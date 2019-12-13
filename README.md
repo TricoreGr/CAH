@@ -12,7 +12,7 @@ Cards against humanity online game
     $ python3 -m venv venv
     $ source venv/bin/activate
     (env)$ pip install -r requirements.txt
-    (env)$ python app.py
+    (env)$ python run.py
     ```
 
     Navigate to [http://localhost:5000](http://localhost:5000)
