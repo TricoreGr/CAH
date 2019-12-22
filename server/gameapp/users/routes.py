@@ -1,8 +1,9 @@
-from gameapp.users.services import check
-from flask import Blueprint
+from flask import Blueprint,jsonify
+from services import getUsers
 
 users = Blueprint('users', __name__)
 
 @users.route('/')
-def health_check():
-    return check()
+def hello():
+    users = getUsers()
+    return jsonify(users)

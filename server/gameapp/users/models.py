@@ -15,4 +15,9 @@ class User(db.Model):
     wins = db.Column(db.Integer)
 
     def __repr__(self):
-        return f"User('{self.username}', '{self.password}', '{self.email}')"
+        user = {"username":self.username, "password":self.password, 
+        "email":self.email,"img":self.img, "games":self.games, "wins":self.wins}
+        return str(user)
+
+    def __json__(self):
+        return ['username','password','email','img','games','wins']
