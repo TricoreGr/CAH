@@ -1,10 +1,12 @@
 from flask_sqlalchemy import SQLAlchemy
+from flask_marshmallow import Marshmallow
 from flask import Flask
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql:///users' #create a user table in username@localhost
 
 db = SQLAlchemy(app)
+ma = Marshmallow(app)
 
 class User(db.Model):
     username = db.Column(db.String(120) , primary_key=True, unique=True, nullable=False)
@@ -14,5 +16,9 @@ class User(db.Model):
     games = db.Column(db.Integer)
     wins = db.Column(db.Integer)
 
-    def __repr__(self):
-        return f"User('{self.username}', '{self.password}', '{self.email}')"
+class UserSchema(ma.Schema):
+    class Meta:
+        fields = ('username', 'email','img','games','wins')
+
+user_schema = UserSchema()
+users_schema = UserSchema(many=True)
