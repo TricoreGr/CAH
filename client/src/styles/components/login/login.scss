@@ -1,0 +1,22 @@
+
+*{
+    display: none;
+}
+.login
+{
+    background: $color-accent;
+    min-height:100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &__title{
+        font-size: 13px;
+        font-family: $montserrat;
+    }
+
+    &__subTitle{
+        font-size: 15px;
+        font-family: $voltaire;
+    }
+}

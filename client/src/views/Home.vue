@@ -26,7 +26,6 @@
               </v-layout>
             </v-parallax>
           </section>
-
         </v-content>
       </v-app>
     </div>
@@ -37,9 +36,7 @@
 export default {
   name: "home",
   data() {
-    return {
-      img1: require("@/assets/hero.jpeg")
-    };
+    return {};
   }
 };
 </script>
