@@ -1,17 +1,12 @@
-
-*{
-    display: none;
-}
 .login
 {
     background: $color-accent;
     min-height:100vh;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
 
     &__title{
-        font-size: 13px;
+        font-size: 15px;
         font-family: $montserrat;
     }
 
