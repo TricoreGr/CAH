@@ -1,0 +1,65 @@
+.card{
+    width: 158px;
+    height: 221px;
+    font-size: 12px;
+    padding: 30px 5px;
+    border-radius: 15px;
+    font-family: $montserrat;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+
+    &__signature{
+        font-family: $voltaire;
+
+    }
+
+    &--player{
+        background:$color-white;
+        color:$color-black;
+    }
+
+    &--czar{
+        background: $color-black;
+        color:$color-white;
+    }
+
+    &--login-input{
+        z-index: 1;
+        margin:-20% 0 0 25%;
+        
+        @media(min-width:$desktop){
+            width: 258px;
+            height: 321px;
+        }
+    }
+
+    &--login-czar{
+        margin-left:-25%;
+
+        @media(min-width:$desktop){
+            width: 258px;
+            height: 321px;
+        }
+    }
+
+    &__content-wrapper{
+        height:100px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+
+        @media(min-width:$desktop){
+            height:150px;
+        }
+    }
+
+    &__input{
+        text-align: center;
+        display: block;
+        font-family: $voltaire;
+    }
+
+}
