@@ -1,5 +1,6 @@
-from models import User,db
-
+from .models import User,db,users_schema,user_schema
+from flask import jsonify
+import json
 
 def addUser(username,password,email,img):
     user = User(username=username, password=password, email=email, img=img)
@@ -9,12 +10,24 @@ def addUser(username,password,email,img):
 
 def getUsers():
     users = User.query.all()
-    return users
+    if users is None:
+        response = {
+            'message' : 'No users in database'
+        }
+        return jsonify(response), 404
+    results = users_schema.dumps(users)
+    results = results.replace('[','').replace(']','')
+    data = json.loads(results)
+    return jsonify(data)
 
 def getUser(uname):
     user = User.query.filter_by(username=uname).first()
-    print(user)
-
-if __name__ == '__main__':
-    getUsers()
-    getUser('admin')
+    if user is None:
+        response = {
+                'message' : 'No user in database with this username'
+        }
+        return jsonify(response), 404
+    results = user_schema.dumps(user)
+    results = results.replace('[','').replace(']','')
+    data = json.loads(results)
+    return jsonify(data)
