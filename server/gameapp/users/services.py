@@ -1,33 +1,78 @@
 from .models import User,db,users_schema,user_schema
 from flask import jsonify
 import json
+import hashlib
+import jwt
+from ..config import Config
 
 def addUser(username,password,email,img):
-    user = User(username=username, password=password, email=email, img=img)
-    db.session.add(user)
-    db.session.commit()
-    print("User added")
+    exists = User.query.filter_by(username).first()
+
+    if exists is None:
+        hashed = hashing(password)
+        user = User(username=username, password=hashed, email=email, img=img)
+
+        db.session.add(user)
+        db.session.commit()
+
+        response = {
+            'message' : 'User added to db'
+        }
+        return jsonify(response)
+
+    else:
+        response = {
+            'message': 'User already exists'
+        }
+        return jsonify(response)
 
 def getUsers():
     users = User.query.all()
+
     if users is None:
         response = {
             'message' : 'No users in database'
         }
         return jsonify(response), 404
+
     results = users_schema.dumps(users)
     results = results.replace('[','').replace(']','')
     data = json.loads(results)
+
     return jsonify(data)
 
 def getUser(uname):
     user = User.query.filter_by(username=uname).first()
+
     if user is None:
         response = {
                 'message' : 'No user in database with this username'
         }
         return jsonify(response), 404
+
     results = user_schema.dumps(user)
     results = results.replace('[','').replace(']','')
     data = json.loads(results)
+
     return jsonify(data)
+
+def checkCreds(username,password):
+    #hashed = hashing(password)
+    hashed = password
+    result = User.query.filter_by(username=username).filter_by(password=hashed).first()
+    if result is None:
+        response = {
+            'message' : 'Invalid credentials'
+        }
+        return jsonify(response)
+    else:
+        key = Config.SECRET_KEY #get the secrete key
+        token = jwt.encode({'user':username},key) #generate token
+        return jsonify({'token': token.decode('utf-8')}) #python encodes it in bytes
+        
+
+def hashing(password):
+    hashpass = hashlib.md5() # create md5 hash
+    hashpass.update(password.encode()) #update it with the password
+
+    return hashpass.hexdigest() #return the hex

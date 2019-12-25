@@ -11,3 +11,4 @@ Werkzeug==0.16.0
 Flask-SQLAlchemy==2.1
 PyMySQL==0.9.3 
 flask-marshmallow==0.10.1 
+PyJWT==1.7.1
