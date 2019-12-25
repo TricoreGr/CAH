@@ -1,6 +1,6 @@
-<template >
-    <div>
+<template>
+  <div>
     hello!
-        <v-btn>CLICK</v-btn>
-    </div>
+    <v-btn>CLICK</v-btn>
+  </div>
 </template>
