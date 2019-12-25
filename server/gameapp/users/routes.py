@@ -1,5 +1,5 @@
 from flask import Blueprint
-from .services import getUsers, getUser
+from .services import getUsers, getUser, checkCreds, addUser
 
 users = Blueprint('users', __name__)
 
@@ -12,3 +12,8 @@ def returnUser(username):
 def returnUsers():
     users = getUsers()
     return users
+
+@users.route('/<username>/auth')
+def checkToken(username):
+    response = checkCreds(username,'root')
+    return response
