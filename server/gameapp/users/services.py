@@ -57,8 +57,7 @@ def getUser(uname):
     return jsonify(data)
 
 def checkCreds(username,password):
-    #hashed = hashing(password)
-    hashed = password
+    hashed = hashing(password)
     result = User.query.filter_by(username=username).filter_by(password=hashed).first()
     if result is None:
         response = {
