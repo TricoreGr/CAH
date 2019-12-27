@@ -1,6 +1,6 @@
 .card{
-    width: 158px;
-    height: 221px;
+    width: 190px;
+    height: 271px;
     font-size: 12px;
     padding: 30px 5px;
     border-radius: 15px;
@@ -12,7 +12,12 @@
 
     &__signature{
         font-family: $voltaire;
+    }
 
+
+    &__error{
+        font-family: $montserrat;
+        color:$color-error;
     }
 
     &--player{
@@ -60,6 +65,13 @@
         text-align: center;
         display: block;
         font-family: $voltaire;
+    }
+
+    &__signature-wrapper{
+        display: flex;
+        height: 50px;
+        justify-content: space-between;
+        flex-direction: column;
     }
 
 }

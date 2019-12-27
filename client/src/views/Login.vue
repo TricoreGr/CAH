@@ -3,40 +3,31 @@ import axios from 'axios';
 export default {
   methods: {
     syncUsername() {
-      var name = document.getElementsByName("username")[0];
-      var czarName = document.getElementById("czar-uername");
-      if (name.value.length < 20) czarName.innerHTML = name.value;
-      if (name.value.length == 0) czarName.innerHTML = "_________________";
+      if (this.username.length < 20) this.czarName = this.username;
+      if (this.username.length == 0) this.czarName = "_________________";
     },
     syncPassword() {
       const text = "veryStr0nkP4ssw0rd";
-      var password = document.getElementsByName("password")[0];
-      var passLength = password.value.length;
-      var czarPassword = document.getElementById("czar-password");
-      czarPassword.innerHTML = text.substring(0, passLength);
-
-      if (passLength == 0) czarPassword.innerHTML = "_________________";
+      var passLength = this.password.length;
+      this.czarPassword = text.substring(0, passLength);
+      if (passLength == 0) this.czarPassword = "_________________";
     },
-    getMessage(){ 
-    const path = "http://localhost:5000/users/ping";
-    axios.get(path)
-      .then(res => {
-        console.log(res);
-      })
-      .catch(error =>{
-        console.log(error);
-      });
-    },
-    login(){ 
-    const path = "http://localhost:5000/users/apostoles/auth";
-    axios.get(path)
-      .then(res => {
-        console.log(res);
-      })
-      .catch(error =>{
-        console.log(error);
-      });
-    }
+    login(){    
+    const path = 'http://localhost:5000/users/'+this.username+'/auth';
+    if(this.username && this.username.length <= 20 && this.password.length>0)
+      axios.post(path,{password:this.password})
+        .then(res => {
+          if(res.data.token){
+            localStorage.setItem('authToken',res.data.token);
+            this.$router.push('/');
+          }
+          else
+            this.error = res.data.message;
+        })
+        .catch(error =>{
+          console.log(error);
+        });
+      }
   },
   data() {
     return {
@@ -44,13 +35,17 @@ export default {
       rules: {
         counter: value => value.length <= 20 || "Max 20 characters",
         required: value => !!value || "Required."
-      }
+      },
+      username : 'IQ^person',
+      password : 'lalala',
+      czarName : "_________________",
+      czarPassword : "_________________",
+      error : ""
     };
   },
   mounted() {
     this.syncUsername();
     this.syncPassword();
-    this.login();
   }
 };
 </script>
@@ -72,8 +67,8 @@ export default {
               <span class="card__text">
                 my username is
               </span>
-              <span id="czar-uername" class="card__input">
-                _________________
+              <span class="card__input">
+                {{czarName}}
               </span>
             </div>
             <div class="card__input-wrapper">
@@ -81,7 +76,7 @@ export default {
                 and my password
               </span>
               <span id="czar-password" class="card__input">
-                _________________
+                {{czarPassword}}
               </span>
             </div>
           </div>
@@ -104,8 +99,8 @@ export default {
                   :type="'text'"
                   :rules="[rules.required, rules.counter]"
                   @input="syncUsername"
-                  name="username"
-                  value="IQ^person"
+                  value=""
+                  v-model="username"
                   counter
                 ></v-text-field>
               </span>
@@ -115,16 +110,19 @@ export default {
                 @input="syncPassword"
                 :rules="[rules.required]"
                 :type="'password'"
-                name="password"
                 value="lololo"
+                v-model="password"
               ></v-text-field>
             </div>
           </div>
+          <div class = "card__signature-wrapper">
+          <span class="card__error">{{error}}</span>
           <span class="card__signature">CAH</span>
+          </div>
         </div>
       </div>
       <div class="login__buttons-wrapper">
-        <v-btn rounded color="black" active-class="test" dark
+        <v-btn rounded color="black" active-class="test" @click.native="login" dark
           >LOG IN, FRIEND!</v-btn
         >
         <v-btn text small>Forgot Password?</v-btn>
