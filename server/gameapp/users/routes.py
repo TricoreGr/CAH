@@ -1,5 +1,6 @@
 from flask import Blueprint
 from .services import getUsers, getUser, checkCreds, addUser
+from flask import jsonify
 
 users = Blueprint('users', __name__)
 
@@ -13,7 +14,12 @@ def returnUsers():
     users = getUsers()
     return users
 
+@users.route('/ping', methods=['GET'])
+def ping_pong():
+    return jsonify('pong!')
+
+
 @users.route('/<username>/auth')
 def checkToken(username):
-    response = checkCreds(username,'root')
+    response = checkCreds('apostoles','password')
     return response

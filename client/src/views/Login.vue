@@ -1,4 +1,5 @@
 <script>
+import axios from 'axios';
 export default {
   methods: {
     syncUsername() {
@@ -15,6 +16,26 @@ export default {
       czarPassword.innerHTML = text.substring(0, passLength);
 
       if (passLength == 0) czarPassword.innerHTML = "_________________";
+    },
+    getMessage(){ 
+    const path = "http://localhost:5000/users/ping";
+    axios.get(path)
+      .then(res => {
+        console.log(res);
+      })
+      .catch(error =>{
+        console.log(error);
+      });
+    },
+    login(){ 
+    const path = "http://localhost:5000/users/apostoles/auth";
+    axios.get(path)
+      .then(res => {
+        console.log(res);
+      })
+      .catch(error =>{
+        console.log(error);
+      });
     }
   },
   data() {
@@ -29,6 +50,7 @@ export default {
   mounted() {
     this.syncUsername();
     this.syncPassword();
+    this.login();
   }
 };
 </script>
@@ -103,7 +125,7 @@ export default {
       </div>
       <div class="login__buttons-wrapper">
         <v-btn rounded color="black" active-class="test" dark
-          >LOG IN, CUNT!</v-btn
+          >LOG IN, FRIEND!</v-btn
         >
         <v-btn text small>Forgot Password?</v-btn>
       </div>
