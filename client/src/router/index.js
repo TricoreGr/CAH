@@ -14,28 +14,41 @@ const routes = [
   {
     path: "/",
     name: "Home",
-    component: Home
+    component: Home,
+    meta: {
+      title: "Home"
+    }
   },
   {
     path: "/login",
     name: "Login",
-    component: Login
+    component: Login,
+    meta: {
+      title: "Register"
+    }
   },
   {
     path: "/register",
     name: "Register",
-    component: Register
+    component: Register,
+    meta: {
+      title: "Register"
+    }
   },
   {
     path: "/profile",
     name: "Profile",
-    component: Profile
+    component: Profile,
+    meta: {
+      title: "Profile"
+    }
   },
   {
     path: "/play",
     name: "Play",
     component: Play,
     meta: {
+      title: "Play",
       requiresAuth: true
     }
   },
@@ -45,13 +58,17 @@ const routes = [
     component: Game,
     props: true,
     meta: {
+      title: "Game",
       requiresAuth: true
     }
   },
   {
     path: "*",
     name: "Error",
-    component: ErrorPage
+    component: ErrorPage,
+    meta: {
+      title: "Error"
+    }
   }
 ];
 
@@ -60,6 +77,5 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 });
-
 
 export default router;
