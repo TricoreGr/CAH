@@ -3,8 +3,8 @@
     <swiper-slide v-for="index in 10" :key="index">
       <card text="test test test test test test test test test test test test test test test "></card>
     </swiper-slide>
-    <div class="swiper-button-prev" slot="button-prev">↼</div>
-    <div class="swiper-button-next" slot="button-next"></div>
+    <div class="cardCarousel__arrow swiper-button-prev" slot="button-prev">↼</div>
+    <div class="cardCarousel__arrow swiper-button-next" slot="button-next">⇁</div>
   </swiper>
 </template>
 <script>

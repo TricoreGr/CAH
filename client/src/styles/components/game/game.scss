@@ -16,6 +16,10 @@
     flex-direction: column;
   }
 
+  &__round{
+    text-align: center;
+  }
+
   &__mainCardWrapper {
     display: flex;
     justify-content: center;
@@ -24,6 +28,14 @@
   &__chatButtonWrapper {
     position: absolute;
     margin-left: 77%;
+  }
+
+  &__cardCarouselWrapper{
+    margin:50px 0;
+
+    @media (min-width:$desktop) {
+    margin:150px 0;
+    }
   }
 
   &__chatNotification {
@@ -36,7 +48,10 @@
     margin-top:-10px;
     position: relative;
     border-radius: 50%;
+    text-align: center;
   }
+
+
 }
 
 .inGameUser {

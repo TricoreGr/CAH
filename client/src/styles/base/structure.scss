@@ -1,3 +1,26 @@
-.v-btn{
-    font-family: $montserrat;
+.v-btn {
+  font-family: $montserrat;
+}
+
+div.swiper-slide {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 5px;
+}
+
+div.swiper-button-prev,
+div.swiper-button-next {
+  background-image: none;
+}
+
+div.cardCarousel__arrow {
+  font-size: 40px;
+  text-shadow: 0px 0px 4px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  user-select: none;
+
+  &:focus {
+    outline: none;
+    background: none;
+  }
 }

@@ -30,29 +30,33 @@
       </div>
     </div>
     <div class="inGame__mainCardWrapper">
-      <div class="card card--czar">
-        <div class="card__content-wrapper">
-          <span class="card__text">
-            Exercitation sint Lorem deserunt excepteur aliquip laboris in
-            ullamco veniam dolore nostrud.
-          </span>
-        </div>
-        <span class="card__signature">CAH</span>
-      </div>
+      <card
+        isCzar
+        text="Exercitation sint Lorem deserunt excepteur aliquip laboris in
+            ullamco veniam dolore nostrud."
+      ></card>
       <div class="inGame__chatButtonWrapper">
-        <v-btn
-          rounded
-          color="black"
-          active-class="test"
-          @click.native="login"
-          dark
-        >
+        <v-btn rounded color="black" dark>
           CHAT
         </v-btn>
         <div class="inGame__chatNotification">
-            !
+          !
         </div>
       </div>
     </div>
+    <div class="inGame__cardCarouselWrapper">
+    <cardCarousel></cardCarousel>
+    </div>
   </div>
 </template>
+<script>
+import cardCarousel from "./components/cardCarousel";
+import card from "./components/card";
+
+export default {
+  components: {
+    cardCarousel,
+    card
+  }
+};
+</script>
