@@ -13,45 +13,62 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: "/",
-    name: "home",
-    component: Home
+    name: "Home",
+    component: Home,
+    meta: {
+      title: "Home"
+    }
   },
   {
     path: "/login",
-    name: "login",
-    component: Login
+    name: "Login",
+    component: Login,
+    meta: {
+      title: "Register"
+    }
   },
   {
     path: "/register",
-    name: "register",
-    component: Register
+    name: "Register",
+    component: Register,
+    meta: {
+      title: "Register"
+    }
   },
   {
     path: "/profile",
-    name: "profile",
-    component: Profile
+    name: "Profile",
+    component: Profile,
+    meta: {
+      title: "Profile"
+    }
   },
   {
     path: "/play",
-    name: "play",
+    name: "Play",
     component: Play,
     meta: {
+      title: "Play",
       requiresAuth: true
     }
   },
   {
     path: "/play/:gameId",
-    name: "game",
+    name: "Game",
     component: Game,
     props: true,
     meta: {
+      title: "Game",
       requiresAuth: true
     }
   },
   {
     path: "*",
-    name: "error",
-    component: ErrorPage
+    name: "Error",
+    component: ErrorPage,
+    meta: {
+      title: "Error"
+    }
   }
 ];
 
@@ -60,6 +77,5 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 });
-
 
 export default router;
