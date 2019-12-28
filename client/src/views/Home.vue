@@ -12,7 +12,6 @@ export default {
   name: "home",
   data() {
     return {
-      imgsrc: require("../assets/cahbanner.jpg")
     };
   }
 };
