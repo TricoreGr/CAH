@@ -10,6 +10,17 @@
     font-style: normal;
   }
 
+  @font-face {
+    font-family: "Montserrat-Regular";
+    src: url("assets/fonts/montserrat-regular/Montserrat-Regular.eot"); /* IE9 Compat Modes */
+    src:
+      url("assets/fonts/montserrat-regular/Montserrat-Regular.otf") format("opentype"), /* Open Type Font */
+      url("assets/fonts/montserrat-regular/Montserrat-Regular.ttf") format("truetype"), /* Safari, Android, iOS */
+      url("assets/fonts/montserrat-regular/Montserrat-Regular.woff") format("woff"), /* Modern Browsers */
+      url("assets/fonts/montserrat-regular/Montserrat-Regular.woff2") format("woff2"); /* Modern Browsers */
+    font-weight: normal;
+    font-style: normal;
+  }
   /* font converted using font-converter.net. thank you! */
 @font-face {
     font-family: "Voltaire";

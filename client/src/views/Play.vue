@@ -1,6 +1,6 @@
 <template>
   <div>
-    hello!
-    <v-btn>CLICK</v-btn>
+    <navbar />
+    <v-app></v-app>
   </div>
 </template>

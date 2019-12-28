@@ -13,27 +13,27 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: "/",
-    name: "home",
+    name: "Home",
     component: Home
   },
   {
     path: "/login",
-    name: "login",
+    name: "Login",
     component: Login
   },
   {
     path: "/register",
-    name: "register",
+    name: "Register",
     component: Register
   },
   {
     path: "/profile",
-    name: "profile",
+    name: "Profile",
     component: Profile
   },
   {
     path: "/play",
-    name: "play",
+    name: "Play",
     component: Play,
     meta: {
       requiresAuth: true
@@ -41,7 +41,7 @@ const routes = [
   },
   {
     path: "/play/:gameId",
-    name: "game",
+    name: "Game",
     component: Game,
     props: true,
     meta: {
@@ -50,7 +50,7 @@ const routes = [
   },
   {
     path: "*",
-    name: "error",
+    name: "Error",
     component: ErrorPage
   }
 ];
