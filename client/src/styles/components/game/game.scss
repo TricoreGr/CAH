@@ -31,10 +31,19 @@
   }
 
   &__cardCarouselWrapper{
-    margin:50px 0;
+    margin:50px 0 0 0;
 
     @media (min-width:$desktop) {
-    margin:150px 0;
+    margin:150px 0 0 0;
+    }
+  }
+
+
+  &__userCarouselWrapper{
+    margin:30px 0 0 0;
+
+    @media (min-width:$desktop) {
+    margin:70px 0 0 0;
     }
   }
 
@@ -52,37 +61,4 @@
   }
 
 
-}
-
-.inGameUser {
-  &__wrapper {
-    display: flex;
-  }
-
-  &__image {
-    width: 55px;
-    height: 55px;
-    object-fit: cover;
-    border-radius: 50%;
-    border: 5px solid $color-white;
-    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.5);
-
-    &--czar {
-      border: 5px solid $color-black;
-    }
-  }
-  &__AttributeWrapper {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    font-family: $voltaire;
-  }
-
-  &__isCzar {
-    font-size: 11px;
-  }
-
-  &__points {
-    font-size: 13px;
-  }
 }

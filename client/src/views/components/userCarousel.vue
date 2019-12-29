@@ -1,19 +1,19 @@
 <template>
   <swiper ref="mySwiper" :options="swiperOption">
-    <swiper-slide v-for="text in Texts" :key="text">
-      <card :text=text></card>
+    <swiper-slide v-for="text in 10" :key="text">
+      <player></player>
     </swiper-slide>
-    <div class="cardCarousel__arrow swiper-button-prev" slot="button-prev">↼</div>
-    <div class="cardCarousel__arrow swiper-button-next" slot="button-next">⇁</div>
+    <div class="cardCarousel__arrow cardCarousel__arrow--mini swiper-button-prev" slot="button-prev">↼</div>
+    <div class="cardCarousel__arrow cardCarousel__arrow--mini swiper-button-next" slot="button-next">⇁</div>
   </swiper>
 </template>
 <script>
-import card from "./card";
+import player from './player';
 import "swiper/dist/css/swiper.css";
 import { swiper, swiperSlide } from "vue-awesome-swiper";
 
 export default {
-  components: { card, swiper, swiperSlide },
+  components: {  swiper, swiperSlide,player },
   data() {
     return {
       Texts:[
@@ -21,14 +21,10 @@ export default {
           "lololololo",
           "lelelelelle",
           "lalalallalala",
-          "lululululuulu",
-          "lelelelelle",
-          "lelelelelle",
-          "lelelelelle",
-
+          "lululululuulu"
         ],
         swiperOption: {
-          slidesPerView: 4,
+          slidesPerView: 8,
           // init: false,
           breakpoints: {
             1542: {
@@ -41,7 +37,7 @@ export default {
               slidesPerView: 3,
             },
             600: {
-              slidesPerView: 2,
+              slidesPerView: 3,
             }
           },  
         navigation: {

@@ -4,7 +4,6 @@
       <v-btn
         rounded
         color="black"
-        active-class="test"
         @click.native="login"
         dark
       >
@@ -15,19 +14,10 @@
           ROUND
         </span>
         <span class="inGame__round">
-          1 / 6
+          {{currentRound}} / {{totalRounds}}
         </span>
       </div>
-      <div class="inGameUser__wrapper">
-        <img
-          class="inGameUser__image inGameUser__image--czar"
-          src="https://upload.wikimedia.org/wikipedia/commons/4/4d/Star_Wars-_The_Last_Jedi_Japan_Premiere_Red_Carpet-_Adam_Driver_%2827163437599%29_%28cropped%29.jpg"
-        />
-        <div class="inGameUser__AttributeWrapper">
-          <span class="inGameUser__isCzar"> </span>
-          <span class="inGameUser__points">69</span>
-        </div>
-      </div>
+      <player></player>
     </div>
     <div class="inGame__mainCardWrapper">
       <card
@@ -45,18 +35,30 @@
       </div>
     </div>
     <div class="inGame__cardCarouselWrapper">
-    <cardCarousel></cardCarousel>
+      <cardCarousel></cardCarousel>
+    </div>
+    <div class="inGame__userCarouselWrapper">
+      <userCarousel></userCarousel>
     </div>
   </div>
 </template>
 <script>
 import cardCarousel from "./components/cardCarousel";
 import card from "./components/card";
-
+import player from "./components/player";
+import userCarousel from './components/userCarousel'
 export default {
   components: {
     cardCarousel,
-    card
+    card,
+    player,
+    userCarousel
+  },
+  data() {
+    return {
+      currentRound:1,
+      totalRounds:6
+    }
   }
 };
 </script>

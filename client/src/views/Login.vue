@@ -78,7 +78,6 @@
         <v-btn
           rounded
           color="black"
-          active-class="test"
           @click.native="login"
           dark
           >LOG IN, FRIEND!</v-btn
