@@ -10,7 +10,7 @@
         <router-link
           active-class="navbar-link--active"
           class="navbar-link"
-          v-for="link in linksAuthenticated"
+          v-for="link in appropriateLinks"
           :key="link.name"
           exact
           :to="link.to"
@@ -30,7 +30,7 @@
           </template>
           <v-list class="navbar-menu--mobile">
             <v-list-item
-              v-for="link in linksAuthenticated"
+              v-for="link in appropriateLinks"
               :key="link.name"
               router
               :to="link.to"
@@ -49,25 +49,60 @@
 export default {
   data() {
     return {
-      linksAuthenticated: [
+      allPageLinks: [
         {
           name: "Home",
-          to: "/"
+          to: "/",
+          nonAuthenticated: true
         },
         {
           name: "Play Now!",
-          to: "/play"
+          to: "/play",
+          nonAuthenticated: false
         },
         {
           name: "Profile",
-          to: "/profile"
+          to: "/profile",
+          nonAuthenticated: false
         },
         {
           name: "Log Out",
-          to: "/logout"
+          to: "/logout",
+          nonAuthenticated: false
+        },
+        {
+          name: "Log In",
+          to: "/login",
+          nonAuthenticated: true
+        },
+        {
+          name: "Register",
+          to: "/register",
+          nonAuthenticated: true
         }
       ]
     };
+  },
+  computed: {
+    appropriateLinks() {
+      var userIsAuthenticated = !!localStorage.getItem("authToken");
+      var links = [];
+      var currentLink;
+
+      if (!userIsAuthenticated) {
+        console.log(userIsAuthenticated);
+        for (currentLink of this.$data.allPageLinks) {
+          if (currentLink.nonAuthenticated) links.push(currentLink);
+        }
+      } else {
+        links.push(this.$data.allPageLinks[0]);
+        for (currentLink of this.$data.allPageLinks) {
+          if (!currentLink.nonAuthenticated) links.push(currentLink);
+        }
+      }
+
+      return links;
+    }
   }
 };
 </script>
