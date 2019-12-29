@@ -3,6 +3,7 @@ import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
 import Login from "../views/Login.vue";
 import Register from "../views/Register.vue";
+import Logout from "../views/Logout.vue";
 import Play from "../views/Play.vue";
 import Game from "../views/Game.vue";
 import Profile from "../views/Profile.vue";
@@ -34,6 +35,11 @@ const routes = [
     meta: {
       title: "Register"
     }
+  },
+  {
+    path: "/logout",
+    name: "Logout",
+    component: Logout
   },
   {
     path: "/profile",
