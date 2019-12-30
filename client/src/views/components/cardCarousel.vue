@@ -29,7 +29,6 @@ export default {
         ],
         swiperOption: {
           slidesPerView: 4,
-          // init: false,
           breakpoints: {
             1542: {
               slidesPerView: 5,
