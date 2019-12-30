@@ -9,6 +9,30 @@
       >
         QUIT
       </v-btn>
+      <v-navigation-drawer
+      v-model="drawer"
+      absolute
+      right
+      temporary
+      class="chat"
+    >
+    <div class="chat__message-wrapper" v-for="(message,index) in messages" :key="index">
+      <span class="chat__user" >{{message.user}}: </span>
+      <span class="chat__message" >{{message.text}}</span>
+    </div>
+    <template v-slot:append>
+        <v-text-field
+                  :type="'text'"
+                  value=""
+                  outlined
+                  solo
+                  class="chat__input"
+                  >
+                </v-text-field>
+                <v-btn class="chat__submit">send</v-btn>
+      </template>
+
+      </v-navigation-drawer>
       <div class="inGame__roundWrapper">
         <span class="inGame__round">
           ROUND
@@ -26,7 +50,7 @@
             ullamco veniam dolore nostrud."
       ></card>
       <div class="inGame__chatButtonWrapper">
-        <v-btn rounded color="black" dark>
+        <v-btn rounded color="black" dark @click.stop="drawer = !drawer">
           CHAT
         </v-btn>
         <div class="inGame__chatNotification">
@@ -57,7 +81,66 @@ export default {
   data() {
     return {
       currentRound:1,
-      totalRounds:6
+      totalRounds:6,
+      drawer: true,
+      messages:[
+        {
+          'user':'stougk',
+          'text':'foveri ergasia , 10/10'
+        },
+        {
+          'user':'dtektoni',
+          'text':'amazing, WOW , 10/10'
+        },
+        {
+          'user':'asidirop',
+          'text':'oti kalutero exoume dei, evge , 10/10'
+        },{
+          'user':'stougk',
+          'text':'foveri ergasia , 10/10'
+        },
+        {
+          'user':'dtektoni',
+          'text':'amazing, WOW , 10/10'
+        },
+        {
+          'user':'asidirop',
+          'text':'oti kalutero exoume dei, evge , 10/10'
+        },{
+          'user':'stougk',
+          'text':'foveri ergasia , 10/10'
+        },
+        {
+          'user':'dtektoni',
+          'text':'amazing, WOW , 10/10'
+        },
+        {
+          'user':'asidirop',
+          'text':'oti kalutero exoume dei, evge , 10/10'
+        },{
+          'user':'stougk',
+          'text':'foveri ergasia , 10/10'
+        },
+        {
+          'user':'dtektoni',
+          'text':'amazing, WOW , 10/10'
+        },
+        {
+          'user':'asidirop',
+          'text':'oti kalutero exoume dei, evge , 10/10'
+        },{
+          'user':'stougk',
+          'text':'foveri ergasia , 10/10'
+        },
+        {
+          'user':'dtektoni',
+          'text':'amazing, WOW , 10/10'
+        },
+        {
+          'user':'asidirop',
+          'text':'oti kalutero exoume dei, evge , 10/10'
+        }
+      ]
     }
   }
 };

@@ -23,6 +23,7 @@ $desktop:1264px;
 
 
 //colours
+$color-base: #FAFAFA;
 $color-accent:#BEE3DB;
 $color-accent--dark:#89B0AE;
 $color-black:#000;
@@ -32,4 +33,5 @@ $color-white-gradient:linear-gradient($color-accent,$color-white);
 
 //typography
 $montserrat:'Montserrat-Bold';
+$montserrat-light: 'Montserrat-Regular';
 $voltaire:'Voltaire';

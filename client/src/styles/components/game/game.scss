@@ -16,7 +16,7 @@
     flex-direction: column;
   }
 
-  &__round{
+  &__round {
     text-align: center;
   }
 
@@ -30,35 +30,95 @@
     margin-left: 77%;
   }
 
-  &__cardCarouselWrapper{
-    margin:50px 0 0 0;
+  &__cardCarouselWrapper {
+    margin: 50px 0 0 0;
 
-    @media (min-width:$desktop) {
-    margin:150px 0 0 0;
+    @media (min-width: $desktop) {
+      margin: 150px 0 0 0;
     }
   }
 
+  &__userCarouselWrapper {
+    margin: 30px 0 0 0;
 
-  &__userCarouselWrapper{
-    margin:30px 0 0 0;
-
-    @media (min-width:$desktop) {
-    margin:70px 0 0 0;
+    @media (min-width: $desktop) {
+      margin: 70px 0 0 0;
     }
   }
 
   &__chatNotification {
     width: 16px;
     height: 16px;
-    background:$color-accent--dark;
+    background: $color-accent--dark;
     font-family: $montserrat;
     font-size: 13px;
     line-height: 16px;
-    margin-top:-10px;
+    margin-top: -10px;
     position: relative;
     border-radius: 50%;
     text-align: center;
   }
+}
 
+.chat {
+  background: linear-gradient(to bottom right, $color-base, $color-accent);
+  opacity: .9;
+
+  &__message-wrapper {
+    display: flex;
+    padding: 20px 40px;
+    flex-direction: column;
+    border-bottom: 1px solid $color-accent--dark;
+  }
+
+  &__user {
+    color: $color-accent--dark;
+    font-family: $montserrat;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    display: block;
+  }
+
+  &__message {
+    display: block;
+    font-family: $montserrat-light;
+  }
+
+  &__input{
+    font-family: $montserrat-light;
+      width:70%;
+  }
+}
+
+
+//fugly
+ .chat {
+  @media (min-width: $tablet) {
+    width: 400px!important;
+  }
+
+  @media (min-width: $desktop) {
+    width: 700px!important;
+  }
+
+
+
+  &__submit{
+    height: 100%!important;
+}
+
+  .v-input__slot
+  {
+    margin:0;
+  }
+
+  .v-text-field__details
+  {
+    display: none;
+  }
+
+  .v-navigation-drawer__append{
+    display: flex;
+  }
 
 }
