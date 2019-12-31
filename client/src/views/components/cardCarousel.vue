@@ -1,7 +1,7 @@
 <template>
   <swiper ref="mySwiper" :options="swiperOption">
-    <swiper-slide v-for="text in Texts" :key="text">
-      <card :text=text></card>
+    <swiper-slide v-for="(text,index) in Texts" :key="index">
+      <card v-on:updateSelectedIndex="updateIndex($event)" v-model="selectedCardIndex" :selectedCardIndex="selectedCardIndex" :index="index" :text=text></card>
     </swiper-slide>
     <div class="cardCarousel__arrow swiper-button-prev" slot="button-prev">↼</div>
     <div class="cardCarousel__arrow swiper-button-next" slot="button-next">⇁</div>
@@ -14,6 +14,11 @@ import { swiper, swiperSlide } from "vue-awesome-swiper";
 
 export default {
   components: { card, swiper, swiperSlide },
+  methods: {
+      updateIndex(index){
+        this.selectedCardIndex = index;
+      }
+    },
   data() {
     return {
       Texts:[
@@ -27,6 +32,7 @@ export default {
           "lelelelelle",
 
         ],
+        selectedCardIndex:-1,
         swiperOption: {
           slidesPerView: 4,
           breakpoints: {
