@@ -58,6 +58,28 @@
     border-radius: 50%;
     text-align: center;
   }
+
+  &__animation{
+    opacity: 0;
+    font-family: $montserrat;
+    position: absolute;
+    transform: rotate(30deg);
+    &--round{
+      margin-left: 25%;
+        &:nth-child(1){
+          font-size: 50px;
+          margin-left: 17%;
+        }
+        &:nth-child(2){
+          font-size: 17px;
+          margin-left: 51%;
+        }
+        &:nth-child(3){
+          font-size: 40px;
+          margin-left: 68%;
+        }
+    }
+  }
 }
 
 .chat {

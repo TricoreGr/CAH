@@ -34,7 +34,7 @@ export default {
         ],
         selectedCardIndex:-1,
         swiperOption: {
-          slidesPerView: 4,
+          slidesPerView: 5,
           breakpoints: {
             1542: {
               slidesPerView: 5,
