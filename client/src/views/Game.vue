@@ -3,9 +3,9 @@
     <div
       v-for="index in 3"
       :key="index"
-      class="inGame__animation inGame__animation--round"
+      class="inGame__animation"
     >
-      Round 2
+      <player></player>
     </div>
     <div class="inGame__statusWrapper">
       <v-btn rounded color="black" dark>
@@ -146,7 +146,7 @@ export default {
               anime({
                 targets: `.inGame__animation:nth-child(${i})`,
                 scale: 2,
-                translateY: 0,
+                translateY: 0+translate_y/2.5,
                 easing: "easeInOutQuart",
                 duration: 1000,
                 opacity: [1, 0]

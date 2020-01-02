@@ -60,23 +60,38 @@
   }
 
   &__animation{
+    z-index: 10;
     opacity: 0;
     font-family: $montserrat;
     position: absolute;
     transform: rotate(30deg);
-    &--round{
       margin-left: 25%;
         &:nth-child(1){
-          font-size: 50px;
-          margin-left: 17%;
+          font-size: 20px;
+            margin-left: 10%;
+          @media(min-width:$tablet){
+            font-size: 50px;
+            margin-left: 17%;  
+          }
+
         }
         &:nth-child(2){
-          font-size: 17px;
-          margin-left: 51%;
+          font-size: 10px;
+            margin-left: 5%;
+
+          @media(min-width:$tablet){
+            font-size: 17px;
+            margin-left: 51%;
+  }
         }
         &:nth-child(3){
-          font-size: 40px;
-          margin-left: 68%;
+  
+          font-size: 7px;
+            margin-left: 82%;
+
+          @media(min-width:$tablet){
+            font-size: 17px;
+            margin-left: 76%;
         }
     }
   }
