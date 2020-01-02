@@ -1,17 +1,27 @@
 .card{
-    width: 190px;
-    height: 271px;
+    width: 80px;
+    height: 120px;
     font-size: 12px;
-    padding: 30px 5px;
+    padding: 30px 15px;
     border-radius: 15px;
-    font-family: $montserrat;
     display: flex;
     flex-direction: column;
+    font-family: $montserrat;
     justify-content: space-between;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    background: $color-white;
+    user-select: none;
+    border: 3px solid transparent;
+    transition : border 200ms ease-out;
+
+    @media (min-width:$tabletLarge){
+    width: 156px;
+    height: 180px;
+    }
 
     &__signature{
         font-family: $voltaire;
+        text-align: center;
     }
 
 
@@ -25,7 +35,13 @@
         color:$color-black;
     }
 
+    &--selected{
+        border:3px solid $color-black;
+        }
+
     &--czar{
+        width: 190px;
+        height: 241px;
         background: $color-black;
         color:$color-white;
     }
@@ -65,6 +81,10 @@
         text-align: center;
         display: block;
         font-family: $voltaire;
+    }
+
+    &__text{
+        text-align: left;
     }
 
     &__signature-wrapper{

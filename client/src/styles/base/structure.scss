@@ -1,0 +1,55 @@
+.v-btn {
+  font-family: $montserrat;
+
+  &:focus {
+    outline: none;
+    background: none;
+  }
+}
+
+div.swiper-slide {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 5px;
+}
+
+div.swiper-button-prev{
+  
+  @media (min-width:$desktop) {
+    left:30px;    
+  }
+}
+
+div.swiper-button-next {
+
+
+  @media (min-width:$desktop) {
+    right:30px;    
+  }
+}
+
+div.swiper-button-prev,
+div.swiper-button-next {
+  background-image: none;
+}
+
+div.cardCarousel__arrow {
+  font-size: 30px;
+  text-shadow: 0px 0px 4px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  user-select: none;
+
+
+  @media(min-width:$tablet){
+    font-size: 40px;
+  }
+
+  &--mini{
+    font-size: 30px;
+  }
+
+  &:focus {
+    outline: none;
+    background: none;
+  }
+}

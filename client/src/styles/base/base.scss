@@ -1,4 +1,6 @@
 @import "./fonts.scss";
+@import "./variables.scss";
+@import "./structure.scss";
 
 $tablet:600px;
 $tabletLarge:960px;
@@ -22,19 +24,3 @@ $desktop:1264px;
 // {
      //tablet 1264 - and beyond
 // }
-
-
-//colours
-$color-base: #FAFAFA;
-$color-accent:#BEE3DB;
-$color-accent--dark:#89B0AE;
-$color-black:#000;
-$color-white:#fff;
-$color-error: #ff5252;
-$color-white-gradient:linear-gradient($color-accent,$color-white);
-
-//typography
-$montserrat:'Montserrat-Bold';
-$montserrat-light: 'Montserrat-Regular';
-$voltaire:'Voltaire';
-
