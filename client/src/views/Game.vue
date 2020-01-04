@@ -1,10 +1,6 @@
 <template>
   <div class="inGame">
-    <div
-      v-for="index in 3"
-      :key="index"
-      class="inGame__animation"
-    >
+    <div v-for="index in 3" :key="index" class="inGame__animation">
       <player></player>
     </div>
     <div class="inGame__statusWrapper">
@@ -40,22 +36,18 @@
           <v-btn @click.native="sendMessage" class="chat__submit">send</v-btn>
         </template>
       </v-navigation-drawer>
-      <div class="inGame__roundWrapper">
-        <span class="inGame__round">
-          ROUND
-        </span>
-        <span class="inGame__round">
-          {{ currentRound }} / {{ totalRounds }}
-        </span>
-      </div>
       <player></player>
     </div>
+    <span class="inGame__hint">
+      Choose {{ cardsToPick }} of the following cards!
+    </span>
     <div class="inGame__mainCardWrapper">
       <card
         isCzar
         text="Exercitation sint Lorem deserunt excepteur aliquip laboris in
             ullamco veniam dolore nostrud."
       ></card>
+
       <div class="inGame__chatButtonWrapper">
         <v-btn
           rounded
@@ -72,10 +64,14 @@
       </div>
     </div>
     <div class="inGame__cardCarouselWrapper">
-      <span class="inGame__hint">
-        Choose {{cardsToPick}} of the following cards!
-      </span>
-      <cardCarousel :cardsToPick="cardsToPick"></cardCarousel>
+      <div class="inGame__submitButtonWrapper">
+        <transition name="fade">
+      <v-btn rounded color="black" v-if="cardsToPick == selectedCardsIndexes.length" dark class="inGame__submitButton">
+        Submit!
+      </v-btn>
+        </transition>
+      </div>
+      <cardCarousel v-on:updateSelectedCardsIndexes="updateSelectedCardsIndexes($event)" :selectedCardsIndexes="selectedCardsIndexes" :cardsToPick="cardsToPick"></cardCarousel>
     </div>
     <div class="inGame__userCarouselWrapper">
       <userCarousel></userCarousel>
@@ -118,6 +114,9 @@ export default {
       //scroll to the end of the container
       test.scrollTop = test.scrollHeight;
     },
+    updateSelectedCardsIndexes(indexArray){
+      this.selectedCardsIndexes = indexArray;
+    },
     nextRoundAnimation(i) {
       var translate_y;
       i++;
@@ -128,7 +127,7 @@ export default {
         case 2:
           translate_y = 400;
           break;
-          case 3:
+        case 3:
           translate_y = 250;
           break;
       }
@@ -149,7 +148,7 @@ export default {
               anime({
                 targets: `.inGame__animation:nth-child(${i})`,
                 scale: 2,
-                translateY: 0+translate_y/2.5,
+                translateY: 0 + translate_y / 2.5,
                 easing: "easeInOutQuart",
                 duration: 1000,
                 opacity: [1, 0]
@@ -170,7 +169,8 @@ export default {
       currentRound: 1,
       totalRounds: 6,
       drawer: false,
-      cardsToPick:1,
+      selectedCardsIndexes:[],
+      cardsToPick: 1,
       messages: [
         {
           user: "stougk",

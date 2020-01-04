@@ -24,7 +24,8 @@ import { swiper, swiperSlide } from "vue-awesome-swiper";
 export default {
   components: { card, swiper, swiperSlide },
   props: {
-    cardsToPick: Number
+    cardsToPick: Number,
+    selectedCardsIndexes:Array
   },
   methods: {
     updateIndex(index) {
@@ -42,8 +43,8 @@ export default {
         //remove that card
         updatedIndexArray.splice(indexOfElementToDelete, 1);
       }
-      //update card index array
-      this.selectedCardsIndexes = updatedIndexArray;
+      //update card index array of parent element
+      this.$emit("updateSelectedCardsIndexes", updatedIndexArray);
     }
   },
   data() {
@@ -58,7 +59,6 @@ export default {
         "lelelelelle",
         "lelelelelle"
       ],
-      selectedCardsIndexes: [],
       swiperOption: {
         slidesPerView: 5,
         breakpoints: {
