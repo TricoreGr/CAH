@@ -72,7 +72,10 @@
       </div>
     </div>
     <div class="inGame__cardCarouselWrapper">
-      <cardCarousel></cardCarousel>
+      <span class="inGame__hint">
+        Choose {{cardsToPick}} of the following cards!
+      </span>
+      <cardCarousel :cardsToPick="cardsToPick"></cardCarousel>
     </div>
     <div class="inGame__userCarouselWrapper">
       <userCarousel></userCarousel>
@@ -167,6 +170,7 @@ export default {
       currentRound: 1,
       totalRounds: 6,
       drawer: false,
+      cardsToPick:1,
       messages: [
         {
           user: "stougk",
