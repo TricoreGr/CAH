@@ -38,9 +38,13 @@
       </v-navigation-drawer>
       <player></player>
     </div>
-    <span class="inGame__hint">
-      Choose {{ cardsToPick }} of the following cards!
-    </span>
+    <div class="inGame__hint-wrapper">
+      <transition name="fade">
+        <span v-if="cardsToPick > 1" class="inGame__hint">
+          Special Round, Choose {{ cardsToPick }} cards!
+        </span>
+      </transition>
+    </div>
     <div class="inGame__mainCardWrapper">
       <card
         isCzar
@@ -55,6 +59,7 @@
           dark
           @click.native="chatNotification = false"
           @click.stop="drawer = !drawer"
+          class="inGame__chatButton"
         >
           CHAT
         </v-btn>
@@ -66,12 +71,22 @@
     <div class="inGame__cardCarouselWrapper">
       <div class="inGame__submitButtonWrapper">
         <transition name="fade">
-      <v-btn rounded color="black" v-if="cardsToPick == selectedCardsIndexes.length" dark class="inGame__submitButton">
-        Submit!
-      </v-btn>
+          <v-btn
+            rounded
+            color="black"
+            v-if="cardsToPick == selectedCardsIndexes.length"
+            dark
+            class="inGame__submitButton"
+          >
+            Submit!
+          </v-btn>
         </transition>
       </div>
-      <cardCarousel v-on:updateSelectedCardsIndexes="updateSelectedCardsIndexes($event)" :selectedCardsIndexes="selectedCardsIndexes" :cardsToPick="cardsToPick"></cardCarousel>
+      <cardCarousel
+        v-on:updateSelectedCardsIndexes="updateSelectedCardsIndexes($event)"
+        :selectedCardsIndexes="selectedCardsIndexes"
+        :cardsToPick="cardsToPick"
+      ></cardCarousel>
     </div>
     <div class="inGame__userCarouselWrapper">
       <userCarousel></userCarousel>
@@ -114,7 +129,7 @@ export default {
       //scroll to the end of the container
       test.scrollTop = test.scrollHeight;
     },
-    updateSelectedCardsIndexes(indexArray){
+    updateSelectedCardsIndexes(indexArray) {
       this.selectedCardsIndexes = indexArray;
     },
     nextRoundAnimation(i) {
@@ -169,8 +184,8 @@ export default {
       currentRound: 1,
       totalRounds: 6,
       drawer: false,
-      selectedCardsIndexes:[],
-      cardsToPick: 1,
+      selectedCardsIndexes: [],
+      cardsToPick: 2,
       messages: [
         {
           user: "stougk",

@@ -4,10 +4,14 @@
   min-height: 100vh;
 
   &__statusWrapper {
-    padding: 30px 20px;
+    padding: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    @media (min-width:$tablet) {
+      padding: 30px 80px;      
+    }
   }
 
   &__roundWrapper {
@@ -27,14 +31,31 @@
 
   &__chatButtonWrapper {
     position: absolute;
-    margin-left: 77%;
+    right:0;
+    padding-right: 13px;
+
+    @media (min-width:$tablet){
+      padding-right:80px;
+    }
+  }
+
+
+  &__chatButton{
+    font-size:10px!important; 
+    @media (min-width:$tablet){
+      font-size:13px!important; 
+    }
+  }
+
+  &__hint-wrapper{
+    min-height: 30px;
+    margin-bottom:60px;
   }
 
   &__hint{
     font-family: $voltaire;
     text-align: center;
     display: block;
-    margin-bottom: 30px;
   }
 
   &__userCarouselWrapper {
