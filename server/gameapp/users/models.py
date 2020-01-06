@@ -3,7 +3,8 @@ from flask_marshmallow import Marshmallow
 from flask import Flask
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://apostoles:password@localhost/users' #create a user table in username@localhost
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://emXFbgryDO:<password here>@remotemysql.com:3306/emXFbgryDO' #add password in order for it to run
 
 db = SQLAlchemy(app)
 ma = Marshmallow(app)

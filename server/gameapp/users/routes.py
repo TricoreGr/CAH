@@ -14,9 +14,9 @@ def returnUsers():
     users = getUsers()
     return users
 
-@users.route('/<username>/auth', methods=['GET','POST'])
+@users.route('/<username>/auth', methods=['GET','POST']) #TODO add password 
 def checkToken(username):
-    password = 'password'
+    password = 'admin'
     if request.method == 'POST':
         creds = request.get_json()
         password = creds['password']
