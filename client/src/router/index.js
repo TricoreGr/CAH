@@ -1,23 +1,80 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
+import Login from "../views/Login.vue";
+import Register from "../views/Register.vue";
+import Logout from "../views/Logout.vue";
+import Play from "../views/Play.vue";
+import Game from "../views/Game.vue";
+import Profile from "../views/Profile.vue";
+import ErrorPage from "../views/ErrorPage.vue";
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: "/",
-    name: "home",
-    component: Home
+    name: "Home",
+    component: Home,
+    meta: {
+      title: "Home"
+    }
   },
   {
-    path: "/about",
-    name: "about",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/About.vue")
+    path: "/login",
+    name: "Login",
+    component: Login,
+    meta: {
+      title: "Register"
+    }
+  },
+  {
+    path: "/register",
+    name: "Register",
+    component: Register,
+    meta: {
+      title: "Register"
+    }
+  },
+  {
+    path: "/logout",
+    name: "Logout",
+    component: Logout
+  },
+  {
+    path: "/profile",
+    name: "Profile",
+    component: Profile,
+    meta: {
+      title: "Profile"
+    }
+  },
+  {
+    path: "/play",
+    name: "Play",
+    component: Play,
+    meta: {
+      title: "Play",
+      requiresAuth: true
+    }
+  },
+  {
+    path: "/play/:gameId",
+    name: "Game",
+    component: Game,
+    props: true,
+    meta: {
+      title: "Game",
+      requiresAuth: true
+    }
+  },
+  {
+    path: "*",
+    name: "Error",
+    component: ErrorPage,
+    meta: {
+      title: "Error"
+    }
   }
 ];
 

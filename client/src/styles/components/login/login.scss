@@ -1,0 +1,75 @@
+.login {
+  background: $color-accent;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  padding-bottom: 10%;
+  text-align: center;
+
+
+  @media (min-width: $desktop) {
+    padding-bottom: 0%;
+  }
+  
+
+  &__title {
+    font-size: 13px;
+    font-family: $montserrat;
+  }
+
+  &__subTitle {
+    font-size: 13px;
+    font-family: $voltaire;
+  }
+
+  &__card-wrapper {
+    margin-top: 20px;
+  }
+
+  &__card-tip {
+    font-family: $montserrat;
+    position: absolute;
+    max-width: 120px;
+    margin-left: -150px;
+    margin-top: 50px;
+    font-size: 12px;
+
+    @media (min-width: $desktop) {
+      margin-left: -250px;
+    }
+  }
+
+  &__card-tip-arrow {
+    display: block;
+    font-size: 30px;
+    margin-top: -10px;
+  }
+
+  &__buttons-wrapper {
+    height: 100px;
+    display: flex;
+    margin-top:20px;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .v-input__control {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .v-input__slot {
+      width: 75%;
+    }
+  }
+
+  .v-input input {
+    text-align: center;
+  }
+
+  .v-btn__content {
+    font-family: $montserrat;
+  }
+}

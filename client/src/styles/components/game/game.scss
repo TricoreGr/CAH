@@ -1,0 +1,195 @@
+.inGame {
+  background: $color-white; //browser fallback
+  background: $color-white-gradient;
+  min-height: 100vh;
+
+  &__statusWrapper {
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    @media (min-width:$tablet) {
+      padding: 30px 80px;      
+    }
+  }
+
+  &__roundWrapper {
+    font-family: $voltaire;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__round {
+    text-align: center;
+  }
+
+  &__mainCardWrapper {
+    display: flex;
+    justify-content: center;
+  }
+
+  &__chatButtonWrapper {
+    position: absolute;
+    right:0;
+    padding-right: 13px;
+
+    @media (min-width:$tablet){
+      padding-right:80px;
+    }
+  }
+
+
+  &__chatButton{
+    font-size:10px!important; 
+    @media (min-width:$tablet){
+      font-size:13px!important; 
+    }
+  }
+
+  &__hint-wrapper{
+    min-height: 30px;
+    margin-bottom:60px;
+  }
+
+  &__hint{
+    font-family: $voltaire;
+    text-align: center;
+    display: block;
+  }
+
+  &__userCarouselWrapper {
+    margin: 30px 0 0 0;
+
+    @media (min-width: $desktop) {
+      margin: 70px 0 0 0;
+    }
+  }
+
+  &__chatNotification {
+    width: 16px;
+    height: 16px;
+    background: $color-accent--dark;
+    font-family: $montserrat;
+    font-size: 13px;
+    line-height: 16px;
+    margin-top: -10px;
+    position: relative;
+    border-radius: 50%;
+    text-align: center;
+  }
+
+  &__submitButtonWrapper{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding-bottom: 50px;
+    min-height: 100px;
+    margin: 50px 0 0 0;
+  }
+  &__submitButton{
+    text-align: center;
+    width:200px;
+    height:50px!important;
+  }
+
+  &__animation{
+    z-index: 10;
+    opacity: 0;
+    font-family: $montserrat;
+    position: absolute;
+    transform: rotate(30deg);
+      margin-left: 25%;
+        &:nth-child(1){
+          font-size: 20px;
+            margin-left: 10%;
+          @media(min-width:$tablet){
+            font-size: 50px;
+            margin-left: 17%;  
+          }
+
+        }
+        &:nth-child(2){
+          font-size: 10px;
+            margin-left: 5%;
+
+          @media(min-width:$tablet){
+            font-size: 17px;
+            margin-left: 51%;
+  }
+        }
+        &:nth-child(3){
+  
+          font-size: 7px;
+            margin-left: 82%;
+
+          @media(min-width:$tablet){
+            font-size: 17px;
+            margin-left: 76%;
+        }
+    }
+  }
+}
+
+.chat {
+  background: linear-gradient(to bottom right, $color-base, $color-accent);
+  opacity: .9;
+
+  &__message-wrapper {
+    display: flex;
+    padding: 20px 40px;
+    flex-direction: column;
+    border-bottom: 1px solid $color-accent--dark;
+  }
+
+  &__user {
+    color: $color-accent--dark;
+    font-family: $montserrat;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    display: block;
+  }
+
+  &__message {
+    display: block;
+    font-family: $montserrat-light;
+  }
+
+  &__input{
+    font-family: $montserrat-light;
+      width:70%;
+  }
+}
+
+
+//fugly
+ .chat {
+  @media (min-width: $tablet) {
+    width: 400px!important;
+  }
+
+  @media (min-width: $desktop) {
+    width: 600px!important;
+  }
+
+
+
+  &__submit{
+    height: 100%!important;
+}
+
+  .v-input__slot
+  {
+    margin:0;
+  }
+
+  .v-text-field__details
+  {
+    display: none;
+  }
+
+  .v-navigation-drawer__append{
+    display: flex;
+  }
+
+}

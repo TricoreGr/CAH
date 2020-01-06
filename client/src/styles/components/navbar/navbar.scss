@@ -1,0 +1,27 @@
+.navbar {
+  font-family: $montserrat-light;
+  padding: 0;
+  background-color: $color-base !important;
+}
+
+.navbar-link-container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+}
+
+.navbar-link {
+  margin: 0 3px;
+}
+
+.navbar-link--active {
+  background-color: $color-accent;
+  border-radius: 5px;
+}
+
+.navbar-menu--mobile {
+  font-family: $montserrat-light;
+}
+.navbar-link--active-mobile {
+  color: darken($color-accent--dark, 15%) !important;
+}
