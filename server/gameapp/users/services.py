@@ -50,6 +50,10 @@ def getUser(uname):
     data = json.loads(results)
     return jsonify(data)
 
+def getUserByJWToken(token):
+    username = jwt.decode(token,Config.SECRET_KEY)['user']
+    return getUser(username)
+
 def checkCreds(username,password):
     hashedPassword = hashPassword(password)
     result = User.query.filter_by(username=username).filter_by(password=hashedPassword).first()

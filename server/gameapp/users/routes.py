@@ -1,5 +1,5 @@
 from flask import Blueprint
-from .services import getUsers, getUser, checkCreds, addUser
+from .services import getUsers, getUser, checkCreds, addUser,getUserByJWToken
 from flask import jsonify,request
 
 users = Blueprint('users', __name__)
@@ -7,6 +7,11 @@ users = Blueprint('users', __name__)
 @users.route('/<username>')
 def returnUser(username):
     user = getUser(username)
+    return user
+
+@users.route('/jwtToUsername',methods=['POST'])
+def returnUserByJWT():
+    user = getUserByJWToken(request.get_json()['token'])
     return user
 
 @users.route('/allusers')
