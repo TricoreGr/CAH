@@ -67,11 +67,12 @@ def checkCreds(username,password):
         token = jwt.encode({'user':username},key) #generate token
         return jsonify({'token': token.decode('utf-8')}) #python encodes it in bytes
 
-def deleteUser(username):
+def deleteUser(token):
+    username = getUserByJWToken(token)
     user = User.query.filter_by(username).first()
-    username = jwt.decode(token,Config.SECRET_KEY)['user']
-    if user is not None and username == user['username']:
+    if user is not None:
         db.session.delete(user)
+        db.session.commit()
         response = {
             'message' : 'User is deleted'
         }
