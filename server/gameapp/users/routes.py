@@ -1,8 +1,13 @@
 from flask import Blueprint
-from .services import getUsers, getUser, checkCreds, addUser,getUserByJWToken
+from .services import getUsers, getUser, checkCreds, addUser, getUserByJWToken, deleteUser
 from flask import jsonify,request
 
 users = Blueprint('users', __name__)
+
+@user.route('/users/<username>/delete',method['GET'])
+def deleteUser(username):
+    response = deleteUser(username)
+    return response
 
 @users.route('/users/<username>', method=['GET'])
 def returnUser(username):
