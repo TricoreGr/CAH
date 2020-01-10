@@ -29,19 +29,6 @@ def addUser(username,password,email):
         }
     return jsonify(response)
 
-def getUsers():
-    users = User.query.all()
-    if users is None:
-        response = {
-            'message' : 'No users in database'
-        }
-        return jsonify(response)
-
-    results = users_schema.dumps(users)
-    results = results.replace('[','').replace(']','')
-    data = json.loads(results)
-    return jsonify(data)
-
 def getUser(uname):
     user = User.query.filter_by(username=uname).first()
     if user is None:
@@ -87,8 +74,25 @@ def deleteUser(username):
         }
         return jsonify(response)
 
-def updateUser(username):
-    return jsonify()
+def updateUser(username,new_username,img):
+    user = User.query.filter_by(username=username).first()
+    change = False
+    if username != new_username:
+        user.username = new_username
+        change = True
+    if user.img != img:
+        user.img = img
+        change = True  
+    if change == True: 
+        db.session.commit()
+        response = {
+            'message' : 'Update was successful'
+        }
+    else:
+        response = {
+            'message' : 'Nothing was updated'
+        }
+    return jsonify(response)
 
 def hashPassword(password):
     hashpass = hashlib.md5() # create md5 hash
