@@ -40,3 +40,4 @@ venv/
 *.pyc
 build
 .vscode/
+server/gameapp/config.py
