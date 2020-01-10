@@ -91,7 +91,7 @@ export default {
     deleteAccount() {
       const path = "http://localhost:5000/users/delete";
       axios
-        .delete(path, { token: localStorage.getItem("authToken") })
+        .delete(path, {data:{ token: localStorage.getItem("authToken") }})
         .then(() => {
           this.$router.push("/Logout");
         })
