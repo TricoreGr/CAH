@@ -10,6 +10,15 @@ def deleteUser():
     response = deleteUser(username)
     return response
 
+@user.route('/users/signup',method['POST'])
+def signup():
+    creds = request.get_json()
+    username = creds['username']
+    password = creds['password']
+    email = creds['email']
+    resp = addUser(username,password,email)
+    return resp
+    
 @users.route('/users/<username>', method=['GET'])
 def returnUser(username):
     user = getUser(username)
@@ -25,8 +34,8 @@ def returnUsers():
     users = getUsers()
     return users
 
-@users.route('/users/<username>/auth', methods=['POST']) #TODO add password 
-def checkToken(username):
+@users.route('/users/<username>/login', methods=['POST']) #TODO add password 
+def login(username):
     creds = request.get_json()
     password = creds['password']
     response = checkCreds(username,password)
