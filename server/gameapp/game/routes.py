@@ -3,22 +3,22 @@ from .services import getBlackCards,getWhiteCards,getBase,getOrder
 
 game = Blueprint('game', __name__)
 
-@game.route('/white')
+@game.route('/cards/white', method=['GET'])
 def returnWhiteCards():
     cards = getWhiteCards()
     return cards
 
-@game.route('/black')
+@game.route('/cards/black', method=['GET'])
 def returnBlackCards():
     cards = getBlackCards()
     return cards
 
-@game.route('/base')
+@game.route('/cards/base', method=['GET'])
 def returnBase():
     base = getBase()
     return base
 
-@game.route('/order')
+@game.route('/cards/order', method=['GET'])
 def returnOrder():
     order = getOrder()
     return order
