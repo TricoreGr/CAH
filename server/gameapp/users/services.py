@@ -5,11 +5,11 @@ import hashlib
 import jwt
 from ..config import Config
 
-def addUser(username,password,email,img):
+def addUser(username,password,email):
     exists = User.query.filter_by(username).first()
     if exists is None:
         hashedPassword = hashPassword(password)
-        user = User(username=username, password=hashedPassword, email=email, img=img)
+        user = User(username=username, password=hashedPassword, email=email)
 
         db.session.add(user)
         db.session.commit()
