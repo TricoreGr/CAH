@@ -46,7 +46,7 @@
         color:$color-white;
     }
 
-    &--login-input{
+    &--userAuth-input{
         width: 190px;
         height: 241px;
         z-index: 1;
@@ -58,7 +58,7 @@
         }
     }
 
-    &--login-czar{
+    &--userAuth-czar{
         margin-left:-25%;
 
         @media(min-width:$desktop){

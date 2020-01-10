@@ -4,10 +4,7 @@
     <div class="account">
       <div class="account__wrapper slide-in-blurred-top">
         <h1 class="account__username">{{ username }}</h1>
-        <img
-          class="account__user-image"
-          :src="img"
-        />
+        <img class="account__user-image" :src="img" />
         <div class="account__score-wrapper">
           <div class="account__info-wrapper">
             <span class="account__info-label">Wins</span>
@@ -38,9 +35,7 @@
         Delete Account?
       </v-btn>
     </div>
-    <v-overlay
-      :value="overlay"
-    >
+    <v-overlay :value="overlay">
       <div class="account__overlay-wrapper">
         <h3>Are you sure you want to delete your account?</h3>
         <div class="account__overlay-button-wrapper">
@@ -52,7 +47,7 @@
             Cancel
           </v-btn>
 
-          <v-btn color="primary" rounded @click="overlay = false">
+          <v-btn color="primary" rounded @click="deleteAccount">
             Confirm
           </v-btn>
         </div>
@@ -62,7 +57,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import axios from "axios";
 export default {
   data() {
     return {
@@ -72,21 +67,33 @@ export default {
       wins: 3,
       overlay: false,
       gamesTotal: 10,
-      img : "https://upload.wikimedia.org/wikipedia/commons/4/4d/Star_Wars-_The_Last_Jedi_Japan_Premiere_Red_Carpet-_Adam_Driver_%2827163437599%29_%28cropped%29.jpg"
+      img:
+        "https://upload.wikimedia.org/wikipedia/commons/4/4d/Star_Wars-_The_Last_Jedi_Japan_Premiere_Red_Carpet-_Adam_Driver_%2827163437599%29_%28cropped%29.jpg"
     };
   },
   methods: {
     fetchData() {
-      const path =
-        "http://localhost:5000/users/jwtToUsername";
+      const path = "http://localhost:5000/users/jwtToUsername";
       axios
-        .post(path,{token:localStorage.getItem("authToken")})
+        .post(path, { token: localStorage.getItem("authToken") })
         .then(res => {
-            this.username = res.data['username']
-            this.email = res.data['email']
-            this.wins = res.data['wins']? res.data['wins'] :0
-            this.gamesTotal = res.data['games']? res.data['games'] :0
-            this.img = res.data['img']
+          this.username = res.data["username"];
+          this.email = res.data["email"];
+          this.wins = res.data["wins"] ? res.data["wins"] : 0;
+          this.gamesTotal = res.data["games"] ? res.data["games"] : 0;
+          this.img = res.data["img"];
+        })
+        .catch(error => {
+          //oops
+          console.log(error);
+        });
+    },
+    deleteAccount() {
+      const path = "http://localhost:5000/users/delete";
+      axios
+        .delete(path, {data:{ token: localStorage.getItem("authToken") }})
+        .then(() => {
+          this.$router.push("/Logout");
         })
         .catch(error => {
           //oops
@@ -96,6 +103,6 @@ export default {
   },
   mounted() {
     this.fetchData();
-  },
+  }
 };
 </script>
