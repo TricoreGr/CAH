@@ -69,12 +69,17 @@ def checkCreds(username,password):
 
 def deleteUser(username):
     user = User.query.filter_by(username).first()
-    if user is not None:
+    username = jwt.decode(token,Config.SECRET_KEY)['user']
+    if user is not None and username == user['username']:
         db.session.delete(user)
         response = {
             'message' : 'User is deleted'
         }
         return jsonify(response)
+    else:
+        response = {
+            'message' : 'Cannot delete user'
+        }
 
 def hashPassword(password):
     hashpass = hashlib.md5() # create md5 hash
