@@ -26,10 +26,12 @@ def signup():
         email = creds['email']
         response = addUser(username,password,email)
         return response
-    except:
+    except Exception as e:
+        print(e)
         response = {
             'message' : 'Error at singup'
         }
+        return jsonify(response)
 
 @users.route('/<username>', methods=['GET'])
 def returnUser(username):
@@ -61,7 +63,7 @@ def login():
         }
         return jsonify(response)
 
-@users.route('update',methods=['UPDATE'])
+@users.route('/update',methods=['UPDATE'])
 def update():
     try:
         creds = request.get_json()

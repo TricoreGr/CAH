@@ -25,6 +25,14 @@
           <span class="account__email-label">email</span>
           <span class="account__email">{{ email }}</span>
         </div>
+        <v-btn
+            rounded
+            dark
+            @click = "updateCreds"
+            class="account__button account__button"
+        >
+        Update info
+        </v-btn>
       </div>
       <v-btn
         rounded
@@ -99,7 +107,19 @@ export default {
           //oops
           console.log(error);
         });
-    }
+    },
+    updateAccount() { // Change this because it doesnt work
+      const path = "http://localhost:5000/users/update";
+      axios
+        .post(path, { token: localStorage.getItem("authToken") })
+        .then(res => {
+          const user = this.username
+          this.$router.push("/users/",username);
+        })
+        .catch(error =>{
+          consol.log(error);
+        })
+    },
   },
   mounted() {
     this.fetchData();
