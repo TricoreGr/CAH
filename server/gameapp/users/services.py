@@ -7,7 +7,8 @@ from ..config import Config
 
 def addUser(username,password,email):
     exists = User.query.filter_by(username).first()
-    if exists is None:
+    mailex = User.query.filter_by(email).first()
+    if exists is None and mailex is None:
         hashedPassword = hashPassword(password)
         user = User(username=username, password=hashedPassword, email=email)
 
@@ -18,11 +19,15 @@ def addUser(username,password,email):
             'message' : 'User added to db'
         }
         return jsonify(response)
-    else:
+    elif mailex is not None:
         response = {
-            'message': 'User already exists'
+            'message': 'Email belongs to another user'
         }
-        return jsonify(response)
+    else:
+        response={
+            'message':'Username already exists'
+        }
+    return jsonify(response)
 
 def getUsers():
     users = User.query.all()
