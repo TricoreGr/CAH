@@ -117,7 +117,7 @@ export default {
           this.$router.push("/users/",username);
         })
         .catch(error =>{
-          consol.log(error);
+          console.log(error);
         })
     },
   },
