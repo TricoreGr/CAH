@@ -87,6 +87,9 @@ def deleteUser(username):
         }
         return jsonify(response)
 
+def updateUser(username):
+    return jsonify()
+
 def hashPassword(password):
     hashpass = hashlib.md5() # create md5 hash
     hashpass.update(password.encode()) #update it with the password
