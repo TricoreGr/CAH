@@ -6,8 +6,8 @@ import jwt
 from ..config import Config
 
 def addUser(username,password,email):
-    exists = User.query.filter_by(username).first()
-    mailex = User.query.filter_by(email).first()
+    exists = User.query.filter_by(username=username).first()
+    mailex = User.query.filter_by(email=email).first()
     if exists is None and mailex is None:
         hashedPassword = hashPassword(password)
         user = User(username=username, password=hashedPassword, email=email)
@@ -35,7 +35,7 @@ def getUsers():
         response = {
             'message' : 'No users in database'
         }
-        return jsonify(response), 404
+        return jsonify(response)
 
     results = users_schema.dumps(users)
     results = results.replace('[','').replace(']','')
@@ -48,12 +48,12 @@ def getUser(uname):
         response = {
                 'message' : 'No user in database with this username'
         }
-        return jsonify(response), 404
+        return response
 
     results = user_schema.dumps(user)
     results = results.replace('[','').replace(']','')
     data = json.loads(results)
-    return jsonify(data)
+    return data
 
 def getUserByJWToken(token):
     username = jwt.decode(token,Config.SECRET_KEY)['user']
@@ -72,9 +72,8 @@ def checkCreds(username,password):
         token = jwt.encode({'user':username},key) #generate token
         return jsonify({'token': token.decode('utf-8')}) #python encodes it in bytes
 
-def deleteUser(token):
-    username = getUserByJWToken(token)
-    user = User.query.filter_by(username).first()
+def deleteUser(username):
+    user = User.query.filter_by(username=username).first()
     if user is not None:
         db.session.delete(user)
         db.session.commit()
@@ -84,7 +83,7 @@ def deleteUser(token):
         return jsonify(response)
     else:
         response = {
-            'message' : 'Cannot delete user'
+            'message' : 'User does not exist'
         }
         return jsonify(response)
 

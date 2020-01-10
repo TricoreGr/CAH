@@ -4,13 +4,15 @@ from flask import jsonify,request
 
 users = Blueprint('users', __name__)
 
-@user.route('/users/delete',method['GET'])
-def deleteUser():
-    username - getUserByJWToken(request.get_json()['token'])
+@users.route('/delete',methods=['POST'])
+def removeUser():
+    token = request.get_json()['token']
+    user = getUserByJWToken(token)
+    username = user['username']
     response = deleteUser(username)
     return response
 
-@user.route('/users/signup',method['POST'])
+@users.route('/signup',methods=['POST'])
 def signup():
     creds = request.get_json()
     username = creds['username']
@@ -18,25 +20,27 @@ def signup():
     email = creds['email']
     resp = addUser(username,password,email)
     return resp
-    
-@users.route('/users/<username>', method=['GET'])
+
+@users.route('/<username>', methods=['GET'])
 def returnUser(username):
     user = getUser(username)
-    return user
+    resp = jsonify(user)
+    return resp
 
 @users.route('/jwtToUsername',methods=['POST'])
 def returnUserByJWT():
     user = getUserByJWToken(request.get_json()['token'])
     return user
 
-@users.route('/users', method=['GET'])
+@users.route('/users', methods=['GET'])
 def returnUsers():
     users = getUsers()
     return users
 
-@users.route('/users/<username>/login', methods=['POST']) #TODO add password 
-def login(username):
+@users.route('/login', methods=['POST']) #TODO add password 
+def login():
     creds = request.get_json()
+    username = creds['username']
     password = creds['password']
     response = checkCreds(username,password)
     return response
