@@ -94,10 +94,10 @@
   </div>
 </template>
 <script>
-import cardCarousel from "./components/cardCarousel";
-import card from "./components/card";
-import player from "./components/player";
-import userCarousel from "./components/userCarousel";
+import cardCarousel from "@/components/CardCarousel";
+import card from "@/components/Card";
+import player from "@/components/Player";
+import userCarousel from "@/components/UserCarousel";
 import anime from "animejs/lib/anime.es.js";
 
 export default {
