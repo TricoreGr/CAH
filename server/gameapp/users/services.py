@@ -66,7 +66,15 @@ def checkCreds(username,password):
         key = Config.SECRET_KEY #get the secrete key
         token = jwt.encode({'user':username},key) #generate token
         return jsonify({'token': token.decode('utf-8')}) #python encodes it in bytes
-        
+
+def deleteUser(username):
+    user = User.query.filter_by(username).first()
+    if user is not None:
+        db.session.delete(user)
+        response = {
+            'message' : 'User is deleted'
+        }
+        return jsonify(response)
 
 def hashPassword(password):
     hashpass = hashlib.md5() # create md5 hash
