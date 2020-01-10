@@ -81,6 +81,7 @@ def deleteUser(token):
         response = {
             'message' : 'Cannot delete user'
         }
+        return jsonify(response)
 
 def hashPassword(password):
     hashpass = hashlib.md5() # create md5 hash
