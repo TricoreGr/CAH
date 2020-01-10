@@ -5,7 +5,7 @@ from ..config import Config
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://emXFbgryDO:GYOLHIdOvC@remotemysql.com:3306/emXFbgryDO' #add password in order for it to run
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://emXFbgryDO:<Change password>@remotemysql.com:3306/emXFbgryDO' #add password in order for it to run
 
 db = SQLAlchemy(app)
 ma = Marshmallow(app)

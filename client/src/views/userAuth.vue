@@ -185,7 +185,6 @@ export default {
             password: this.password
           })
           .then(res => {
-            console.log(res);
             if (res.data.message == 'Email belongs to another user') {
               this.serverErrors.emailExists = res.data.message
             }
