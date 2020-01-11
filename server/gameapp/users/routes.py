@@ -16,6 +16,7 @@ def removeUser():
         response = {
             'message' : 'Error at delete'
         }
+        return jsonify(response)
 
 @users.route('/signup',methods=['POST'])
 def signup():
@@ -43,6 +44,7 @@ def returnUser(username):
         response = {
             'message' : 'Error at user'
         }
+        return jsonify(response)
 
 @users.route('/jwtToUsername',methods=['POST'])
 def returnUserByJWT():
