@@ -5,11 +5,12 @@ import hashlib
 import jwt
 from ..config import Config
 
-def addUser(username,password,email,img):
-    exists = User.query.filter_by(username).first()
-    if exists is None:
+def addUser(username,password,email):
+    exists = User.query.filter_by(username=username).first()
+    mailex = User.query.filter_by(email=email).first()
+    if exists is None and mailex is None:
         hashedPassword = hashPassword(password)
-        user = User(username=username, password=hashedPassword, email=email, img=img)
+        user = User(username=username, password=hashedPassword, email=email)
 
         db.session.add(user)
         db.session.commit()
@@ -18,24 +19,15 @@ def addUser(username,password,email,img):
             'message' : 'User added to db'
         }
         return jsonify(response)
+    elif mailex is not None:
+        response = {
+            'message': 'Email belongs to another user'
+        }
     else:
-        response = {
-            'message': 'User already exists'
+        response={
+            'message':'Username already exists'
         }
-        return jsonify(response)
-
-def getUsers():
-    users = User.query.all()
-    if users is None:
-        response = {
-            'message' : 'No users in database'
-        }
-        return jsonify(response), 404
-
-    results = users_schema.dumps(users)
-    results = results.replace('[','').replace(']','')
-    data = json.loads(results)
-    return jsonify(data)
+    return jsonify(response)
 
 def getUser(uname):
     user = User.query.filter_by(username=uname).first()
@@ -43,12 +35,16 @@ def getUser(uname):
         response = {
                 'message' : 'No user in database with this username'
         }
-        return jsonify(response), 404
+        return response
 
     results = user_schema.dumps(user)
     results = results.replace('[','').replace(']','')
     data = json.loads(results)
-    return jsonify(data)
+    return data
+
+def getUserByJWToken(token):
+    username = jwt.decode(token,Config.SECRET_KEY)['user']
+    return getUser(username)
 
 def checkCreds(username,password):
     hashedPassword = hashPassword(password)
@@ -62,7 +58,47 @@ def checkCreds(username,password):
         key = Config.SECRET_KEY #get the secrete key
         token = jwt.encode({'user':username},key) #generate token
         return jsonify({'token': token.decode('utf-8')}) #python encodes it in bytes
-        
+
+def deleteUser(username):
+    user = User.query.filter_by(username=username).first()
+    if user is not None:
+        db.session.delete(user)
+        db.session.commit()
+        response = {
+            'message' : 'User is deleted'
+        }
+        return jsonify(response)
+    else:
+        response = {
+            'message' : 'User does not exist'
+        }
+        return jsonify(response)
+
+def updateUser(username,new_username,img):
+    user = User.query.filter_by(username=username).first()
+    exist = User.query.filter_by(username=new_username).first()
+    change = False
+    if username != new_username and exists is None:
+        user.username = new_username
+        change = True
+    elif exists is not None:
+        response = {
+            'message' : 'Invalid username'
+        }
+        return jsonify(response)
+    if user.img != img:
+        user.img = img
+        change = True  
+    if change == True: 
+        db.session.commit()
+        response = {
+            'message' : 'Update was successful'
+        }
+    else:
+        response = {
+            'message' : 'Nothing was updated'
+        }
+    return jsonify(response)
 
 def hashPassword(password):
     hashpass = hashlib.md5() # create md5 hash

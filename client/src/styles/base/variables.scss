@@ -30,7 +30,7 @@ $color-black:#000;
 $color-white:#fff;
 $color-error: #ff5252;
 $color-white-gradient:linear-gradient($color-accent,$color-white);
-
+$color-white-green-gradient:linear-gradient($color-base,$color-accent);
 //typography
 $montserrat:'Montserrat-Bold';
 $montserrat-light: 'Montserrat-Regular';

@@ -1,9 +1,9 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
-import Login from "../views/Login.vue";
-import Register from "../views/Register.vue";
+import UserAuth from "../views/userAuth.vue";
 import Logout from "../views/Logout.vue";
+
 import Play from "../views/Play.vue";
 import Game from "../views/Game.vue";
 import Profile from "../views/Profile.vue";
@@ -23,15 +23,15 @@ const routes = [
   {
     path: "/login",
     name: "Login",
-    component: Login,
+    component: UserAuth,
     meta: {
-      title: "Register"
+      title: "Login"
     }
   },
   {
     path: "/register",
     name: "Register",
-    component: Register,
+    component: UserAuth,
     meta: {
       title: "Register"
     }
