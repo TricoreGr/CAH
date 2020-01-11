@@ -1,9 +1,6 @@
-from .models import client
+from .models import cards, tables
 import json
 from flask import jsonify
-
-game = client['game']
-cards = game['cards']
 
 #blackCards
 #whiteCards
@@ -29,3 +26,42 @@ def getBase():
 
 def getOrder():
     order = cards.find({}).distinct('order')
+
+def newTable(owner):
+    tablename = owner + "'s_table"
+    table = {
+        'id' : tablename,
+        'owner' : owner,
+        'gamesession' : {
+            'czar' : None,
+            'blackCards' : [],
+            'whitecards' : []
+        },
+        'players': [{
+            'username' : owner,
+            'points' : 0,
+            'whitecards' : []
+            }
+        ],
+        'cards': {
+            'bcards' : [],
+            'wcards' : []
+        }
+    }
+    tables.insert_one(table)
+
+def addUserToTable(user,id):
+    query = {'id':id}
+    newuser = {'$push': {
+        'players':[
+            {'username':user['username'],'points':0,'whitecards:[]'}
+            ]}}
+    tables.update_one(query,newuser)
+
+def removeUserFromTable(user,id):
+    query = {'id':id}
+    user = {'$pull': {
+        'players':[
+            {'username':user['username']}
+            ]}}
+    tables.update_one(query,user)

@@ -76,10 +76,16 @@ def deleteUser(username):
 
 def updateUser(username,new_username,img):
     user = User.query.filter_by(username=username).first()
+    exist = User.query.filter_by(username=new_username).first()
     change = False
-    if username != new_username:
+    if username != new_username and exists is None:
         user.username = new_username
         change = True
+    elif exists is not None:
+        response = {
+            'message' : 'Invalid username'
+        }
+        return jsonify(response)
     if user.img != img:
         user.img = img
         change = True  
