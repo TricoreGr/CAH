@@ -28,7 +28,7 @@
         <v-btn
             rounded
             dark
-            @click = "updateCreds"
+            @click = "updateAccount"
             class="account__button account__button"
         >
         Update info
@@ -111,10 +111,10 @@ export default {
     updateAccount() { // Change this because it doesnt work
       const path = "http://localhost:5000/users/update";
       axios
-        .post(path, { token: localStorage.getItem("authToken") })
+        .update(path, { token: localStorage.getItem("authToken") })
         .then(res => {
-          const user = this.username
-          this.$router.push("/users/",username);
+          var messsage = res.data["message"];
+          if(message == 'Update was successful')  fetchData();
         })
         .catch(error =>{
           console.log(error);
