@@ -1,0 +1,38 @@
+.room-card {
+  width: 300px !important;
+  margin-bottom: 25px;
+  margin-left: 10px;
+  margin-right: 10px;
+
+  &__title{
+    font-family: $montserrat-light;
+  }  
+
+  &__subcontainer {
+    display: flex;
+    padding: 0 8px;
+    justify-content: space-between;
+    align-items: center !important;
+  }
+
+  &__size-label{
+    font-size: 17px !important;
+    margin-left: 10px;
+    color: rgb(77, 74, 74);
+    font-family: $voltaire
+  }
+
+  &__size-label--full{
+      background-color: rgb(202, 12, 12);
+      padding: 0 5px;
+      color: white;
+      border-radius: 5px;
+  }
+
+  &__button {
+    background-color: $color-accent--dark !important;
+    margin-bottom: 10px;
+    height: 30px !important;
+    font-family: $montserrat;
+  }
+}
