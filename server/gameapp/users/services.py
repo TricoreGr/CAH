@@ -1,12 +1,10 @@
 from .models import User,db,users_schema,user_schema
 from flask import jsonify, Response
-from flask_bcrypt import Bcrypt
 import json
 import hashlib
 import jwt
 from ..config import Config
 
-bcrypt = Bcrypt()
 
 def getUsers():
     users = User.query.all()
@@ -22,26 +20,22 @@ def addUser(username,password,email):
         return {'message': 'User already exists'}, 409
     if mailExists is not None:
         return {'message': 'A user with this email already exists'}, 409
-    # print(bcrypt.generate_password_hash(password)).decode('utf-8')
-    # hashedPassword = bcrypt.generate_password_hash(password)
-    # print('HI')
-    hashedPassword = 1234
+    hashedPassword = hashPassword(password)
     user = User(username=username, password=hashedPassword, email=email)
     db.session.add(user)
     db.session.commit()
 
     newUser = user.query.filter_by(username = username).first()
     output = user_schema.dump(newUser)
-    return output    
+    key = Config.SECRET_KEY #get the secrete key
+    token = jwt.encode({'user':username},key) #generate token
+
+    return {"user": output, "token": token.decode('utf-8')}    
 
 
 def hashPassword(password):
     h = hashlib.md5(password.encode('utf-8'))
     return h.hexdigest()
-    
-    # hashpass = hashlib.md5() # create md5 hash
-    # hashpass.update(password.encode()) #update it with the password
-    # return hashpass.hexdigest() #return the hex
 
 
 def getUser(uname):
@@ -69,7 +63,6 @@ def checkCreds(username,password):
     token = jwt.encode({'user':username},key) #generate token
     output = user_schema.dump(userWithPassword)
     return {"user": output, "token": token.decode('utf-8')}
-    # return jsonify({'token': token.decode('utf-8')}) #python encodes it in bytes
 
 
 def deleteUser(username):
@@ -82,33 +75,19 @@ def deleteUser(username):
     return output
     
 
-def updateUser(username, new_username, img):
+def updateUser(username, img):
     user = User.query.filter_by(username=username).first()
-    if(new_username is not None):
-        return updateUsername(user, new_username)
-    else:    
-        return updateUserImg(user, img)
-    return {'message': 'Server error'}, 500
+    if user is None:
+        return {'message':'There is no user with this username'}, 404 
+    return updateUserImg(user, img)
 
-
-def updateUsername(user, new_username):
-    newUsernameExists = User.query.filter_by(username=new_username).first()
-    if (newUsernameExists is not None):
-        return {'message': 'A user with this username already exists'}, 409
-    if (user.username == new_username):
-        return {'message':'The new username is the same as the old one'}, 400
-    user.username = new_username
-    db.session.commit()
-    newUser = user.query.filter_by(username =new_username).first()
-    output = user_schema.dump(user)
-    return output
 
 def updateUserImg(user, img):
     if (user.img == img):
         return {'message':'The new image is the same as the old one'}, 400
     user.img = img
     db.session.commit()
-    newUser = user.query.filter_by(username =new_username).first()
+    newUser = user.query.filter_by(username = user.username).first()
     output = user_schema.dump(user)
     return output
 

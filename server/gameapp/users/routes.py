@@ -13,17 +13,24 @@ def handleUsersRoute():
             print(e)
             return {'message': 'Server error'}, 500
     if request.method == 'POST':
-        try: 
-            requestPayload = request.get_json()
-            username = requestPayload['username']
-            password = requestPayload['password']
-            email = requestPayload['email']
-            if (username is None) or (password is None) or (email is None):
-                return {'message': 'Some fields are missing'}, 400
-            return addUser(username,password,email)
+        try:
+            creds = request.get_json()
+            username = creds.get('username')
+            password = creds.get('password')
+            email = creds.get('email')
+            if username is None or password is None or email is None:
+                response = {
+                    'message':'Some fields are missing'
+                }
+                return response, 400
+            response = addUser(username,password,email)
+            return response
         except Exception as e:
-            print(e)   
-            return {'message': 'Server error'}, 500 
+            print(e)
+            response = {
+                'message' : 'Server error'
+            }
+            return response,500
 
 
 @users.route('/<username>', methods=['GET','PUT','DELETE'])
@@ -36,17 +43,22 @@ def handleUserRoute(username):
     if request.method == 'PUT':
         try:
             creds = request.get_json()
-            print(creds)
-            new_username = creds.get('username')
+            validUser = validateToken(creds.get('token'), username)
+            if not validUser:
+                return {'message': 'Unauthorized'}, 401
             img = creds.get('image')
-            if (new_username is None) and (img is None):
+            if img is None:
                 return {'message': 'No user info given'}, 400 
-            return updateUser(username, new_username, img)
+            return updateUser(username, img)
         except Exception as e:
             print(e)
             return {'message': 'Server error'}, 500
     if request.method == 'DELETE':
         try:
+            creds = request.get_json()
+            validUser = validateToken(creds.get('token'), username)
+            if not validUser:
+                return {'message': 'Unauthorized'}, 401
             return deleteUser(username)
         except Exception as e:
             print(e)
@@ -61,13 +73,22 @@ def returnUserByJWT():
 def login():
     try:
         creds = request.get_json()
-        username = creds['username']
-        password = creds['password']
+        username = creds.get('username')
+        password = creds.get('password')
         response = checkCreds(username, password)
         return response
-    except:
+    except Exception as e:
+        print(e)
         response = {
-            'message': 'Error at login'
+            'message': 'Server error'
         }
-        return jsonify(response)
+        return response,500
 
+def validateToken(token, givenUsername):
+    if token is None:
+        return False
+    user = getUserByJWToken(token)
+    if givenUsername != user.get('username'):
+        return False
+    return True
+    
