@@ -4,7 +4,10 @@
     <div class="account">
       <div class="account__wrapper slide-in-blurred-top">
         <h1 class="account__username">{{ username }}</h1>
-        <img class="account__user-image" :src="img" />
+        <img @click="
+            updateModal = true;
+            overlay = true;
+          " class="account__user-image" :src="img" />
         <div class="account__score-wrapper">
           <div class="account__info-wrapper">
             <span class="account__info-label">Wins</span>
@@ -25,19 +28,14 @@
           <span class="account__email-label">email</span>
           <span class="account__email">{{ email }}</span>
         </div>
-        <v-btn
-          rounded
-          dark
-          @click="updateAccount"
-          class="account__button account__button"
-        >
-          Update info
-        </v-btn>
       </div>
       <v-btn
         rounded
         dark
-        @click="overlay = true"
+        @click="
+          overlay = true;
+          deleteAccountModal = true;
+        "
         class="account__button account__button--deleteAccount"
       >
         Delete Account?
@@ -45,19 +43,41 @@
     </div>
     <v-overlay :value="overlay">
       <div class="account__overlay-wrapper">
-        <h3>Are you sure you want to delete your account?</h3>
-        <div class="account__overlay-button-wrapper">
-          <v-btn
-            rounded
-            class="account__cancel-button"
-            @click="overlay = false"
-          >
-            Cancel
-          </v-btn>
+        <v-card v-if="updateModal">
+          <v-form ref="form">
+            <v-card-text>
+              <v-card-title>
+                <span class="headline">User Profile</span>
+              </v-card-title>
 
-          <v-btn color="primary" rounded @click="deleteAccount">
-            Confirm
-          </v-btn>
+              <v-text-field
+                label="User Image"
+                v-model="newImage"
+              ></v-text-field>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue darken-1" text @click="resetModal"
+                >Close</v-btn
+              >
+              <v-btn color="blue darken-1" text @click="dialog = false;userUpdate();"
+                >Save</v-btn
+              >
+            </v-card-actions>
+          </v-form>
+        </v-card>
+
+        <div v-if="deleteAccountModal">
+          <h3>Are you sure you want to delete your account?</h3>
+          <div class="account__overlay-button-wrapper">
+            <v-btn rounded class="account__cancel-button" @click="resetModal">
+              Cancel
+            </v-btn>
+
+            <v-btn color="primary" rounded @click="deleteAccount">
+              Confirm
+            </v-btn>
+          </div>
         </div>
       </div>
     </v-overlay>
@@ -75,8 +95,19 @@ export default {
       wins: 3,
       overlay: false,
       gamesTotal: 10,
-      img:
-        "https://upload.wikimedia.org/wikipedia/commons/4/4d/Star_Wars-_The_Last_Jedi_Japan_Premiere_Red_Carpet-_Adam_Driver_%2827163437599%29_%28cropped%29.jpg"
+      img:"https://upload.wikimedia.org/wikipedia/commons/4/4d/Star_Wars-_The_Last_Jedi_Japan_Premiere_Red_Carpet-_Adam_Driver_%2827163437599%29_%28cropped%29.jpg",
+      updateModal: false,
+      deleteAccountModal: false,
+      newImage: this.img,
+      newUsername: this.newUsername,
+      rules: {
+        //vuetify form rules
+        counter: value => value ? value.length <= 20 || "Max 20 characters":'',
+        required: value => value ? !!value || "Required.":''
+      },
+      serverErrors: {
+        usernameExists: ""
+      }
     };
   },
   methods: {
@@ -108,18 +139,36 @@ export default {
           console.log(error);
         });
     },
-    updateAccount() {
-      // Change this because it doesnt work
-      const path = "http://localhost:5000/users/update";
-      axios
-        .update(path, { token: localStorage.getItem("authToken") })
-        .then(res => {
-          var message = res.data["message"];
-          if (message == "Update was successful") this.$methods.fetchData();
-        })
-        .catch(error => {
-          console.log(error);
-        });
+    resetModal() {
+      this.updateModal = false;
+      this.deleteAccountModal = false;
+      this.overlay = false;
+    },
+    userUpdate() {
+      this.resetModal();
+      var   headers={
+        "Content-Type":"application/json",
+      }
+      //url for post method
+      const path = "http://localhost:5000/users/" + this.username;
+      //form rules
+      if (this.$refs.form.validate())
+        //use axios for requests
+        axios
+          .put(path, {
+            token:localStorage.getItem("authToken"),
+            image: this.newImage
+          },headers)
+          .then(res => {
+            console.log(res);
+            if (res.status == 200) {
+              this.fetchData();
+            }
+          })
+          .catch(error => {
+            //oops
+            console.log(error);
+          });
     }
   },
   mounted() {
