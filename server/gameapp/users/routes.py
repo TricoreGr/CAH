@@ -43,7 +43,9 @@ def handleUserRoute(username):
     if request.method == 'PUT':
         try:
             creds = request.get_json()
-            print(creds)
+            validUser = validateToken(creds.get('token'), username)
+            if not validUser:
+                return {'message': 'Unauthorized'}, 401
             new_username = creds.get('username')
             img = creds.get('image')
             if (new_username is None) and (img is None):
@@ -54,6 +56,10 @@ def handleUserRoute(username):
             return {'message': 'Server error'}, 500
     if request.method == 'DELETE':
         try:
+            creds = request.get_json()
+            validUser = validateToken(creds.get('token'), username)
+            if not validUser:
+                return {'message': 'Unauthorized'}, 401
             return deleteUser(username)
         except Exception as e:
             print(e)
@@ -78,3 +84,11 @@ def login():
         }
         return jsonify(response)
 
+def validateToken(token, givenUsername):
+    if token is None:
+        return False
+    user = getUserByJWToken(token)
+    if givenUsername != user.get('username'):
+        return False
+    return True
+    
