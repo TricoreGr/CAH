@@ -185,16 +185,14 @@ export default {
             password: this.password
           })
           .then(res => {
-            if (res.data.message == 'Email belongs to another user') {
-              this.serverErrors.emailExists = res.data.message
+            console.log(res);
+            if (res.status == 409) {
+              this.serverErrors.emailExists = "Email/Username already exists"
             }
 
-            else if (res.data.message == 'Username already exists') {
-              this.serverErrors.usernameExists = res.data.message
-            }
-            else
+            else if (res.status == 200) {
               this.login();
-          })
+          }})
           .catch(error => {
             //oops
             console.log(error);

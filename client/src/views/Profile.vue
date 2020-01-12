@@ -108,18 +108,6 @@ export default {
           console.log(error);
         });
     },
-    updateAccount() { // Change this because it doesnt work
-      const path = "http://localhost:5000/users/update";
-      axios
-        .update(path, { token: localStorage.getItem("authToken") })
-        .then(res => {
-          var messsage = res.data["message"];
-          if(message == 'Update was successful')  fetchData();
-        })
-        .catch(error =>{
-          console.log(error);
-        })
-    },
   },
   mounted() {
     this.fetchData();
