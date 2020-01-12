@@ -1,106 +1,115 @@
 from .models import User,db,users_schema,user_schema
-from flask import jsonify
+from flask import jsonify, Response
+from flask_bcrypt import Bcrypt
 import json
 import hashlib
 import jwt
 from ..config import Config
 
+bcrypt = Bcrypt()
+
+def getUsers():
+    users = User.query.all()
+    output = users_schema.dump(users)
+    return {"users": output}
+
+
 def addUser(username,password,email):
-    exists = User.query.filter_by(username=username).first()
-    mailex = User.query.filter_by(email=email).first()
-    if exists is None and mailex is None:
-        hashedPassword = hashPassword(password)
-        user = User(username=username, password=hashedPassword, email=email)
+    userExists = User.query.filter_by(username=username).first()
+    mailExists = User.query.filter_by(email=email).first()
 
-        db.session.add(user)
-        db.session.commit()
+    if userExists is not None:
+        return {'message': 'User already exists'}, 409
+    if mailExists is not None:
+        return {'message': 'A user with this email already exists'}, 409
+    # print(bcrypt.generate_password_hash(password)).decode('utf-8')
+    # hashedPassword = bcrypt.generate_password_hash(password)
+    # print('HI')
+    hashedPassword = 1234
+    user = User(username=username, password=hashedPassword, email=email)
+    db.session.add(user)
+    db.session.commit()
 
-        response = {
-            'message' : 'User added to db'
-        }
-        return jsonify(response)
-    elif mailex is not None:
-        response = {
-            'message': 'Email belongs to another user'
-        }
-    else:
-        response={
-            'message':'Username already exists'
-        }
-    return jsonify(response)
+    newUser = user.query.filter_by(username = username).first()
+    output = user_schema.dump(newUser)
+    return output    
+
+
+def hashPassword(password):
+    h = hashlib.md5(password.encode('utf-8'))
+    return h.hexdigest()
+    
+    # hashpass = hashlib.md5() # create md5 hash
+    # hashpass.update(password.encode()) #update it with the password
+    # return hashpass.hexdigest() #return the hex
+
 
 def getUser(uname):
     user = User.query.filter_by(username=uname).first()
     if user is None:
-        response = {
-                'message' : 'No user in database with this username'
-        }
-        return response
+        return {'message': 'User was not found'}, 404
+    output = user_schema.dump(user)
+    return output
 
-    results = user_schema.dumps(user)
-    results = results.replace('[','').replace(']','')
-    data = json.loads(results)
-    return data
 
 def getUserByJWToken(token):
     username = jwt.decode(token,Config.SECRET_KEY)['user']
     return getUser(username)
 
+
 def checkCreds(username,password):
     hashedPassword = hashPassword(password)
-    result = User.query.filter_by(username=username).filter_by(password=hashedPassword).first()
-    if result is None:
-        response = {
-            'message' : 'Invalid credentials'
-        }
-        return jsonify(response)
-    else:
-        key = Config.SECRET_KEY #get the secrete key
-        token = jwt.encode({'user':username},key) #generate token
-        return jsonify({'token': token.decode('utf-8')}) #python encodes it in bytes
+    user = User.query.filter_by(username=username)
+    if user is None:
+        return {'message': 'There is no user with this username'}, 404
+    userWithPassword = user.filter_by(password=hashedPassword).first()
+    if userWithPassword is None:
+        return {'message': 'Invalid credentials'}, 401
+    key = Config.SECRET_KEY #get the secrete key
+    token = jwt.encode({'user':username},key) #generate token
+    output = user_schema.dump(userWithPassword)
+    return {"user": output, "token": token.decode('utf-8')}
+    # return jsonify({'token': token.decode('utf-8')}) #python encodes it in bytes
+
 
 def deleteUser(username):
     user = User.query.filter_by(username=username).first()
-    if user is not None:
-        db.session.delete(user)
-        db.session.commit()
-        response = {
-            'message' : 'User is deleted'
-        }
-        return jsonify(response)
-    else:
-        response = {
-            'message' : 'User does not exist'
-        }
-        return jsonify(response)
+    if user is None:
+        return {'message': 'User was not found'}, 404
+    output = user_schema.dump(user)
+    db.session.delete(user)
+    db.session.commit()
+    return output
+    
 
-def updateUser(username,new_username,img):
+def updateUser(username, new_username, img):
     user = User.query.filter_by(username=username).first()
-    exist = User.query.filter_by(username=new_username).first()
-    change = False
-    if username != new_username and exists is None:
-        user.username = new_username
-        change = True
-    elif exists is not None:
-        response = {
-            'message' : 'Invalid username'
-        }
-        return jsonify(response)
-    if user.img != img:
-        user.img = img
-        change = True  
-    if change == True: 
-        db.session.commit()
-        response = {
-            'message' : 'Update was successful'
-        }
-    else:
-        response = {
-            'message' : 'Nothing was updated'
-        }
-    return jsonify(response)
+    if(new_username is not None):
+        return updateUsername(user, new_username)
+    else:    
+        return updateUserImg(user, img)
+    return {'message': 'Server error'}, 500
 
-def hashPassword(password):
-    hashpass = hashlib.md5() # create md5 hash
-    hashpass.update(password.encode()) #update it with the password
-    return hashpass.hexdigest() #return the hex
+
+def updateUsername(user, new_username):
+    newUsernameExists = User.query.filter_by(username=new_username).first()
+    if (newUsernameExists is not None):
+        return {'message': 'A user with this username already exists'}, 409
+    if (user.username == new_username):
+        return {'message':'The new username is the same as the old one'}, 400
+    user.username = new_username
+    db.session.commit()
+    newUser = user.query.filter_by(username =new_username).first()
+    output = user_schema.dump(user)
+    return output
+
+def updateUserImg(user, img):
+    if (user.img == img):
+        return {'message':'The new image is the same as the old one'}, 400
+    user.img = img
+    db.session.commit()
+    newUser = user.query.filter_by(username =new_username).first()
+    output = user_schema.dump(user)
+    return output
+
+

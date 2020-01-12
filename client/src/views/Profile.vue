@@ -26,12 +26,12 @@
           <span class="account__email">{{ email }}</span>
         </div>
         <v-btn
-            rounded
-            dark
-            @click = "updateAccount"
-            class="account__button account__button"
+          rounded
+          dark
+          @click="updateAccount"
+          class="account__button account__button"
         >
-        Update info
+          Update info
         </v-btn>
       </div>
       <v-btn
@@ -99,27 +99,28 @@ export default {
     deleteAccount() {
       const path = "http://localhost:5000/users/delete";
       axios
-        .delete(path, {data:{ token: localStorage.getItem("authToken") }})
+        .delete(path, { data: { token: localStorage.getItem("authToken") } })
         .then(() => {
-          this.$router.push("/Logout");
+          this.$router.push("/logout");
         })
         .catch(error => {
           //oops
           console.log(error);
         });
     },
-    updateAccount() { // Change this because it doesnt work
+    updateAccount() {
+      // Change this because it doesnt work
       const path = "http://localhost:5000/users/update";
       axios
         .update(path, { token: localStorage.getItem("authToken") })
         .then(res => {
-          var messsage = res.data["message"];
-          if(message == 'Update was successful')  fetchData();
+          var message = res.data["message"];
+          if (message == "Update was successful") this.$methods.fetchData();
         })
-        .catch(error =>{
+        .catch(error => {
           console.log(error);
-        })
-    },
+        });
+    }
   },
   mounted() {
     this.fetchData();
