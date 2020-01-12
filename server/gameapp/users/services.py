@@ -22,10 +22,7 @@ def addUser(username,password,email):
         return {'message': 'User already exists'}, 409
     if mailExists is not None:
         return {'message': 'A user with this email already exists'}, 409
-    # print(bcrypt.generate_password_hash(password)).decode('utf-8')
-    # hashedPassword = bcrypt.generate_password_hash(password)
-    # print('HI')
-    hashedPassword = 1234
+    hashedPassword = hashPassword(password)
     user = User(username=username, password=hashedPassword, email=email)
     db.session.add(user)
     db.session.commit()
@@ -38,10 +35,6 @@ def addUser(username,password,email):
 def hashPassword(password):
     h = hashlib.md5(password.encode('utf-8'))
     return h.hexdigest()
-    
-    # hashpass = hashlib.md5() # create md5 hash
-    # hashpass.update(password.encode()) #update it with the password
-    # return hashpass.hexdigest() #return the hex
 
 
 def getUser(uname):
@@ -69,7 +62,6 @@ def checkCreds(username,password):
     token = jwt.encode({'user':username},key) #generate token
     output = user_schema.dump(userWithPassword)
     return {"user": output, "token": token.decode('utf-8')}
-    # return jsonify({'token': token.decode('utf-8')}) #python encodes it in bytes
 
 
 def deleteUser(username):
