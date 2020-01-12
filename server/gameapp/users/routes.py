@@ -13,17 +13,24 @@ def handleUsersRoute():
             print(e)
             return {'message': 'Server error'}, 500
     if request.method == 'POST':
-        try: 
-            requestPayload = request.get_json()
-            username = requestPayload['username']
-            password = requestPayload['password']
-            email = requestPayload['email']
-            if (username is None) or (password is None) or (email is None):
-                return {'message': 'Some fields are missing'}, 400
-            return addUser(username,password,email)
+        try:
+            creds = request.get_json()
+            username = creds.get('username')
+            password = creds.get('password')
+            email = creds.get('email')
+            if username is None or password is None or email is None:
+                response = {
+                    'message':'Some fields are missing'
+                }
+                return response, 400
+            response = addUser(username,password,email)
+            return response
         except Exception as e:
-            print(e)   
-            return {'message': 'Server error'}, 500 
+            print(e)
+            response = {
+                'message' : 'Server error'
+            }
+            return response,500
 
 
 @users.route('/<username>', methods=['GET','PUT','DELETE'])
