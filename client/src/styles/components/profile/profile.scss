@@ -41,6 +41,7 @@
   }
 
   &__user-image {
+    cursor: pointer;
     border-radius: 50%;
     object-fit: cover;
     border: 8px solid $color-black;
