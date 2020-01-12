@@ -14,7 +14,7 @@ class User(db.Model):
     username = db.Column(db.String(120) , primary_key=True, unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
     email = db.Column(db.String(200), unique=True, nullable=False)
-    img = db.Column(db.String())
+    img = db.Column(db.String(300))
     games = db.Column(db.Integer)
     wins = db.Column(db.Integer)
 

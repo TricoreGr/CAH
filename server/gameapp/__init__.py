@@ -7,9 +7,6 @@ def create_app(config_class=Config):
     app.config.from_object(Config)
     app.config.from_object(Configdb)
 
-    #socketio = SocketIO(app)
-    #socketio.run(app)
-
     from gameapp.users.routes import users
     from gameapp.game.routes import game
     from gameapp.chat.routes import chat
@@ -19,3 +16,7 @@ def create_app(config_class=Config):
     app.register_blueprint(chat)
 
     return app
+
+def create_socket(app):
+    socketio = SocketIO(app)
+    return socketio
