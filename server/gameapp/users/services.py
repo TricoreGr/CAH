@@ -29,7 +29,10 @@ def addUser(username,password,email):
 
     newUser = user.query.filter_by(username = username).first()
     output = user_schema.dump(newUser)
-    return output    
+    key = Config.SECRET_KEY #get the secrete key
+    token = jwt.encode({'user':username},key) #generate token
+
+    return {"user": output, "token": token.decode('utf-8')}    
 
 
 def hashPassword(password):
