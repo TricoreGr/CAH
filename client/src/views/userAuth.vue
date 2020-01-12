@@ -172,7 +172,7 @@ export default {
     },
     signup() {
       //url for post method
-      const path = "http://localhost:5000/users/signup";
+      const path = "http://localhost:5000/users/";
       //form rules
       if (
         this.$refs.form.validate()
