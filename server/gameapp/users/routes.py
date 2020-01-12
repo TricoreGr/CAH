@@ -4,19 +4,6 @@ from flask import jsonify,request
 
 users = Blueprint('users', __name__)
 
-@users.route('/delete',methods=['DELETE'])
-def removeUser():
-    try:
-        token = request.get_json()['token']
-        user = getUserByJWToken(token)
-        username = user['username']
-        response = deleteUser(username)
-        return response
-    except:
-        response = {
-            'message' : 'Error at delete'
-        }
-        return jsonify(response)
 
 @users.route('/signup',methods=['POST'])
 def signup():
@@ -25,59 +12,85 @@ def signup():
         username = creds['username']
         password = creds['password']
         email = creds['email']
+        if username is None or password is None or email is None:
+            response = {
+                'message':'Some fields are missing'
+            }
+            return response, 400
         response = addUser(username,password,email)
-        return response
+        return response,200
     except Exception as e:
         print(e)
         response = {
-            'message' : 'Error at singup'
+            'message' : 'Server error'
         }
-        return jsonify(response)
+        return jsonify(response),500
 
-@users.route('/<username>', methods=['GET'])
+@users.route('/<username>', methods=['GET','UPDATE','DELETE'])
 def returnUser(username):
-    try:
-        user = getUser(username)
-        response = jsonify(user)
-        return response
-    except:
-        response = {
-            'message' : 'Error at user'
-        }
-        return jsonify(response)
+    if request.method == 'GET':
+        try:
+            user = getUser(username)
+            response = jsonify(user)
+            return response,200
+        except:
+            response = {
+                'message' : 'Server error'
+            }
+            return jsonify(response),500
+    elif request.method == 'DELETE':
+        try:
+            token = request.get_json()['token']
+            uname = getUserByJWToken(token)
+            if uname == username:
+                response = deleteUser(username)
+                return response,200
+            else:
+                response = {
+                    'message' : 'Permission not allowed'
+                }
+                return jsonify(response),403
+        except:
+            response = {
+                'message' : 'Server error'
+            }
+            return jsonify(response),500
+    elif request.method == 'UPDATE':
+        try:
+            creds = request.get_json()
+            token = creds['token']
+            uname = getUserByJWToken(token)
+            new_username = creds['username']
+            if uname == username:
+                img = creds['image']
+                response = updateUser(username,new_username,img)
+                return response,200
+            else:
+                response = {
+                    'message' : 'Permission not allowed'
+                }
+                return jsonify(response),403
+        except:
+            response = {
+                'message':'Server error'
+            }
+            return jsonify(response),500
 
 @users.route('/jwtToUsername',methods=['POST'])
 def returnUserByJWT():
         user = getUserByJWToken(request.get_json()['token'])
         return user
 
-@users.route('/login', methods=['POST']) #TODO add password 
+@users.route('/login', methods=['POST'])
 def login():
     try:
         creds = request.get_json()
         username = creds['username']
         password = creds['password']
         response = checkCreds(username,password)
-        return response
+        return response,200
     except:
         response = {
-            'message' : 'Error at login'
-        }
-        return jsonify(response)
-
-@users.route('/update',methods=['UPDATE'])
-def update():
-    try:
-        creds = request.get_json()
-        token = creds['token']
-        username = getUserByJWToken(token)
-        username = username['username'] 
-        new_username = creds['username']
-        img = creds['image']
-        response = updateUser(username,new_username,img)
-        return response
-    except:
-        response = {
-            'message':'Error at update'
+            'message' : 'Server error'
         }
         return jsonify(response)

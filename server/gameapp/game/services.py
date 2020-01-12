@@ -52,7 +52,7 @@ def newTable(owner):
         tables.insert_one(table)
 
         message = 'New table was created'
-    else:
+    except:
         message = 'Could not create table'
     
     response = {
@@ -84,7 +84,7 @@ def deleteTable(id):
         query = {'id':id}
         tables.delete_one(query)
         message = 'Table was deleted'
-    else:
+    except:
         message = 'Unable to delete table'
     response = {
         'message' : message
@@ -96,7 +96,7 @@ def addUserToTable(user,id):
         query = {'id':id}
         newuser = {'$push': {
             'players':[
-                {'username':user['username'],'points':0,'whitecards:[]'}
+                {'username':user['username'],'points':0,'whitecards':[]}
                 ]}}
         tables.update_one(query,newuser)
         message = 'User added to table'
