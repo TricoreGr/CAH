@@ -20,7 +20,7 @@ def addUser(username,password,email):
         return {'message': 'User already exists'}, 409
     if mailExists is not None:
         return {'message': 'A user with this email already exists'}, 409
-    hashedPassword = hashPassword(password)
+    hashedPassword = hashPassword(str(password))
     user = User(username=username, password=hashedPassword, email=email)
     db.session.add(user)
     db.session.commit()
@@ -87,6 +87,7 @@ def updateUserImg(user, img):
         return {'message':'The new image is the same as the old one'}, 400
     user.img = img
     db.session.commit()
+    print(user.username)
     newUser = user.query.filter_by(username = user.username).first()
     output = user_schema.dump(user)
     return output
