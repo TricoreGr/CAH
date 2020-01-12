@@ -17,7 +17,7 @@ def addUser(username,password,email):
 
         response = {
             'message' : 'User added to db'
-        }
+        },200
         return jsonify(response)
     elif mailex is not None:
         response = {
@@ -27,7 +27,7 @@ def addUser(username,password,email):
         response={
             'message':'Username already exists'
         }
-    return jsonify(response)
+    return jsonify(response),409
 
 def getUser(uname):
     user = User.query.filter_by(username=uname).first()
@@ -35,7 +35,7 @@ def getUser(uname):
         response = {
                 'message' : 'No user in database with this username'
         }
-        return response
+        return response,404
 
     results = user_schema.dumps(user)
     results = results.replace('[','').replace(']','')
@@ -53,11 +53,11 @@ def checkCreds(username,password):
         response = {
             'message' : 'Invalid credentials'
         }
-        return jsonify(response)
+        return jsonify(response),401
     else:
         key = Config.SECRET_KEY #get the secrete key
         token = jwt.encode({'user':username},key) #generate token
-        return jsonify({'token': token.decode('utf-8')}) #python encodes it in bytes
+        return jsonify({'token': token.decode('utf-8')}),200 #python encodes it in bytes
 
 def deleteUser(username):
     user = User.query.filter_by(username=username).first()
@@ -67,12 +67,12 @@ def deleteUser(username):
         response = {
             'message' : 'User is deleted'
         }
-        return jsonify(response)
+        return jsonify(response),200
     else:
         response = {
             'message' : 'User does not exist'
         }
-        return jsonify(response)
+        return jsonify(response),404
 
 def updateUser(username,new_username,img):
     user = User.query.filter_by(username=username).first()
@@ -85,7 +85,7 @@ def updateUser(username,new_username,img):
         response = {
             'message' : 'Invalid username'
         }
-        return jsonify(response)
+        return jsonify(response),500
     if user.img != img:
         user.img = img
         change = True  
@@ -98,7 +98,7 @@ def updateUser(username,new_username,img):
         response = {
             'message' : 'Nothing was updated'
         }
-    return jsonify(response)
+    return jsonify(response),200
 
 def hashPassword(password):
     hashpass = hashlib.md5() # create md5 hash
