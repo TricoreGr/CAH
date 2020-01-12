@@ -75,33 +75,19 @@ def deleteUser(username):
     return output
     
 
-def updateUser(username, new_username, img):
+def updateUser(username, img):
     user = User.query.filter_by(username=username).first()
-    if(new_username is not None):
-        return updateUsername(user, new_username)
-    else:    
-        return updateUserImg(user, img)
-    return {'message': 'Server error'}, 500
+    if user is None:
+        return {'message':'There is no user with this username'}, 404 
+    return updateUserImg(user, img)
 
-
-def updateUsername(user, new_username):
-    newUsernameExists = User.query.filter_by(username=new_username).first()
-    if (newUsernameExists is not None):
-        return {'message': 'A user with this username already exists'}, 409
-    if (user.username == new_username):
-        return {'message':'The new username is the same as the old one'}, 400
-    user.username = new_username
-    db.session.commit()
-    newUser = user.query.filter_by(username =new_username).first()
-    output = user_schema.dump(user)
-    return output
 
 def updateUserImg(user, img):
     if (user.img == img):
         return {'message':'The new image is the same as the old one'}, 400
     user.img = img
     db.session.commit()
-    newUser = user.query.filter_by(username =new_username).first()
+    newUser = user.query.filter_by(username = user.username).first()
     output = user_schema.dump(user)
     return output
 

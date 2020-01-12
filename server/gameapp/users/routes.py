@@ -46,11 +46,10 @@ def handleUserRoute(username):
             validUser = validateToken(creds.get('token'), username)
             if not validUser:
                 return {'message': 'Unauthorized'}, 401
-            new_username = creds.get('username')
             img = creds.get('image')
-            if (new_username is None) and (img is None):
+            if img is None:
                 return {'message': 'No user info given'}, 400 
-            return updateUser(username, new_username, img)
+            return updateUser(username, img)
         except Exception as e:
             print(e)
             return {'message': 'Server error'}, 500
@@ -78,11 +77,12 @@ def login():
         password = creds.get('password')
         response = checkCreds(username, password)
         return response
-    except:
+    except Exception as e:
+        print(e)
         response = {
-            'message': 'Error at login'
+            'message': 'Server error'
         }
-        return jsonify(response)
+        return response,500
 
 def validateToken(token, givenUsername):
     if token is None:
