@@ -74,8 +74,8 @@ def returnUserByJWT():
 def login():
     try:
         creds = request.get_json()
-        username = creds['username']
-        password = creds['password']
+        username = creds.get('username')
+        password = creds.get('password')
         response = checkCreds(username, password)
         return response
     except:
