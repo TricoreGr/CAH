@@ -1,8 +1,8 @@
-from gameapp import create_app,create_socket
+from gameapp import create_app,socketio
 from flask_cors import CORS
 
 app = create_app()
-socketio = create_socket(app)
+socketio = socketio
 
 CORS(app, resources={r'/*': {'origins': '*'}})
 
