@@ -1,12 +1,10 @@
 from .models import User,db,users_schema,user_schema
 from flask import jsonify, Response
-from flask_bcrypt import Bcrypt
 import json
 import hashlib
 import jwt
 from ..config import Config
 
-bcrypt = Bcrypt()
 
 def getUsers():
     users = User.query.all()
