@@ -5,7 +5,7 @@ from ..config import Config
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://emXFbgryDO:GYOLHIdOvC@remotemysql.com:3306/emXFbgryDO' #add password in order for it to run
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://<username>:<password>@remotemysql.com:3306/<username>' #add password in order for it to run
 
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
@@ -14,7 +14,7 @@ class User(db.Model):
     username = db.Column(db.String(120) , primary_key=True, unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
     email = db.Column(db.String(200), unique=True, nullable=False)
-    img = db.Column(db.String(60), default='default.jpg') #TODO add image
+    img = db.Column(db.String())
     games = db.Column(db.Integer)
     wins = db.Column(db.Integer)
 
