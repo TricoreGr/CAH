@@ -17,8 +17,8 @@ def addUser(username,password,email):
 
         response = {
             'message' : 'User added to db'
-        },200
-        return jsonify(response)
+        }
+        return jsonify(response),200
     elif mailex is not None:
         response = {
             'message': 'Email belongs to another user'

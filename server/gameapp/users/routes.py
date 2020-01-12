@@ -18,7 +18,7 @@ def signup():
             }
             return response, 400
         response = addUser(username,password,email)
-        return response,200
+        return response
     except Exception as e:
         print(e)
         response = {
@@ -26,7 +26,7 @@ def signup():
         }
         return jsonify(response),500
 
-@users.route('/<username>', methods=['GET','UPDATE','DELETE'])
+@users.route('/<username>', methods=['GET','PUT','DELETE'])
 def returnUser(username):
     if request.method == 'GET':
         try:
@@ -44,7 +44,7 @@ def returnUser(username):
             uname = getUserByJWToken(token)
             if uname == username:
                 response = deleteUser(username)
-                return response,200
+                return response
             else:
                 response = {
                     'message' : 'Permission not allowed'
@@ -55,7 +55,7 @@ def returnUser(username):
                 'message' : 'Server error'
             }
             return jsonify(response),500
-    elif request.method == 'UPDATE':
+    elif request.method == 'PUT':
         try:
             creds = request.get_json()
             token = creds['token']
@@ -64,7 +64,7 @@ def returnUser(username):
             if uname == username:
                 img = creds['image']
                 response = updateUser(username,new_username,img)
-                return response,200
+                return response
             else:
                 response = {
                     'message' : 'Permission not allowed'
@@ -88,7 +88,7 @@ def login():
         username = creds['username']
         password = creds['password']
         response = checkCreds(username,password)
-        return response,200
+        return response
     except:
         response = {
             'message' : 'Server error'
