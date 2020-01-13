@@ -4,10 +4,21 @@
     <div class="account">
       <div class="account__wrapper slide-in-blurred-top">
         <h1 class="account__username">{{ username }}</h1>
-        <img @click="
-            updateModal = true;
-            overlay = true;
-          " class="account__user-image" :src="img" />
+        <div class="account__user-image-wrapper">
+          <v-progress-circular
+            indeterminate
+            :width="2"
+            v-if="isLoading"
+          ></v-progress-circular>
+          <img
+            @click="
+              updateModal = true;
+              overlay = true;
+            "
+            class="account__user-image"
+            :src="img"
+          />
+        </div>
         <div class="account__score-wrapper">
           <div class="account__info-wrapper">
             <span class="account__info-label">Wins</span>
@@ -60,7 +71,13 @@
               <v-btn color="blue darken-1" text @click="resetModal"
                 >Close</v-btn
               >
-              <v-btn color="blue darken-1" text @click="dialog = false;userUpdate();"
+              <v-btn
+                color="blue darken-1"
+                text
+                @click="
+                  dialog = false;
+                  userUpdate();
+                "
                 >Save</v-btn
               >
             </v-card-actions>
@@ -89,21 +106,23 @@ import axios from "axios";
 export default {
   data() {
     return {
-      username: "StoeBlyat",
-      email: "gooduser@cah.com",
+      username: "Loading...",
+      email: "gooduser@hehe.com",
       rank: "big Boi", //todo : add ranks
       wins: 3,
       overlay: false,
       gamesTotal: 10,
-      img:"https://upload.wikimedia.org/wikipedia/commons/4/4d/Star_Wars-_The_Last_Jedi_Japan_Premiere_Red_Carpet-_Adam_Driver_%2827163437599%29_%28cropped%29.jpg",
+      isLoading: false,
+      img:"",
       updateModal: false,
       deleteAccountModal: false,
       newImage: this.img,
       newUsername: this.newUsername,
       rules: {
         //vuetify form rules
-        counter: value => value ? value.length <= 20 || "Max 20 characters":'',
-        required: value => value ? !!value || "Required.":''
+        counter: value =>
+          value ? value.length <= 20 || "Max 20 characters" : "",
+        required: value => (value ? !!value || "Required." : "")
       },
       serverErrors: {
         usernameExists: ""
@@ -112,6 +131,7 @@ export default {
   },
   methods: {
     fetchData() {
+      this.isLoading = true;
       const path = "http://localhost:5000/users/jwtToUsername";
       axios
         .post(path, { token: localStorage.getItem("authToken") })
@@ -121,6 +141,7 @@ export default {
           this.wins = res.data["wins"] ? res.data["wins"] : 0;
           this.gamesTotal = res.data["games"] ? res.data["games"] : 0;
           this.img = res.data["img"];
+          this.isLoading = false;
         })
         .catch(error => {
           //oops
@@ -128,11 +149,14 @@ export default {
         });
     },
     deleteAccount() {
-      const path = "http://localhost:5000/users/delete";
+      this.isLoading = true;
+      const path = "http://localhost:5000/users/"+this.username;
       axios
         .delete(path, { data: { token: localStorage.getItem("authToken") } })
         .then(() => {
           this.$router.push("/logout");
+          this.isLoading = false;
+
         })
         .catch(error => {
           //oops
@@ -146,19 +170,23 @@ export default {
     },
     userUpdate() {
       this.resetModal();
-      var   headers={
-        "Content-Type":"application/json",
-      }
+      var headers = {
+        "Content-Type": "application/json"
+      };
       //url for post method
       const path = "http://localhost:5000/users/" + this.username;
       //form rules
       if (this.$refs.form.validate())
         //use axios for requests
         axios
-          .put(path, {
-            token:localStorage.getItem("authToken"),
-            image: this.newImage
-          },headers)
+          .put(
+            path,
+            {
+              token: localStorage.getItem("authToken"),
+              image: this.newImage
+            },
+            headers
+          )
           .then(res => {
             console.log(res);
             if (res.status == 200) {
