@@ -46,11 +46,11 @@ Cards against humanity online game
 ```json
     users
     {
-        "username" : username,
-        "password" : password,
-        "email" : email,
-        "img" : img,
-        "game" : games
-        "wins" : wins
+        "username" : "some username",
+        "password" : "some password",
+        "email" : "some email",
+        "img" : "some img",
+        "game" : "some games",
+        "wins" : "some wins"
     }
 ```
