@@ -17,9 +17,10 @@
 
   &__size-label{
     font-size: 17px !important;
-    margin-left: 10px;
+    margin-right: 5px;
     color: rgb(77, 74, 74);
-    font-family: $voltaire
+    font-family: $voltaire;
+    margin-bottom:8px;
   }
 
   &__size-label--full{
