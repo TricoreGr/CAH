@@ -41,3 +41,16 @@ Cards against humanity online game
 | `/users/{username}` | DELETE | Διαγράφει τον συγκεκριμένο χρήστη, `returns user` | 200(OK), 401(UNAUTHORIZED), 500(SERVER ERROR) |
 | `/users/jwtToUsername` | POST | Επιστρέφει το username που αντιστοιχεί το token, `returns user` | 200(OK) |
 | `/users/login` | POST | Επιστρέφει το token του χρήστη, `returns user, token` | 200(ΟΚ), 401(UNAUTHORIZED), 500(SERVER ERROR)
+
+#### user type example
+```json
+    users
+    {
+        "username" : username,
+        "password" : password,
+        "email" : email,
+        "img" : img,
+        "game" : games
+        "wins" : wins
+    }
+```
