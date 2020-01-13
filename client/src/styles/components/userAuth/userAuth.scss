@@ -72,4 +72,23 @@
   .v-btn__content {
     font-family: $montserrat;
   }
+
+
+  .v-progress-circular{
+    width:100px!important;
+    height:100px!important;
+    position: fixed;
+    top:-25%;
+    @media(min-width: $desktop){
+      width:150px!important;
+      height:150px!important;
+    }
+
+    .v-progress-circular__overlay{
+      stroke:$color-accent--dark;
+      z-index: 10;
+    }
+
+  }
+
 }

@@ -100,14 +100,18 @@
             <span class="card__error">{{ error }}</span>
             <span class="card__signature">CAH</span>
           </div>
+
+            <v-progress-circular
+            indeterminate
+            :width="2"
+            v-if="isLoading"
+          ></v-progress-circular>
         </v-form>
+      
       </div>
+      
       <div class="userAuth__buttons-wrapper">
-        <v-btn
-          rounded
-          color="black"
-          @click.native="submitHandle"
-          dark
+        <v-btn rounded color="black" @click.native="submitHandle" dark
           >{{ this.formType == "login" ? "LOG IN" : "SIGN UP" }}, FRIEND!</v-btn
         >
         <v-btn text small @click.native="toggleForm"
@@ -140,45 +144,48 @@ export default {
       this.czarPassword = text.substring(0, passLength);
       if (passLength == 0) this.czarPassword = "_________________";
     },
-    submitHandle(){
-      this.formType =='login'?this.login():this.signup();
+    submitHandle() {
+      this.formType == "login" ? this.login() : this.signup();
     },
     login() {
+      this.isLoading = true;
       //url for post method
       const path = "http://localhost:5000/users/login";
       //form rules
-      if (
-        this.$refs.form.validate()
-      )
+      if (this.$refs.form.validate())
         //use axios for requests
         axios
-          .post(path, { username:this.username,password: this.password })
+          .post(path, { username: this.username, password: this.password })
           .then(res => {
             if (res.data.token) {
+              this.isLoading = false;
               //save the auth token in browser
               localStorage.setItem("authToken", res.data.token);
               //redirect to homepage
               this.$router.push("/");
             }
             //auth failed
-            
           })
           .catch(error => {
-            //oops 
-            switch(error.response.status){
-            case 401:this.error = 'Invalid Credentials';break;
-            case 500:this.error = 'Server Error, try again';break;
+            //oops
+            switch (error.response.status) {
+              case 401:
+                this.error = "Invalid Credentials";
+                break;
+              case 500:
+                this.error = "Server Error, try again";
+                break;
             }
             console.log(error);
+            this.isLoading = false;
           });
     },
     signup() {
+      this.isLoading = true;
       //url for post method
       const path = "http://localhost:5000/users/";
       //form rules
-      if (
-        this.$refs.form.validate()
-      )
+      if (this.$refs.form.validate())
         //use axios for requests
         axios
           .post(path, {
@@ -187,21 +194,25 @@ export default {
             password: this.password
           })
           .then(() => {
+            this.isLoading = false;
             this.login();
           })
           .catch(error => {
             //oops
             this.error = error.response.data.message;
+            this.isLoading = false;
           });
     },
     toggleForm() {
-      this.error = "" //reset
+      this.error = ""; //reset
       this.formType == "login"
         ? ((this.formType = "signup"), this.$router.push("Register"))
         : ((this.formType = "login"), this.$router.push("Login"));
     },
-    managePath(){
-      this.$router.history.current.path.toLowerCase() == "/login" ? this.formType = 'login' : this.formType = 'signup'
+    managePath() {
+      this.$router.history.current.path.toLowerCase() == "/login"
+        ? (this.formType = "login")
+        : (this.formType = "signup");
     }
   },
   data() {
@@ -223,7 +234,8 @@ export default {
       czarName: "_________________",
       czarPassword: "_________________",
       czarEmail: "_________________",
-      error: ""
+      error: "",
+      isLoading:false
     };
   },
   mounted() {
