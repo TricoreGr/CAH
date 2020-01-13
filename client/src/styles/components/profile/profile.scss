@@ -144,6 +144,7 @@
   .v-progress-circular{
     width:100px!important;
     height:100px!important;
+    position: absolute;
     @media(min-width: $desktop){
       width:150px!important;
       height:150px!important;
