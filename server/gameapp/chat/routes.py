@@ -5,7 +5,4 @@ from flask import Blueprint
 chat = Blueprint('chat', __name__)
 
 # ROOMS = {}
-
-# @socketio.on('connect')
-# def on_connect(data):
-#     return
+ 
