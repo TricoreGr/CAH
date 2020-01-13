@@ -8,8 +8,9 @@ socketio = SocketIO()
 @socketio.on('joined',{})
 def joined(data):
     room = data['room']
+    print(room)
     join_room(room)
-    emit('playerJoined',{'user':'status',"message":data['username']+' has joined.'},broadcast=True,room=room)
+    emit('playerJoined',{'user':'status',"message":data['username']+' has joined.'},room=room)
 
 # todo: set it up
 @socketio.on('leave')
@@ -23,7 +24,8 @@ def leave(data):
 def sendMessage(data):
     username = data['username']
     message = data['message']
-    emit('newMessage',{'user':username,'message':message},broadcast=True)
+    room = data['room']
+    emit('newMessage',{'user':username,'message':message},room=room)
 
 def create_app(config_class=Config):
     app = Flask(__name__)

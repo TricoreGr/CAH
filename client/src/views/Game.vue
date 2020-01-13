@@ -36,6 +36,7 @@
             solo
             class="chat__input"
             v-model="message"
+            @keydown.enter="sendMessage"
           >
           </v-text-field>
           <v-btn @click.native="sendMessage" class="chat__submit">send</v-btn>
@@ -115,9 +116,11 @@ export default {
   },
   methods: {
     sendMessage() {
+      if(this.message)
       this.socket.emit("sendMessage", {
         username: this.username,
-        message: this.message
+        message: this.message,
+        room:this.room  
       });
       this.message = "";
     },
@@ -198,7 +201,7 @@ export default {
       }
     },
     joinRoom() {
-      this.socket.emit("joined", { username: this.username });
+      this.socket.emit("joined", { username: this.username,room: this.room});
     },
     connectSocket() {
       this.socket = io.connect("http://localhost:5000");
@@ -222,13 +225,15 @@ export default {
       chatNotification: false,
       drawer: false,
       selectedCardsIndexes: [],
-      cardsToPick: 2,
+      cardsToPick: 1,
       socket: Object,
-      messages: []
+      messages: [],
+      room:String
     };
   },
   mounted() {
     this.nextRoundAnimation(0); //for showing off purposes
+    this.room = this.$router.currentRoute.params.gameId
   },
   created() {
     this.fetchUsername();
