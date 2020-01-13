@@ -27,7 +27,7 @@ Cards against humanity online game
 
     Navigate to [http://localhost:8080](http://localhost:8080)
     
-| URI  | METHOD | ΕΝΕΡΓΕΙΑ | RETURN STATUS | 
-| ------------- | ------------- |
+| URI  | METHOD | ΕΝΕΡΓΕΙΑ | RETURN STATUS |  
+| ------------- | ------------- | ------------- | ------------- |
 | /users/  | GET | Επιστρέφει όλους τους χρήστες του παιχνιδιού | 200(OK), 500(SERVER ERROR) |
 | /users/  | POST | Δημιουργεί έναν νέο χρήστη | 200(ΟΚ), 400(MISSING FIELDS), 500(SERVER ERROR) |
