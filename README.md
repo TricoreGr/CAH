@@ -113,8 +113,8 @@ User :
     }
 ```
 ## Thanks to
-   *Our professors for allowing us to make such a masterpiece
-   *Hell energy drinks
-   *Antidepressants
+   -Our professors for allowing us to make such a masterpiece
+   -Hell energy drinks
+   -Antidepressants
    
 
