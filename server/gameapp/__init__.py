@@ -5,7 +5,7 @@ from flask_socketio import emit,send,join_room,leave_room
 
 socketio = SocketIO()
 
-@socketio.on('joined',{})
+@socketio.on('joined')
 def joined(data):
     room = data['room']
     print(room)
