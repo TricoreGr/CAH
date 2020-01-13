@@ -1,11 +1,11 @@
-from flask import Blueprint
+from flask import Blueprint, request
 from .services import getRooms, createRoom, deleteRoom, getRoundWhiteCards, getCzar, getBlackCard, getPlayers,getIndividualWhiteCards
 
 game = Blueprint('game', __name__)
 
-@game.route('/', methods=['GET','POST','DELETE']):
+@game.route('/', methods=['GET','POST','DELETE'])
 def handleRoomsRoute():
-    if request.method =='GET':
+    if request.method == 'GET':
         try:
             return getRooms()
         except Exception as e:
