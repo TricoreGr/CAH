@@ -57,6 +57,10 @@ def handleUserRoute(username):
         try:
             creds = request.get_json()
             validUser = validateToken(creds.get('token'), username)
+            print('validUser')
+            print(validUser)
+            print('token')
+            print(creds.get('token'))
             if not validUser:
                 return {'message': 'Unauthorized'}, 401
             return deleteUser(username)

@@ -12,7 +12,6 @@ def joined(data):
     join_room(room)
     emit('playerJoined',{'user':'status',"message":data['username']+' has joined.'},room=room)
 
-# todo: set it up
 @socketio.on('leave')
 def leave(data):
     username = data['username']
