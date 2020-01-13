@@ -1,12 +1,15 @@
 from flask import Flask
 from flask_socketio import SocketIO,emit,send
 from gameapp.config import Config,Configdb
+from flask_socketio import emit,send,join_room,leave_room
 
 socketio = SocketIO()
 
 @socketio.on('joined',{})
 def joined(data):
-    emit('playerJoined',{'user':'status',"message":data['username']+' has joined.'},broadcast=True)
+    room = data['room']
+    join_room(room)
+    emit('playerJoined',{'user':'status',"message":data['username']+' has joined.'},broadcast=True,room=room)
 
 # todo: set it up
 @socketio.on('leave')
