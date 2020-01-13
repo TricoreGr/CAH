@@ -5,13 +5,14 @@ client = MongoClient(
     "mongodb+srv://ieeediots:asidirop@ieeediots-uctmo.mongodb.net/test?retryWrites=true&w=majority")
 
 db = client['ieeediots_cah']  # db name is game
-
-# cards = gamei['cards']  # collection name
-
 roomsCollection = db['rooms']  # collection name
 
+db = client['game']
+cardsCollection = db['cards']  # collection name
 
-def roomModel(owner):
+
+
+def roomModel(owner, blackcards, whitecards):
     return {
         'owner': owner,
         'gamesession': {
@@ -28,8 +29,8 @@ def roomModel(owner):
                 }
             ],
             'cards': {
-                'blackCards': [],
-                'whiteCards': []
+                'blackCards': blackcards,
+                'whiteCards': whitecards
             }
         },
     }

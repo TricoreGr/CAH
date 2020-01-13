@@ -1,12 +1,12 @@
-from .models import  roomsCollection, roomModel
+from .models import  cardsCollection,roomsCollection, roomModel
 import json
 import jwt
 from flask import jsonify, Response
 from bson.json_util import dumps
 from bson import json_util
 from ..config import Config
-
-
+from bson.objectid import ObjectId
+import random
 
 # def migrateCards():
 #     with open('cards.json','r') as file:
@@ -17,7 +17,6 @@ def getRooms():
     try:
         rooms = []
         cursor = roomsCollection.find({})
-        doc = {}
         for document in cursor:
             rooms.append(document)
         return Response(json.dumps({'rooms': rooms}, default=json_util.default),
@@ -33,22 +32,42 @@ def getRooms():
 def createRoom(token):
     owner = getUsernameByJWToken(token)
     try:
-        room = roomModel(owner)
+        whiteCards = getRandomWhiteCards()
+        blackCards = getRandomBlackCards()
+        room = roomModel(owner,blackCards,whiteCards)
+        print(room)
         roomsCollection.insert_one(room)
         createdRoom = roomsCollection.find_one({"owner": owner})
         return Response(json.dumps({'room': createdRoom}, default=json_util.default),
                 mimetype='application/json')
-    except:
+    except Exception as e:
+        print(e)
         return {"message": "Server error"}, 500
 
+def getRandomBlackCards():
+    allBlackCards = []
+    cursor = cardsCollection.find({})
+    for document in cursor:
+        allBlackCards=document["blackCards"]
+    return random.sample(allBlackCards, k=33)
+
+def getRandomWhiteCards():
+    allWhiteCards = []
+    cursor = cardsCollection.find({})
+    for document in cursor:
+        allWhiteCards=document["whiteCards"]
+    print(len(allWhiteCards))
+    return random.sample(allWhiteCards, k=146)
 
 def deleteRoom():
     return okok
 
 
-def getRoundWhiteCards():
-    whiteCards = cards.find({}).distinct('whiteCards')
-    return jsonify(whiteCards)
+def getRoundWhiteCards(roomId):
+    roomDocument = roomsCollection.find_one({'_id': ObjectId(roomId)})
+    session = roomDocument['gamesession']['round']['whitecards']
+    print(session)
+    return {"message": "ok"}
 
 
 def getCzar():
