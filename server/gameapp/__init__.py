@@ -18,7 +18,7 @@ def leave(data):
     username = data['username']
     room = data['room']
     leave_room(room)
-    send(username + ' has left the table.', room=room)
+    emit('playerLeft',{'user':'status',"message":data['username']+' has left.'}, room=room)
 
 @socketio.on('sendMessage')
 def sendMessage(data):

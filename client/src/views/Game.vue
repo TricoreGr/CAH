@@ -4,7 +4,7 @@
       <player></player>
     </div>
     <div class="inGame__statusWrapper">
-      <v-btn rounded color="black" dark>
+      <v-btn rounded color="black" dark @click="leaveGame">
         QUIT
       </v-btn>
       <v-navigation-drawer
@@ -212,9 +212,20 @@ export default {
       this.socket.on("playerJoined", data => {
         this.updateMessages(data.user, data.message);
       });
+      this.socket.on("playerLeft", data => {
+        this.updateMessages(data.user, data.message);
+      });
       this.socket.on("newMessage", data => {
         this.updateMessages(data.user, data.message);
       });
+    },
+    leaveGame(){
+      this.socket.emit('leave',{
+        username:this.username,
+        room:this.room
+      })
+      this.socket.disconnect();
+      this.$router.push('/play');
     }
   },
   data() {
