@@ -105,6 +105,7 @@ import player from "@/components/Player";
 import userCarousel from "@/components/UserCarousel";
 import anime from "animejs/lib/anime.es.js";
 import io from "socket.io-client";
+import axios from "axios";
 export default {
   components: {
     cardCarousel,
@@ -120,12 +121,25 @@ export default {
       });
       this.message = "";
     },
+    fetchUsername() {
+      const path = "http://localhost:5000/users/jwtToUsername";
+      axios
+        .post(path, { token: localStorage.getItem("authToken") })
+        .then(res => {
+          this.username = res.data["username"];
+          this.connectSocket();
+        })
+        .catch(error => {
+          //oops
+          console.log(error);
+        });
+    },
     updateMessages(user, text) {
       this.messages.push({
         user,
         text
       });
-      if(!this.drawer) this.chatNotification = true;
+      if (!this.drawer) this.chatNotification = true;
       //wait 0.01 secs because we need to add element
       setTimeout(this.scrollToLastMessage, 10);
     },
@@ -186,6 +200,10 @@ export default {
     joinRoom() {
       this.socket.emit("joined", { username: this.username });
     },
+    connectSocket() {
+      this.socket = io.connect("http://localhost:5000");
+      this.enableSocketListeners();
+    },
     enableSocketListeners() {
       this.socket.on("connect", this.joinRoom);
       this.socket.on("playerJoined", data => {
@@ -199,7 +217,7 @@ export default {
   data() {
     return {
       animationTimeline: anime.timeline(),
-      username: "Kotsovolos",
+      username: "",
       message: "",
       chatNotification: false,
       drawer: false,
@@ -211,10 +229,9 @@ export default {
   },
   mounted() {
     this.nextRoundAnimation(0); //for showing off purposes
-    this.enableSocketListeners();
   },
   created() {
-    this.socket = io.connect("http://localhost:5000");
+    this.fetchUsername();
   }
 };
 </script>
