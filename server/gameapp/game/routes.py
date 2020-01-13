@@ -1,5 +1,5 @@
 from flask import Blueprint, request
-from .services import getRooms, createRoom, deleteRoom, getRoundWhiteCards, getCzar, getBlackCard, getPlayers,getIndividualWhiteCards
+from .services import getRooms, submitWhiteCards, createRoom, deleteRoom, getRoundWhiteCards, getCzar, getBlackCard, getPlayers,getIndividualWhiteCards
 
 game = Blueprint('game', __name__)
 
@@ -41,8 +41,11 @@ def handleRoundWhitecardsRoute(roomId):
         try:
             requestData = request.get_json()
             token = requestData.get('token')
-            whitecard = requestData.get('card')
-            submitWhitecards(roomId, token, card)
+            whitecards = []
+            whitecards.append(requestData.get('card1'))
+            whitecards.append(requestData.get('card2'))
+            whitecards.append(requestData.get('card3'))
+            return submitWhiteCards(roomId, token, whitecards)
         except Exception as e:
             print(e)
             return {'message': 'Server error'}, 500   
