@@ -2,30 +2,37 @@ from .models import cards, tables
 import json
 from flask import jsonify
 
-#blackCards
-#whiteCards
-#Base
-#order
 
-def migrateCards():
-    with open('cards.json','r') as file:
-        crds = json.load(file) 
-    cards.insert(crds)
+# def migrateCards():
+#     with open('cards.json','r') as file:
+#         crds = json.load(file) 
+#     cards.insert(crds)
 
-def getBlackCards():
-    blackCards = cards.find({}).distinct('blackCards')
-    return jsonify(blackCards)
+def getRooms():
+    return ok
 
-def getWhiteCards():
+def createRoom():
+    return ok
+
+def deleteRoom():
+    return okok
+
+def getRoundWhiteCards():
     whiteCards = cards.find({}).distinct('whiteCards')
     return jsonify(whiteCards)
 
-def getBase():
-    base = cards.find({}).distinct('Base')
-    return jsonify(base)
+def getCzar():
+    print(ok)
 
-def getOrder():
-    order = cards.find({}).distinct('order')
+def getBlackCard():
+    blackCards = cards.find({}).distinct('blackCards')
+    return jsonify(blackCards)
+
+def getPlayers():
+    return ok
+
+def getIndividualWhiteCards():
+    return big ok
 
 def newTable(owner):
     try:
