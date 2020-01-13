@@ -1,6 +1,6 @@
 from flask_socketio import SocketIO,emit,send,join_room,leave_room
 from ..socket import socketio
-   
+
 @socketio.on('joined')
 def joined(data):
     room = data['room']

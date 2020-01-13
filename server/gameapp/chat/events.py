@@ -3,7 +3,6 @@ from ..socket import socketio
 
 @socketio.on('sendMessage')
 def sendMessage(data):
-    print("HELLO")
     username = data['username']
     message = data['message']
     room = data['room']
