@@ -42,12 +42,21 @@ Cards against humanity online game
 | `/users/jwtToUsername` | POST | Επιστρέφει το username που αντιστοιχεί το token, `returns user` | 200(OK) |
 | `/users/login` | POST | Επιστρέφει το token του χρήστη, `returns user, token` | 200(ΟΚ), 401(UNAUTHORIZED), 500(SERVER ERROR)
 
-#### user type example
+#### User model in mysql
+```
+User : 
+        username
+        password
+        email
+        img
+        games
+        wins
+```
+
+#### User type example
 ```json
-    users
-    {
+    users {
         "username" : "some username",
-        "password" : "some password",
         "email" : "some email",
         "img" : "some img",
         "game" : "some games",
