@@ -8,7 +8,7 @@ from flask import jsonify
 #order
 
 def migrateCards():
-    with open('cards.json','r') as file:
+    with open('./cards.json','r') as file:
         crds = json.load(file) 
     cards.insert(crds)
 
