@@ -49,23 +49,7 @@ export default {
   components: { Room },
   data() {
     return {
-      rooms: [
-        {
-          id: "21dfkfd",
-          creator: "Dima",
-          usersJoined: 8
-        },
-        {
-          id: "21dfk5d",
-          creator: "Giapa",
-          usersJoined: 2
-        },
-        {
-          id: "21df32fd",
-          creator: "Kalovelo",
-          usersJoined: 6
-        }
-      ]
+      rooms: []
     };
   },
   methods: {
@@ -92,6 +76,23 @@ export default {
   },
   created() {
     //call the api to get all available rooms
+    const path = "http://localhost:5000/rooms/";
+    axios
+      .get(path, { token: localStorage.getItem("authToken") })
+      .then(res => {
+        var rooms = res.data.rooms;
+        for (const room of rooms) {
+          var newRoom = {
+            id: room._id.$oid,
+            creator: room.owner,
+            usersJoined: room.gamesession.players.length
+          };
+          this.$data.rooms.push(newRoom);
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 };
 </script>
