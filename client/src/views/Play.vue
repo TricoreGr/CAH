@@ -1,7 +1,7 @@
 <template>
   <div>
-    <navbar />
     <v-app>
+      <navbar />
       <div
         style="
         display: flex;
@@ -21,6 +21,21 @@
         >
         </room>
       </div>
+      <v-btn
+        style="
+        background-color: green;
+        color: white;
+        position: fixed;
+        bottom: 50px;
+        right: 50px;
+        height: 70px;
+        width: 70px;
+        "
+        icon
+        fab
+        @click="createRoomButtonPressed"
+        ><v-icon>mdi-plus</v-icon>
+      </v-btn>
     </v-app>
   </div>
 </template>
@@ -52,8 +67,14 @@ export default {
     };
   },
   methods: {
-    createRoomButtonPressed() {
-
+    createRoomButtonPressed: function() {
+      //post room method to backend
+      var newRoom = {
+        id: "2325dvd2",
+        creator: "Stougaros",
+        usersJoined: 0
+      };
+      this.$data.rooms.push(newRoom);
     }
   },
   created() {
