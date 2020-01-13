@@ -4,6 +4,7 @@ import jwt
 from flask import jsonify, Response
 from bson.json_util import dumps
 from bson import json_util
+from bson.objectid import ObjectId
 from ..config import Config
 
 
@@ -42,8 +43,15 @@ def createRoom(token):
         return {"message": "Server error"}, 500
 
 
-def deleteRoom():
-    return okok
+def deleteRoom(id):
+    try:
+        query = {
+            '_id':ObjectId(id)
+        }
+        deletedRoom = roomsCollection.delete_one(query)
+        return id
+    except:
+        return {"message":"Server error"},500
 
 
 def getRoundWhiteCards():

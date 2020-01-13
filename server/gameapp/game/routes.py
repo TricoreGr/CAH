@@ -22,8 +22,9 @@ def handleRoomsRoute():
     if request.method == 'DELETE':
         try:
             requestPayload = request.get_json()
-            token = requestPayload.get('token')
-            return deleteRoom(token)
+            id = requestPayload.get('id')
+            deletedRoom = deleteRoom(id)
+            return {'message':'room '+deletedRoom+' has been deleted.'},200
         except Exception as e:
             print(e)
             return {'message': 'Server error'}, 500 
