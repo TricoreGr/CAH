@@ -15,7 +15,7 @@ def create_app(config_class=Config):
     from gameapp.chat.routes import chat
 
     app.register_blueprint(users, url_prefix='/users')
-    app.register_blueprint(game, url_prefix='/game')
+    app.register_blueprint(game, url_prefix='/rooms')
     app.register_blueprint(chat)
 
     return app
