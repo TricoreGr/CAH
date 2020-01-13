@@ -71,7 +71,6 @@
                   value=""
                   v-model="username"
                   counter
-                  :error-messages="serverErrors.usernameExists"
                 ></v-text-field>
                 <v-text-field
                   label="Email"
@@ -80,7 +79,6 @@
                   @input="syncEmail"
                   value=""
                   v-model="email"
-                  :error-messages="serverErrors.emailExists"
                   v-if="this.formType == 'signup'"
                 ></v-text-field>
               </span>
@@ -163,10 +161,14 @@ export default {
               this.$router.push("/");
             }
             //auth failed
-            else this.error = res.data.message;
+            
           })
           .catch(error => {
-            //oops
+            //oops 
+            switch(error.response.status){
+            case 401:this.error = 'Invalid Credentials';break;
+            case 500:this.error = 'Server Error, try again';break;
+            }
             console.log(error);
           });
     },
@@ -184,23 +186,16 @@ export default {
             email: this.email,
             password: this.password
           })
-          .then(res => {
-            if (res.data.message == 'Email belongs to another user') {
-              this.serverErrors.emailExists = res.data.message
-            }
-
-            else if (res.data.message == 'Username already exists') {
-              this.serverErrors.usernameExists = res.data.message
-            }
-            else
-              this.login();
+          .then(() => {
+            this.login();
           })
           .catch(error => {
             //oops
-            console.log(error);
+            this.error = error.response.data.message;
           });
     },
     toggleForm() {
+      this.error = "" //reset
       this.formType == "login"
         ? ((this.formType = "signup"), this.$router.push("Register"))
         : ((this.formType = "login"), this.$router.push("Login"));
@@ -220,10 +215,6 @@ export default {
           value => !!value || "E-mail is required",
           value => /.+@.+\..+/.test(value) || "E-mail must be valid"
         ]
-      },
-      serverErrors:{
-        usernameExists:'',
-        emailExists:''
       },
       //default values for cards
       username: "",
