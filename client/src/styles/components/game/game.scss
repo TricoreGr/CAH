@@ -151,6 +151,11 @@
     display: block;
   }
 
+  &__update{
+    font-family: $montserrat;
+    color:$color-black;
+  }
+
   &__message {
     display: block;
     font-family: $montserrat-light;
