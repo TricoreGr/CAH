@@ -1,5 +1,5 @@
 from flask import Blueprint
-from .services import getUsers, getUser, checkCreds, addUser, getUserByJWToken, deleteUser, updateUser
+from .services import getUsers, getUser, checkCreds, addUser, getUserByJWToken, deleteUser, updateUser, updateGames
 from flask import jsonify, request, Response
 
 users = Blueprint('users', __name__)
@@ -43,13 +43,20 @@ def handleUserRoute(username):
     if request.method == 'PUT':
         try:
             creds = request.get_json()
+            win = creds.get('win')
+            game = creds.get('game')
+
             validUser = validateToken(creds.get('token'), username)
             if not validUser:
                 return {'message': 'Unauthorized'}, 401
-            img = creds.get('image')
-            if img is None:
-                return {'message': 'No user info given'}, 400 
-            return updateUser(username, img)
+            
+            if win is not None or game is not None:
+                return updateGames(username,win,game)
+            else:
+                img = creds.get('image')
+                if img is None:
+                    return {'message': 'No user info given'}, 400 
+                return updateUser(username, img)
         except Exception as e:
             print(e)
             return {'message': 'Server error'}, 500

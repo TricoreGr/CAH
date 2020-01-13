@@ -91,4 +91,18 @@ def updateUserImg(user, img):
     output = user_schema.dump(user)
     return output
 
-
+def updateGames(username, win, game):
+    user = User.query.filter_by(username=username).first()
+    if win is not None:
+        if user.wins is None:
+            user.wins = 1
+        else:
+            user.wins += 1
+    if user.games is None:
+        user.games = 1
+    else:
+        user.games += 1
+    db.session.commit()
+    user = user.query.filter_by(username=username).first()
+    output = user_schema.dump(user)
+    return output
