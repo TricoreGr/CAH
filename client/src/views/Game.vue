@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <div class="inGame">
+    <div class="inGame" :class="{ 'inGame--czar': isCzar }">
       <div v-for="index in 3" :key="index" class="inGame__animation">
         <player></player>
       </div>
@@ -49,6 +49,9 @@
         <transition name="fade">
           <span v-if="cardsToPick > 1" class="inGame__hint">
             Special Round, Choose {{ cardsToPick }} cards!
+          </span>
+          <span v-if="isCzar" class="inGame__hint">
+            You're the czar! Choose the funniest card.
           </span>
         </transition>
       </div>
@@ -237,6 +240,7 @@ export default {
       message: "",
       chatNotification: false,
       drawer: false,
+      isCzar: true,
       selectedCardsIndexes: [],
       cardsToPick: 1,
       socket: Object,

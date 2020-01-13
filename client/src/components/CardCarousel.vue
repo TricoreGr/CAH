@@ -1,6 +1,6 @@
 <template>
   <swiper ref="mySwiper" :options="swiperOption">
-    <swiper-slide v-for="(text, index) in Texts" :key="index">
+    <swiper-slide v-for="(text, index) in Texts" :key="index" transition="staggered" stagger="5000">
       <card
         v-on:updateSelectedIndex="updateIndex($event)"
         :selectedCardsIndexes="selectedCardsIndexes"

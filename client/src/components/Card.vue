@@ -1,6 +1,6 @@
 <template>
   <div
-    class="card"
+    class="card tilt-in-top-1"
     v-on:click="selectCard"
     :class="[
       isCzar ? 'card--czar' : '', 
