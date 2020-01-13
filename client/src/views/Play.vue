@@ -24,6 +24,7 @@
       <v-btn
         style="
         background-color: green;
+        opacity: 0.5;
         color: white;
         position: fixed;
         bottom: 50px;
@@ -42,6 +43,7 @@
 
 <script>
 import Room from "@/components/RoomCard.vue";
+import axios from "axios";
 
 export default {
   components: { Room },
@@ -68,13 +70,24 @@ export default {
   },
   methods: {
     createRoomButtonPressed: function() {
-      //post room method to backend
-      var newRoom = {
-        id: "2325dvd2",
-        creator: "Stougaros",
-        usersJoined: 0
-      };
-      this.$data.rooms.push(newRoom);
+      const path = "http://localhost:5000/rooms/";
+      axios
+        .post(path, { token: localStorage.getItem("authToken") })
+        .then(res => {
+          var id = res.data.room._id.$oid;
+          var newRoom = {
+            id: id,
+            creator: res.data.room.owner,
+            usersJoined: 0
+          };
+          this.$data.rooms.push(newRoom);
+          this.$router.push("/play/" + id);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+
+      // this.$router.push("/play/" + id);
     }
   },
   created() {
