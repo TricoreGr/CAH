@@ -9,10 +9,11 @@
       ></card>
     </swiper-slide>
     <div class="cardCarousel__arrow swiper-button-prev" slot="button-prev">
-      ↼
+              <v-icon> mdi-chevron-left</v-icon>
     </div>
     <div class="cardCarousel__arrow swiper-button-next" slot="button-next">
-      ⇁
+              <v-icon> mdi-chevron-right</v-icon>
+      
     </div>
   </swiper>
 </template>

@@ -48,9 +48,10 @@
 
     &--userAuth-input{
         width: 190px;
-        height: 241px;
+        height: 281px;
         z-index: 1;
         margin:-20% 0 0 25%;
+        padding: 10px 15px;
         
         @media(min-width:$desktop){
             width: 258px;

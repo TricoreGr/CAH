@@ -1,6 +1,7 @@
 <template>
-  <div>
+    <v-app>
     <navbar />
+
     <div class="account">
       <div class="account__wrapper slide-in-blurred-top">
         <h1 class="account__username">{{ username }}</h1>
@@ -68,11 +69,10 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="resetModal"
+              <v-btn  text @click="resetModal"
                 >Close</v-btn
               >
               <v-btn
-                color="blue darken-1"
                 text
                 @click="
                   dialog = false;
@@ -91,14 +91,14 @@
               Cancel
             </v-btn>
 
-            <v-btn color="primary" rounded @click="deleteAccount">
+            <v-btn color="black" rounded @click="deleteAccount">
               Confirm
             </v-btn>
           </div>
         </div>
       </div>
     </v-overlay>
-  </div>
+    </v-app>
 </template>
 
 <script>

@@ -1,103 +1,105 @@
 <template>
-  <div class="inGame">
-    <div v-for="index in 3" :key="index" class="inGame__animation">
-      <player></player>
-    </div>
-    <div class="inGame__statusWrapper">
-      <v-btn rounded color="black" dark @click="leaveGame">
-        QUIT
-      </v-btn>
-      <v-navigation-drawer
-        v-model="drawer"
-        absolute
-        right
-        temporary
-        class="chat"
-      >
-        <div
-          class="chat__message-wrapper"
-          v-for="(message, index) in messages"
-          :key="index"
-        >
-          <span class="chat__update" v-if="message.user == 'status'"
-            >{{ message.user }} : {{ message.text }}</span
-          >
-          <div v-else>
-            <span class="chat__user">{{ message.user }}: </span>
-            <span class="chat__message">{{ message.text }}</span>
-          </div>
-        </div>
-
-        <template v-slot:append>
-          <v-text-field
-            :type="'text'"
-            value=""
-            outlined
-            solo
-            class="chat__input"
-            v-model="message"
-            @keydown.enter="sendMessage"
-          >
-          </v-text-field>
-          <v-btn @click.native="sendMessage" class="chat__submit">send</v-btn>
-        </template>
-      </v-navigation-drawer>
-      <player></player>
-    </div>
-    <div class="inGame__hint-wrapper">
-      <transition name="fade">
-        <span v-if="cardsToPick > 1" class="inGame__hint">
-          Special Round, Choose {{ cardsToPick }} cards!
-        </span>
-      </transition>
-    </div>
-    <div class="inGame__mainCardWrapper">
-      <card
-        isCzar
-        text="Exercitation sint Lorem deserunt excepteur aliquip laboris in
-            ullamco veniam dolore nostrud."
-      ></card>
-
-      <div class="inGame__chatButtonWrapper">
-        <v-btn
-          rounded
-          color="black"
-          dark
-          @click.native="chatNotification = false"
-          @click.stop="drawer = !drawer"
-          class="inGame__chatButton"
-        >
-          CHAT
-        </v-btn>
-        <div v-if="chatNotification" class="inGame__chatNotification blink">
-          !
-        </div>
+  <v-app>
+    <div class="inGame">
+      <div v-for="index in 3" :key="index" class="inGame__animation">
+        <player></player>
       </div>
-    </div>
-    <div class="inGame__cardCarouselWrapper">
-      <div class="inGame__submitButtonWrapper">
+      <div class="inGame__statusWrapper">
+        <v-btn rounded color="black" dark @click="leaveGame">
+          QUIT
+        </v-btn>
+        <v-navigation-drawer
+          v-model="drawer"
+          absolute
+          right
+          temporary
+          class="chat"
+        >
+          <div
+            class="chat__message-wrapper"
+            v-for="(message, index) in messages"
+            :key="index"
+          >
+            <span class="chat__update" v-if="message.user == 'status'"
+              >{{ message.user }} : {{ message.text }}</span
+            >
+            <div v-else>
+              <span class="chat__user">{{ message.user }}: </span>
+              <span class="chat__message">{{ message.text }}</span>
+            </div>
+          </div>
+
+          <template v-slot:append>
+            <v-text-field
+              :type="'text'"
+              value=""
+              outlined
+              solo
+              class="chat__input"
+              v-model="message"
+              @keydown.enter="sendMessage"
+            >
+            </v-text-field>
+            <v-btn @click.native="sendMessage" class="chat__submit">send</v-btn>
+          </template>
+        </v-navigation-drawer>
+        <player></player>
+      </div>
+      <div class="inGame__hint-wrapper">
         <transition name="fade">
+          <span v-if="cardsToPick > 1" class="inGame__hint">
+            Special Round, Choose {{ cardsToPick }} cards!
+          </span>
+        </transition>
+      </div>
+      <div class="inGame__mainCardWrapper">
+        <card
+          isCzar
+          text="Exercitation sint Lorem deserunt excepteur aliquip laboris in
+            ullamco veniam dolore nostrud."
+        ></card>
+
+        <div class="inGame__chatButtonWrapper">
           <v-btn
             rounded
             color="black"
-            v-if="cardsToPick == selectedCardsIndexes.length"
             dark
-            class="inGame__submitButton"
+            @click.native="chatNotification = false"
+            @click.stop="drawer = !drawer"
+            class="inGame__chatButton"
           >
-            Submit!
+            CHAT
           </v-btn>
-        </transition>
+          <div v-if="chatNotification" class="inGame__chatNotification blink">
+            !
+          </div>
+        </div>
       </div>
-      <cardCarousel
-        v-on:updateSelectedCardsIndexes="updateSelectedCardsIndexes($event)"
-        :selectedCardsIndexes="selectedCardsIndexes"
-        :cardsToPick="cardsToPick"
-      ></cardCarousel>
+      <div class="inGame__cardCarouselWrapper">
+        <div class="inGame__submitButtonWrapper">
+          <transition name="fade">
+            <v-btn
+              rounded
+              color="black"
+              v-if="cardsToPick == selectedCardsIndexes.length"
+              dark
+              class="inGame__submitButton"
+            >
+              Submit!
+            </v-btn>
+          </transition>
+        </div>
+        <cardCarousel
+          v-on:updateSelectedCardsIndexes="updateSelectedCardsIndexes($event)"
+          :selectedCardsIndexes="selectedCardsIndexes"
+          :cardsToPick="cardsToPick"
+        ></cardCarousel>
+      </div>
+      <div class="inGame__userCarouselWrapper">
+        <userCarousel></userCarousel>
+      </div>
     </div>
-    <div class="inGame__userCarouselWrapper">
-      <userCarousel></userCarousel>
-    </div>
-  </div>
+  </v-app>
 </template>
 <script>
 import cardCarousel from "@/components/CardCarousel";
@@ -116,12 +118,12 @@ export default {
   },
   methods: {
     sendMessage() {
-      if(this.message)
-      this.socket.emit("sendMessage", {
-        username: this.username,
-        message: this.message,
-        room:this.room  
-      });
+      if (this.message)
+        this.socket.emit("sendMessage", {
+          username: this.username,
+          message: this.message,
+          room: this.room
+        });
       this.message = "";
     },
     fetchUsername() {
@@ -201,7 +203,7 @@ export default {
       }
     },
     joinRoom() {
-      this.socket.emit("joined", { username: this.username,room: this.room});
+      this.socket.emit("joined", { username: this.username, room: this.room });
     },
     connectSocket() {
       this.socket = io.connect("http://localhost:5000");
@@ -219,13 +221,13 @@ export default {
         this.updateMessages(data.user, data.message);
       });
     },
-    leaveGame(){
-      this.socket.emit('leave',{
-        username:this.username,
-        room:this.room
-      })
+    leaveGame() {
+      this.socket.emit("leave", {
+        username: this.username,
+        room: this.room
+      });
       this.socket.disconnect();
-      this.$router.push('/play');
+      this.$router.push("/play");
     }
   },
   data() {
@@ -239,12 +241,12 @@ export default {
       cardsToPick: 1,
       socket: Object,
       messages: [],
-      room:String
+      room: String
     };
   },
   mounted() {
     this.nextRoundAnimation(0); //for showing off purposes
-    this.room = this.$router.currentRoute.params.gameId
+    this.room = this.$router.currentRoute.params.gameId;
   },
   created() {
     this.fetchUsername();

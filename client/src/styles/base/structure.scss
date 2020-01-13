@@ -17,10 +17,18 @@ div.swiper-slide {
   padding-bottom: 5px;
 }
 
+.v-icon.v-icon{
+    font-size:30px!important;
+
+  @media (min-width:$desktop) {
+    font-size:50px!important;    
+  }
+  }
+
 div.swiper-button-prev{
   
   @media (min-width:$desktop) {
-    left:30px;    
+    left:10px;    
   }
 }
 
