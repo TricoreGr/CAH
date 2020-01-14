@@ -26,5 +26,5 @@ def start(data):
        czar = getRandomPlayer(room)
     else:
        czar = getNextCzar(czar,room)
-
     splitCards(room)
+    emit('nextRoundReady', room=room)
