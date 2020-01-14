@@ -1,10 +1,10 @@
 import io from "socket.io-client";
-
+import Player from './player'
 class GameSocket {
   socket = io();
   username = String;
   room = String;
-  
+
   constructor(username, room) {
     this.socket = io.connect("http://localhost:5000");
     this.username = username;
@@ -39,8 +39,10 @@ class GameSocket {
     });
   };
 
-  handleJoin = updateMessages => {
+  handleJoin = (updateMessages, updatePlayers) => {
     this.socket.on("playerJoined", data => {
+      var player = new Player(data.player,data.image);
+      updatePlayers(player);
       updateMessages(data.user, data.message);
     });
   };

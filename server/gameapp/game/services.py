@@ -7,6 +7,7 @@ from bson import json_util, BSON
 from ..config import Config
 from bson.objectid import ObjectId
 import random
+from .events import join_room,leave_room
 
 
 # def migrateCards():
@@ -127,8 +128,13 @@ def submitWhiteCards(roomId, token, cards):
         return {"message": "Server ok"}, 200 
     except Exception as e:
         print(e)
-        return {"message": "Server error"}, 500       
+        return {"message": "Server error"}, 500
 
+
+        return {"message": "Server ok"}, 200 
+    except Exception as e:
+        print(e)
+        return {"message": "Server error"}, 500
 
 def getAllTable():
     try:
@@ -194,11 +200,6 @@ def removeUserFromTable(user, id):
         'message': message
     }
     return jsonify(response)
-
-
-
-
-
 def getSubmitedCards(id):
     try:
         query = {'id': id}
