@@ -1,6 +1,5 @@
 from flask import Blueprint, request
 from .services import getRooms, submitWhiteCards, createRoom, deleteRoom, getRoundWhiteCards, getCzar, getBlackCard, getPlayers,getIndividualWhiteCards
-from .events import joined,left
 
 game = Blueprint('game', __name__)
 
@@ -23,9 +22,8 @@ def handleRoomsRoute():
     if request.method == 'DELETE':
         try:
             requestPayload = request.get_json()
-            id = requestPayload.get('id')
-            deletedRoom = deleteRoom(id)
-            return {'message':'room '+deletedRoom+' has been deleted.'},200
+            token = requestPayload.get('token')
+            return deleteRoom(token)
         except Exception as e:
             print(e)
             return {'message': 'Server error'}, 500 

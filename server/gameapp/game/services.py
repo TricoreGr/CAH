@@ -1,5 +1,9 @@
+from .models import cardsCollection, roomsCollection, roomModel
 import json
-from bson import json_util
+import jwt
+from flask import jsonify, Response
+from bson.json_util import dumps
+from bson import json_util, BSON
 from ..config import Config
 from bson.objectid import ObjectId
 import random
@@ -42,58 +46,88 @@ def createRoom(token):
         print(e)
         return {"message": "Server error"}, 500
 
+
 def getRandomBlackCards():
     allBlackCards = []
     cursor = cardsCollection.find({})
     for document in cursor:
-        allBlackCards=document["blackCards"]
+        allBlackCards = document["blackCards"]
     return random.sample(allBlackCards, k=33)
+
 
 def getRandomWhiteCards():
     allWhiteCards = []
     cursor = cardsCollection.find({})
     for document in cursor:
-        allWhiteCards=document["whiteCards"]
+        allWhiteCards = document["whiteCards"]
     print(len(allWhiteCards))
     return random.sample(allWhiteCards, k=146)
 
 
-def deleteRoom(id):
-    try:
-        query = {
-            '_id':ObjectId(id)
-        }
-        deletedRoom = roomsCollection.delete_one(query)
-        return id
-    except:
-        return {"message":"Server error"},500
+def deleteRoom():
+    return okok
 
 
 def getRoundWhiteCards(roomId):
     roomDocument = roomsCollection.find_one({'_id': ObjectId(roomId)})
     session = roomDocument['gamesession']['round']['whitecards']
-    print(session)
     return {"message": "ok"}
 
 
-def getCzar():
-    print(ok)
+def getCzar(roomId):
+    roomDocument = roomsCollection.find_one({'_id': ObjectId(roomId)})
+    czar = roomDocument['gamesession']['round']['czar']
+    return Response(json.dumps({'czar': czar}, default=json_util.default),
+                    mimetype='application/json')
 
 
-def getBlackCard():
-    blackCards = cards.find({}).distinct('blackCards')
-    return jsonify(blackCards)
+def getBlackCard(roomId):
+    roomDocument = roomsCollection.find_one({'_id': ObjectId(roomId)})
+    blackCard = roomDocument['gamesession']['round']['blackCard']
+    return Response(json.dumps({'blackCard': blackCard}, default=json_util.default),
+                    mimetype='application/json')
 
 
-def getPlayers():
-    return ok
+def getPlayers(roomId):
+    roomDocument = roomsCollection.find_one({'_id': ObjectId(roomId)})
+    players = roomDocument['gamesession']['players']
+    return Response(json.dumps({'players': players}, default=json_util.default),
+                    mimetype='application/json')
 
 
-def getIndividualWhiteCards():
-    return big 
+def getIndividualWhiteCards(roomId, username):
+    try:
+        roomDocument = roomsCollection.find_one({'_id': ObjectId(roomId)})
+        players = roomDocument['gamesession']['players']
+        for player in players:
+            if player['username'] == username:
+                return Response(json.dumps({'whitecards': player['whitecards']}, default=json_util.default),
+                        mimetype='application/json')
+    except Exception as e:
+        print(e)
+        return {"message": "Server error"}, 500
 
 
-    
+def submitWhiteCards(roomId, token, cards):
+    try:
+        roomDocument = roomsCollection.find_one({'_id': ObjectId(roomId)})
+        submittedUsername = getUsernameByJWToken(token)
+        cardsToAppend = []
+        for card in cards:
+            if card is not None:
+                cardsToAppend.append(card)
+        submittedCards = {
+            'username': submittedUsername,
+            'cards': cardsToAppend
+        }
+        print(submittedCards)
+
+
+
+        return {"message": "Server ok"}, 200 
+    except Exception as e:
+        print(e)
+        return {"message": "Server error"}, 500       
 
 
 def getAllTable():
@@ -160,7 +194,6 @@ def removeUserFromTable(user, id):
         'message': message
     }
     return jsonify(response)
-
 
 
 

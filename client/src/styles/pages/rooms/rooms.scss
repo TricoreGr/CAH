@@ -1,0 +1,52 @@
+.rooms-page {
+  background: $color-white-green-gradient !important;
+
+  &__container {
+    display: flex;
+    flex-flow: row wrap;
+    min-width: 300px;
+    justify-content: flex-start;
+    margin: 40px auto;
+    overflow: hidden;
+    @media (max-width:$tablet){
+        justify-content: center;
+        }
+  }
+
+  &__button {
+    background-color: $color-accent--dark !important;
+    opacity: 0.8 !important;
+    color: white !important;
+    position: fixed !important;
+    bottom: 50px !important;
+    right: 50px !important;
+    height: 70px !important;
+    width: 70px !important;
+    @media (max-width:$tablet){
+        width: 40px !important;
+        height: 50px !important;
+        bottom: 20px !important;
+        right: 20px !important;
+        }
+  }
+}
+
+// .rooms-page__container {
+//   display: flex;
+//   flex-flow: row wrap;
+//   min-width: 300px;
+//   justify-content: space-around;
+//   margin: 40px auto;
+//   overflow: hidden;
+// }
+
+// .rooms-page__button {
+//   background-color: green;
+//   opacity: 0.5;
+//   color: white;
+//   position: fixed;
+//   bottom: 50px;
+//   right: 50px;
+//   height: 70px;
+//   width: 70px;
+// }
