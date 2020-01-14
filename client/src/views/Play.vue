@@ -3,6 +3,13 @@
     <v-app>
       <navbar />
       <div class="rooms-page__container">
+        <v-progress-circular
+          class="rooms-page__loader"
+          indeterminate
+          :width="5"
+          size="100"
+          v-if="isLoading"
+        ></v-progress-circular>
         <room
           v-for="room in rooms"
           :key="room.id"
@@ -32,6 +39,7 @@ export default {
   components: { Room },
   data() {
     return {
+      isLoading: false,
       rooms: []
     };
   },
@@ -60,9 +68,11 @@ export default {
   created() {
     //call the api to get all available rooms
     const path = "http://localhost:5000/rooms/";
+    this.$data.isLoading = true;
     axios
       .get(path, { token: localStorage.getItem("authToken") })
       .then(res => {
+        this.$data.isLoading = false;
         var rooms = res.data.rooms;
         for (const room of rooms) {
           var newRoom = {
