@@ -1,5 +1,6 @@
 import io from "socket.io-client";
 import Player from "./player";
+import axios from 'axios'
 class GameSocket {
   socket = io();
   username = String;
