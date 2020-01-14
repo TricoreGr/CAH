@@ -92,7 +92,7 @@ def updateUserImg(user, img):
     output = user_schema.dump(user)
     return output
 
-def returnImg(user):
+def returnImg(username):
     user = User.query.filter_by(username=username).first()
     img = user.img
     if img is None:
