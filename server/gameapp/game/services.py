@@ -130,6 +130,12 @@ def submitWhiteCards(roomId, token, cards):
         print(e)
         return {"message": "Server error"}, 500
 
+
+        return {"message": "Server ok"}, 200 
+    except Exception as e:
+        print(e)
+        return {"message": "Server error"}, 500
+
 def getAllTable():
     try:
         rooms = []
@@ -196,8 +202,13 @@ def removeUserFromTable(user, id):
     return jsonify(response)
 
 
+<<<<<<< HEAD
 
 
+=======
+
+
+>>>>>>> a698973d38197bcf91b946bee6a730bd5484ff50
 
 def getSubmitedCards(id):
     try:
