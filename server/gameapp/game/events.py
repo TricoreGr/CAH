@@ -15,4 +15,4 @@ def left(data):
     username = data['username']
     room = data['room']
     leave_room(room)
-    emit('playerLeft',{'user':'status','message':data['username']+' has left.'}, room=room)
+    emit('playerLeft',{'user':'status','message':data['username']+' has left.','player':username}, room=room)
