@@ -140,7 +140,27 @@ def submitWhiteCards(roomId, token, cards):
         return {"message": "Server error"}, 500
 
 def insertPlayer(roomId, token):
-    print(ok)
+    try:
+        username = getUsernameByJWToken(token)
+        query = {
+                '_id': ObjectId(roomId)
+            }
+        userObject = {
+            "username": username,
+            "points" : 0,
+            "whitecards": []
+        }
+        new_vals = {
+            "$push" : {
+                "gamesession.players" : userObject
+            }
+        }
+        roomsCollection.update_one(query,new_vals)
+        return Response(json.dumps({'player': userObject}, default=json_util.default),
+                        mimetype='application/json')
+    except Exception as e:
+        print(e)
+        return {"message": "Server error"}, 500
 
 def getAllTable():
     try:
