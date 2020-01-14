@@ -1,16 +1,8 @@
 <template>
-  <div>
+  <div class="rooms-page">
     <v-app>
       <navbar />
-      <div
-        style="
-        display: flex;
-        flex-flow: row wrap;
-        min-width: 300px;
-        justify-content: space-around; 
-        margin: 40px auto; 
-        overflow: hidden;"
-      >
+      <div class="rooms-page__container">
         <room
           v-for="room in rooms"
           :key="room.id"
@@ -22,16 +14,7 @@
         </room>
       </div>
       <v-btn
-        style="
-        background-color: green;
-        opacity: 0.5;
-        color: white;
-        position: fixed;
-        bottom: 50px;
-        right: 50px;
-        height: 70px;
-        width: 70px;
-        "
+        class="rooms-page__button"
         icon
         fab
         @click="createRoomButtonPressed"
