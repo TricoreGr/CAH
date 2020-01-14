@@ -13,7 +13,6 @@ import random
 #         crds = json.load(file)
 #     cards.insert(crds)
 
-
 def getRooms():
     try:
         rooms = []
@@ -28,7 +27,6 @@ def getRooms():
             'message': 'Could not return tables'
         }
         return response, 500
-
 
 def createRoom(token):
     owner = getUsernameByJWToken(token)
@@ -45,14 +43,12 @@ def createRoom(token):
         print(e)
         return {"message": "Server error"}, 500
 
-
 def getRandomBlackCards():
     allBlackCards = []
     cursor = cardsCollection.find({})
     for document in cursor:
         allBlackCards = document["blackCards"]
     return random.sample(allBlackCards, k=33)
-
 
 def getRandomWhiteCards():
     allWhiteCards = []
@@ -62,7 +58,6 @@ def getRandomWhiteCards():
     print(len(allWhiteCards))
     return random.sample(allWhiteCards, k=146)
 
-
 def deleteRoom():
     return okok
 
@@ -71,7 +66,6 @@ def getRoundWhiteCards(roomId):
     roomDocument = roomsCollection.find_one({'_id': ObjectId(roomId)})
     session = roomDocument['gamesession']['round']['whitecards']
     return {"message": "ok"}
-
 
 def getCzar(roomId):
     czar = getCzarAsJson(roomId)
@@ -104,7 +98,6 @@ def getNextCzar(czar,roomId):
     }
     roomsCollection.update_one(query,new_vals)
     return czar['username']
-
 
 def getBlackCard(roomId):
     roomDocument = roomsCollection.find_one({'_id': ObjectId(roomId)})
@@ -145,7 +138,6 @@ def getIndividualWhiteCards(roomId, username):
     except Exception as e:
         print(e)
         return {"message": "Server error"}, 500
-
 
 def submitWhiteCards(roomId, token, cards):
     try:
@@ -196,7 +188,6 @@ def getAllTable():
         }
     return jsonify(response)
 
-
 def deleteTable(id):
     try:
         query = {'id': id}
@@ -208,7 +199,6 @@ def deleteTable(id):
         'message': message
     }
     return jsonify(response)
-
 
 def addUserToTable(user, id):
     try:
@@ -226,7 +216,6 @@ def addUserToTable(user, id):
     }
     return jsonify(response)
 
-
 def removeUserFromTable(user, id):
     try:
         query = {'id': id}
@@ -242,6 +231,7 @@ def removeUserFromTable(user, id):
         'message': message
     }
     return jsonify(response)
+
 def getSubmitedCards(id):
     try:
         query = {'id': id}
@@ -262,3 +252,28 @@ def getSubmitedCards(id):
 def getUsernameByJWToken(token):
     username = jwt.decode(token, Config.SECRET_KEY)['user']
     return username
+
+def splitCards(roomId):
+    roomDocument = roomsCollection.find_one({'_id': ObjectId(roomId)})
+    whiteCards = roomDocument['gamesession']['cards']['whiteCards']
+    players = roomDocument['gamesession']['players']
+    new_values = list()
+    for player in players:
+        difference = 10 - len(player['whitecards'])
+        player_cards = list()
+        for i in range(difference):
+            player_cards.append(whiteCards.pop())
+        new_values.append({
+            'username': player['username'],
+            "points" : player['points'],
+            "whitecards" : player_cards
+        })
+    query = {
+        '_id' : ObjectId(roomId),
+    }
+    new_vals = {
+        '$set' : {
+            "gamesession.players": new_values
+        }
+    }
+    roomsCollection.update_one(query,new_vals)

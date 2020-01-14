@@ -1,7 +1,7 @@
 from flask_socketio import SocketIO,emit,send,join_room,leave_room
 from ..socket import socketio
 from ..users.services import returnImg
-from .services import getCzarAsJson, getRandomPlayer, getNextCzar
+from .services import getCzarAsJson, getRandomPlayer, getNextCzar, splitCards
 
 @socketio.on('joined')
 def joined(data):
@@ -23,7 +23,8 @@ def start(data):
     room = data['room']
     czar = getCzarAsJson(room)
     if czar is "" or czar is None:
-        czar = getRandomPlayer(room)
+       czar = getRandomPlayer(room)
     else:
-        czar = getNextCzar(czar,room)
-    return czar
+       czar = getNextCzar(czar,room)
+
+    splitCards(room)

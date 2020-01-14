@@ -83,13 +83,3 @@ def handlePlayerCardsRoute(roomId, username):
     except Exception as e:
         print(e)
         return {'message': 'Server error'}, 500
-
-@game.route('/test',methods=['POST'])
-def peos():
-    requestData = request.get_json()
-    roomId = requestData.get('room')
-    data = {
-        'room': roomId
-    }
-    czar = start(data)
-    return {'czar':czar}
