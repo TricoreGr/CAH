@@ -1,11 +1,11 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from flask import Flask
-from ..config import Config
+from ..config import Config, Configdb
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://GMfobXB7CD:1mRCSNkKIV@remotemysql.com:3306/GMfobXB7CD' #add password in order for it to run
+app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{Configdb.SQL_USERNAME}:{Configdb.SQL_PASSWORD}@{Configdb.SQL_URL}/{Configdb.SQL_USERNAME}' #add password in order for it to run
 
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
