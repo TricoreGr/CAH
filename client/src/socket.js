@@ -1,7 +1,5 @@
 import io from "socket.io-client";
 import Player from "./player";
-import axios from "axios";
-
 class GameSocket {
   socket = io();
   username = String;
@@ -19,13 +17,6 @@ class GameSocket {
   };
 
   joinRoom = () => {
-    const url = "http://localhost:5000/rooms/" + this.room + "/players";
-    axios
-      .post(url, {
-        token: localStorage.getItem("authToken")
-      })
-      .then(res => console.log(res))
-      .catch(error => console.log(error));
     this.socket.emit("joined", { username: this.username, room: this.room });
   };
 
@@ -42,8 +33,9 @@ class GameSocket {
       updateMessages(data.user, data.message);
     });
   };
-  handleLeave = updateMessages => {
+  handleLeave = (updateMessages,removePlayer) => {
     this.socket.on("playerLeft", data => {
+      removePlayer(data.player);
       updateMessages(data.user, data.message);
     });
   };
@@ -56,13 +48,17 @@ class GameSocket {
     });
   };
   leaveGame = () => {
-    this.socket.emit("leave", {
+      this.socket.emit("leave", {
       username: this.username,
       room: this.room
     });
     this.socket.disconnect();
-    this.$router.push("/play");
   };
-}
 
+  startGame = (room) => {
+    this.socket.emit("start_round", {
+    room: room
+  });
+};
+}
 export default GameSocket;
