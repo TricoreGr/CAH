@@ -1,6 +1,6 @@
 <template>
   <swiper ref="mySwiper" :options="swiperOption">
-    <swiper-slide v-for="(text, index) in Texts" :key="index" transition="staggered" stagger="5000">
+    <swiper-slide v-for="(text, index) in cardTexts" :key="index" transition="staggered" stagger="5000">
       <card
         v-on:updateSelectedIndex="updateIndex($event)"
         :selectedCardsIndexes="selectedCardsIndexes"
@@ -26,7 +26,8 @@ export default {
   components: { card, swiper, swiperSlide },
   props: {
     cardsToPick: Number,
-    selectedCardsIndexes: Array
+    selectedCardsIndexes: Array,
+    cardTexts:Array
   },
   methods: {
     updateIndex(index) {
@@ -52,16 +53,6 @@ export default {
   },
   data() {
     return {
-      Texts: [
-        "lalalalal",
-        "lololololo",
-        "lelelelelle",
-        "lalalallalala",
-        "lululululuulu",
-        "lelelelelle",
-        "lelelelelle",
-        "lelelelelle"
-      ],
       swiperOption: {
         slidesPerView: 5,
         breakpoints: {

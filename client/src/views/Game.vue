@@ -86,7 +86,9 @@
               color="black"
               v-if="cardsToPick == selectedCardsIndexes.length"
               dark
+              :disabled="hasSubmitted"
               class="inGame__submitButton"
+              @click="submitCards"
             >
               Submit!
             </v-btn>
@@ -96,6 +98,7 @@
           v-on:updateSelectedCardsIndexes="updateSelectedCardsIndexes($event)"
           :selectedCardsIndexes="selectedCardsIndexes"
           :cardsToPick="cardsToPick"
+          :cardTexts="texts "
         ></cardCarousel>
       </div>
       <div class="inGame__userCarouselWrapper">
@@ -211,6 +214,10 @@ export default {
     leaveGame(){
     this.socket.leaveGame();
   },
+  submitCards(){
+    this.hasSubmitted=true;
+    //todo: handle submit
+  }
   },
   data() {
     return {
@@ -224,7 +231,17 @@ export default {
       cardsToPick: 1,
       messages: [],
       room: String,
-      socket :Object
+      socket :Object,
+      texts: [
+        "lololololo",
+        "lelelelelle",
+        "lalalallalala",
+        "lululululuulu",
+        "lelelelelle",
+        "lelelelelle",
+        "lelelelelle"
+      ],
+      hasSubmitted:false,
     };
   },
   mounted() {
