@@ -55,6 +55,29 @@ class GameSocket {
       updateMessages(data.user, data.message);
     });
   };
+
+  handleJoin = (updateMessages, updatePlayers) => {
+    this.socket.on("playerJoined", data => {
+      var player = new Player(data.player, data.image);
+      updatePlayers(player);
+      updateMessages(data.user, data.message);
+    });
+  };
+
+  getNextRoundInfo = () => {
+    this.socket.on("nextRoundReady", data => {
+      const roomUrl = "http://localhost:5000/rooms/" + this.room;
+      var czar;
+      axios
+        .get(roomUrl + "/round/czar", {
+          token: localStorage.getItem("authToken")
+        })
+        .then(res => console.log(res))
+        .catch(error => console.log(error));
+      console.log(data);
+      console.log(czar);
+    });
+  };
   leaveGame = () => {
     this.socket.emit("leave", {
       username: this.username,
