@@ -92,4 +92,9 @@ def updateUserImg(user, img):
     output = user_schema.dump(user)
     return output
 
-
+def returnImg(user):
+    user = User.query.filter_by(username=username).first()
+    img = user.img
+    if img is None:
+        img = 'https://celebs.infoseemedia.com/wp-content/uploads/2019/08/Chris-Brown-and-Lisa-Ann-dated.jpg'
+    return img
