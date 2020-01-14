@@ -120,11 +120,21 @@ def submitWhiteCards(roomId, token, cards):
             'username': submittedUsername,
             'cards': cardsToAppend
         }
-        print(submittedCards)
+        query = {
+            '_id': ObjectId(roomId)
+        }
+        new_vals = {
+            "$push" : {
+                "gamesession.round.whitecards" : {
+                    "username": submittedUsername,
+                    "cards" : cardsToAppend
+                }
+            }
 
-
-
-        return {"message": "Server ok"}, 200 
+        }
+        roomsCollection.update_one(query,new_vals)
+        return Response(json.dumps({'cards': submittedCards}, default=json_util.default),
+                        mimetype='application/json')
     except Exception as e:
         print(e)
         return {"message": "Server error"}, 500       
