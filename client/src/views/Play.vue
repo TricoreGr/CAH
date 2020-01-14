@@ -1,7 +1,7 @@
 <template>
   <div>
-    <navbar />
     <v-app>
+      <navbar />
       <div
         style="
         display: flex;
@@ -21,43 +21,78 @@
         >
         </room>
       </div>
+      <v-btn
+        style="
+        background-color: green;
+        opacity: 0.5;
+        color: white;
+        position: fixed;
+        bottom: 50px;
+        right: 50px;
+        height: 70px;
+        width: 70px;
+        "
+        icon
+        fab
+        @click="createRoomButtonPressed"
+        ><v-icon>mdi-plus</v-icon>
+      </v-btn>
     </v-app>
   </div>
 </template>
 
 <script>
 import Room from "@/components/RoomCard.vue";
+import axios from "axios";
 
 export default {
   components: { Room },
   data() {
     return {
-      rooms: [
-        {
-          id: "21dfkfd",
-          creator: "Dima",
-          usersJoined: 8
-        },
-        {
-          id: "21dfk5d",
-          creator: "Giapa",
-          usersJoined: 2
-        },
-        {
-          id: "21df32fd",
-          creator: "Kalovelo",
-          usersJoined: 6
-        }
-      ]
+      rooms: []
     };
   },
   methods: {
-    createRoomButtonPressed() {
+    createRoomButtonPressed: function() {
+      const path = "http://localhost:5000/rooms/";
+      axios
+        .post(path, { token: localStorage.getItem("authToken") })
+        .then(res => {
+          var id = res.data.room._id.$oid;
+          var newRoom = {
+            id: id,
+            creator: res.data.room.owner,
+            usersJoined: 0
+          };
+          this.$data.rooms.push(newRoom);
+          this.$router.push("/play/" + id);
+        })
+        .catch(error => {
+          console.log(error);
+        });
 
+      // this.$router.push("/play/" + id);
     }
   },
   created() {
     //call the api to get all available rooms
+    const path = "http://localhost:5000/rooms/";
+    axios
+      .get(path, { token: localStorage.getItem("authToken") })
+      .then(res => {
+        var rooms = res.data.rooms;
+        for (const room of rooms) {
+          var newRoom = {
+            id: room._id.$oid,
+            creator: room.owner,
+            usersJoined: room.gamesession.players.length
+          };
+          this.$data.rooms.push(newRoom);
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 };
 </script>
