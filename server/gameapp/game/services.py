@@ -7,8 +7,10 @@ from bson import json_util, BSON
 from ..config import Config
 from bson.objectid import ObjectId
 import random
-
-
+from .models import roomModel 
+import jwt
+from .models import cardsCollection,roomsCollection
+from flask import Response
 # def migrateCards():
 #     with open('cards.json','r') as file:
 #         crds = json.load(file)
@@ -196,7 +198,20 @@ def removeUserFromTable(user, id):
     return jsonify(response)
 
 
-
+def submitWhiteCard(user, id, card):
+    try:
+        query = {'id': id, 'players': [{'username': user['username']}]}
+        new_vals = {'$push': {'gamesession': {
+            'whitecards': [card]
+        }}}
+        tables.update_one(query, new_vals)
+        message = 'Card was submited'
+    except:
+        message = 'Card was not submited'
+    response = {
+        'message': message
+    }
+    return jsonify(response)
 
 
 def getSubmitedCards(id):
@@ -217,5 +232,5 @@ def getSubmitedCards(id):
 
 
 def getUsernameByJWToken(token):
-    username = jwt.decode(token, Config.SECRET_KEY)['user']
+    username = jwt.decode(token,Config.SECRET_KEY)['user']
     return username
