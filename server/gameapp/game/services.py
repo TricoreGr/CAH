@@ -7,8 +7,6 @@ from bson import json_util, BSON
 from ..config import Config
 from bson.objectid import ObjectId
 import random
-from .events import join_room,leave_room
-
 
 # def migrateCards():
 #     with open('cards.json','r') as file:
@@ -76,10 +74,36 @@ def getRoundWhiteCards(roomId):
 
 
 def getCzar(roomId):
-    roomDocument = roomsCollection.find_one({'_id': ObjectId(roomId)})
-    czar = roomDocument['gamesession']['round']['czar']
+    czar = getCzarAsJson(roomId)
     return Response(json.dumps({'czar': czar}, default=json_util.default),
                     mimetype='application/json')
+
+def getCzarAsJson(roomId):
+    roomDocument = roomsCollection.find_one({'_id': ObjectId(roomId)})
+    czar = roomDocument['gamesession']['round']['czar']
+    return czar
+
+def getNextCzar(czar,roomId):
+    roomDocument = roomsCollection.find_one({'_id':ObjectId(roomId)})
+    players = roomDocument['gamesession']['players']
+    dudes = list()
+    for player in players:
+        dudes.append(player['username'])
+    index = dudes.index(czar)
+    if index != len(players)-1:
+        czar = players[index+1]
+    else:
+        czar = players[0]
+    query = {
+        '_id':ObjectId(roomId)
+    }
+    new_vals = {
+        "$set" : {
+            "gamesession.round.czar" :  czar['username']     
+        }
+    }
+    roomsCollection.update_one(query,new_vals)
+    return czar['username']
 
 
 def getBlackCard(roomId):
@@ -95,6 +119,20 @@ def getPlayers(roomId):
     return Response(json.dumps({'players': players}, default=json_util.default),
                     mimetype='application/json')
 
+def getRandomPlayer(roomId):
+    roomDocument = roomsCollection.find_one({'_id': ObjectId(roomId)})
+    players = roomDocument['gamesession']['players']
+    czar = random.choice(players)
+    query = {
+        '_id':ObjectId(roomId)
+    }
+    new_vals = {
+        "$set" : {
+            "gamesession.round.czar" : czar['username']
+        }
+    }
+    roomsCollection.update_one(query,new_vals)
+    return czar['username']
 
 def getIndividualWhiteCards(roomId, username):
     try:
