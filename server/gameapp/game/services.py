@@ -3,8 +3,10 @@ from bson import json_util
 from ..config import Config
 from bson.objectid import ObjectId
 import random
-
-
+from .models import roomModel 
+import jwt
+from .models import cardsCollection,roomsCollection
+from flask import Response
 # def migrateCards():
 #     with open('cards.json','r') as file:
 #         crds = json.load(file)
@@ -162,10 +164,6 @@ def removeUserFromTable(user, id):
     return jsonify(response)
 
 
-<<<<<<< HEAD
-
-
-=======
 def submitWhiteCard(user, id, card):
     try:
         query = {'id': id, 'players': [{'username': user['username']}]}
@@ -180,7 +178,6 @@ def submitWhiteCard(user, id, card):
         'message': message
     }
     return jsonify(response)
->>>>>>> dd34bf4c2c69c7902f996e33853120e6c44ad884
 
 
 def getSubmitedCards(id):
@@ -201,10 +198,5 @@ def getSubmitedCards(id):
 
 
 def getUsernameByJWToken(token):
-<<<<<<< HEAD
-    username = jwt.decode(token, Config.SECRET_KEY)['user']
-    return username
-=======
     username = jwt.decode(token,Config.SECRET_KEY)['user']
     return username
->>>>>>> dd34bf4c2c69c7902f996e33853120e6c44ad884
