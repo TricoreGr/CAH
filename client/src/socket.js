@@ -1,5 +1,7 @@
 import io from "socket.io-client";
-import Player from './player'
+import Player from "./player";
+import axios from "axios";
+
 class GameSocket {
   socket = io();
   username = String;
@@ -17,6 +19,14 @@ class GameSocket {
   };
 
   joinRoom = () => {
+    const url = "http://localhost:5000/rooms/" + this.room + "/players";
+    axios
+      .post(url, {
+        token: localStorage.getItem("authToken")
+      })
+      .then(res => console.log(res))
+      .catch(error => console.log(error));
+    console.log("HI");
     this.socket.emit("joined", { username: this.username, room: this.room });
   };
 
@@ -41,7 +51,7 @@ class GameSocket {
 
   handleJoin = (updateMessages, updatePlayers) => {
     this.socket.on("playerJoined", data => {
-      var player = new Player(data.player,data.image);
+      var player = new Player(data.player, data.image);
       updatePlayers(player);
       updateMessages(data.user, data.message);
     });
