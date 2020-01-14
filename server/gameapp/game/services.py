@@ -96,6 +96,13 @@ def getPlayers(roomId):
                     mimetype='application/json')
 
 
+def getOwner(roomId):
+    roomDocument = roomsCollection.find_one({'_id': ObjectId(roomId)})
+    owner = roomDocument['owner']
+    return Response(json.dumps({'owner': owner}, default=json_util.default),
+                    mimetype='application/json')
+
+
 def getIndividualWhiteCards(roomId, username):
     try:
         roomDocument = roomsCollection.find_one({'_id': ObjectId(roomId)})
