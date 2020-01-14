@@ -15,7 +15,7 @@
           exact
           :to="link.to"
         >
-          <v-btn text>
+          <v-btn class="navbar-button" text>
             {{ link.name }}
           </v-btn>
         </router-link>

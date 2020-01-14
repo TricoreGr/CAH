@@ -14,6 +14,10 @@
   margin: 0 3px;
 }
 
+.navbar-button {
+  font-family: $montserrat-light !important;
+}
+
 .navbar-link--active {
   background-color: $color-accent;
   border-radius: 5px;

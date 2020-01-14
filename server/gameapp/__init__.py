@@ -1,30 +1,6 @@
 from flask import Flask
-from flask_socketio import SocketIO,emit,send
+from  .socket import socketio
 from gameapp.config import Config,Configdb
-from flask_socketio import emit,send,join_room,leave_room
-
-socketio = SocketIO()
-
-@socketio.on('joined')
-def joined(data):
-    room = data['room']
-    print(room)
-    join_room(room)
-    emit('playerJoined',{'user':'status',"message":data['username']+' has joined.'},room=room)
-
-@socketio.on('leave')
-def leave(data):
-    username = data['username']
-    room = data['room']
-    leave_room(room)
-    emit('playerLeft',{'user':'status',"message":data['username']+' has left.'}, room=room)
-
-@socketio.on('sendMessage')
-def sendMessage(data):
-    username = data['username']
-    message = data['message']
-    room = data['room']
-    emit('newMessage',{'user':username,'message':message},room=room)
 
 def create_app(config_class=Config):
     app = Flask(__name__)
@@ -36,7 +12,7 @@ def create_app(config_class=Config):
     from gameapp.chat.routes import chat
 
     app.register_blueprint(users, url_prefix='/users')
-    app.register_blueprint(game, url_prefix='/game')
+    app.register_blueprint(game, url_prefix='/rooms')
     app.register_blueprint(chat)
 
     socketio.init_app(app,cors_allowed_origins="*")
