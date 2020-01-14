@@ -2,6 +2,11 @@
 ![CAH](https://media.firebox.com/product/8322/extra3_column_grid_10/cards-against-humanity_29067.jpg)
 
 Cards against humanity online game 
+### The IEEEdiots:
+1. George 'Atlas' Apostolopoulos
+2. Apostolos 'MMA Fighter' Kalovelonis
+3. Grigoris 'Scrapper' Giapantzis
+
 
 ## In order to run:
 
