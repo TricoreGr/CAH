@@ -3,6 +3,11 @@
     &__wrapper {
       display: flex;
     }
+
+    &__image-wrapper{
+      flex-direction: column;
+display: flex;
+    }
   
     &__image {
       width: 25px;
@@ -11,14 +16,20 @@
       border-radius: 50%;
       border: 2px solid $color-white;
       box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.5);
-  
+      transform: all .3s;
+      
       @media (min-width:$tablet){
         width: 35px;
         height: 35px;
       }
 
       &--czar {
-        border: 2px solid $color-black;
+        border: 5px solid $color-black;
+      }
+
+
+      &--played {
+        border: 2px solid #ffc34d;
       }
 
       &--active {
@@ -30,16 +41,22 @@
 
     &__AttributeWrapper {
       display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+      flex-direction: column-reverse;
+      height:70px;
       font-family: $voltaire;
     }
   
     &__isCzar {
       font-size: 11px;
     }
+
+
+    &__username {
+      font-size: 13px;
+    }
   
     &__points {
+      align-self: flex-end;
       font-size: 13px;
     }
   }
