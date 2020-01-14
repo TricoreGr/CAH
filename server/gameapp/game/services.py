@@ -127,6 +127,13 @@ def getRandomPlayer(roomId):
     roomsCollection.update_one(query,new_vals)
     return czar['username']
 
+def getOwner(roomId):
+    roomDocument = roomsCollection.find_one({'_id': ObjectId(roomId)})
+    owner = roomDocument['owner']
+    return Response(json.dumps({'owner': owner}, default=json_util.default),
+                    mimetype='application/json')
+
+
 def getIndividualWhiteCards(roomId, username):
     try:
         roomDocument = roomsCollection.find_one({'_id': ObjectId(roomId)})
@@ -141,7 +148,6 @@ def getIndividualWhiteCards(roomId, username):
 
 def submitWhiteCards(roomId, token, cards):
     try:
-        roomDocument = roomsCollection.find_one({'_id': ObjectId(roomId)})
         submittedUsername = getUsernameByJWToken(token)
         cardsToAppend = []
         for card in cards:
@@ -165,6 +171,29 @@ def submitWhiteCards(roomId, token, cards):
         }
         roomsCollection.update_one(query,new_vals)
         return Response(json.dumps({'cards': submittedCards}, default=json_util.default),
+                        mimetype='application/json')
+    except Exception as e:
+        print(e)
+        return {"message": "Server error"}, 500
+
+def insertPlayer(roomId, token):
+    try:
+        username = getUsernameByJWToken(token)
+        query = {
+                '_id': ObjectId(roomId)
+            }
+        userObject = {
+            "username": username,
+            "points" : 0,
+            "whitecards": []
+        }
+        new_vals = {
+            "$push" : {
+                "gamesession.players" : userObject
+            }
+        }
+        roomsCollection.update_one(query,new_vals)
+        return Response(json.dumps({'player': userObject}, default=json_util.default),
                         mimetype='application/json')
     except Exception as e:
         print(e)

@@ -1,5 +1,5 @@
 import io from "socket.io-client";
-import Player from './player'
+import Player from "./player";
 class GameSocket {
   socket = io();
   username = String;
@@ -33,27 +33,32 @@ class GameSocket {
       updateMessages(data.user, data.message);
     });
   };
-  handleLeave = updateMessages => {
+  handleLeave = (updateMessages,removePlayer) => {
     this.socket.on("playerLeft", data => {
+      removePlayer(data.player);
       updateMessages(data.user, data.message);
     });
   };
 
   handleJoin = (updateMessages, updatePlayers) => {
     this.socket.on("playerJoined", data => {
-      var player = new Player(data.player,data.image);
+      var player = new Player(data.player, data.image);
       updatePlayers(player);
       updateMessages(data.user, data.message);
     });
   };
   leaveGame = () => {
-    this.socket.emit("leave", {
+      this.socket.emit("leave", {
       username: this.username,
       room: this.room
     });
     this.socket.disconnect();
-    this.$router.push("/play");
   };
-}
 
+  startGame = (room) => {
+    this.socket.emit("start_round", {
+    room: room
+  });
+};
+}
 export default GameSocket;

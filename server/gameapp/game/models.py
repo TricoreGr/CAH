@@ -22,13 +22,7 @@ def roomModel(owner, blackcards, whitecards):
                 'blackCard': None,
                 'whitecards': []
             },
-            'players': [
-                {
-                    'username': owner,
-                    'points': 0,
-                    'whitecards': []
-                }
-            ],
+            'players': [],
             'cards': {
                 'blackCards': blackcards,
                 'whiteCards': whitecards

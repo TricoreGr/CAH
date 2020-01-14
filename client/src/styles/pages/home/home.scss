@@ -1,27 +1,93 @@
 .parallax {
-    position: relative;
-    -webkit-filter: grayscale(60%); /* Safari 6.0 - 9.0 */
-    filter: grayscale(30%);
-    height: 350px !important;
+  position: relative;
+  -webkit-filter: grayscale(60%); /* Safari 6.0 - 9.0 */
+  filter: grayscale(30%);
+  height: 350px !important;
+}
+
+.parallax__button {
+  background-color: $color-accent--dark !important;
+  font-family: $montserrat !important;
+  color: white !important;
+  position: absolute !important;
+  top: 48px;
+  right: 30px !important;
+  border-radius: 19px !important;
+  width: 160px !important;
+  height: 40px !important;
+  @media (min-width: $tabletLarge) {
+    border-radius: 29px !important;
+    top: 55px !important;
+    right: 50px !important;
+    font-size: 18px !important;
+    height: 60px !important;
+    width: 290px !important;
   }
-  
-  .parallax__button {
-    background-color: $color-accent--dark !important;
-    font-family: $montserrat !important;
-    color: white !important;
-    position: absolute !important;
-    top: 48px;
-    right: 30px !important;
-    border-radius: 19px !important;
-    width: 160px !important;
+}
+
+.home__container-left {
+  display: flex;
+  width: 100%;
+  margin-top: 50px;
+  margin-left: 20px;
+  @media (max-width: $tablet) {
+    width: 100%;
+    margin-left: 0;
+  }
+}
+
+.home__container-left--title {
+  // width: 40%;
+  font-family: $montserrat !important;
+}
+
+.home__container-left--p {
+  width: 40%;
+  font-family: $montserrat-light !important;
+  @media (max-width: $tablet) {
+    width: 80%;
+    margin: 0 auto;
+    text-align: center;
+  }
+}
+
+.home__container-right {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  margin-top: 50px;
+  padding-right: 20px !important;
+  text-align: right;
+  @media (max-width: $tablet) {
+    width: 100%;
+    margin-right: 0;
+  }
+}
+
+.home__container-right--title {
+  width: 40%;
+  font-family: $montserrat !important;
+}
+
+.home__container-right--p {
+  width: 40%;
+  font-family: $montserrat-light !important;
+  @media (max-width: $tablet) {
+    width: 80%;
+    margin: 0 auto;
+    text-align: center;
+  }
+}
+
+.home__button {
+  background-color: $color-accent--dark !important;
+  width: 300px;
+  margin: 20px auto;
+  font-family: $montserrat !important;
+  border-radius: 19px !important;
+  height: 40px !important;
+  @media (max-width: $tablet) {
     height: 40px !important;
-    @media (min-width: $tabletLarge) {
-      border-radius: 29px !important;
-      top: 55px !important;
-      right: 50px !important;
-      font-size: 18px !important;
-      height: 60px !important;
-      width: 290px !important;
-    }
+    width: 200px;
   }
-  
+}
