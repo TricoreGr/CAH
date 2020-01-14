@@ -200,11 +200,6 @@ def removeUserFromTable(user, id):
         'message': message
     }
     return jsonify(response)
-
-
-
-
-
 def getSubmitedCards(id):
     try:
         query = {'id': id}
