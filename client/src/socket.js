@@ -26,7 +26,6 @@ class GameSocket {
       })
       .then(res => console.log(res))
       .catch(error => console.log(error));
-    console.log("HI");
     this.socket.emit("joined", { username: this.username, room: this.room });
   };
 
