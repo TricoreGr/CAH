@@ -58,8 +58,5 @@ export default {
       return this.$refs.mySwiper.swiper;
     }
   },
-  mounted(){
-    console.log(this.$props);
-  }
 };
 </script>

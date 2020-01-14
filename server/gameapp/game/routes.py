@@ -1,5 +1,6 @@
 from flask import Blueprint, request
-from .services import getRooms, submitWhiteCards, insertPlayer, createRoom, deleteRoom, getRoundWhiteCards, getCzar, getBlackCard, getPlayers,getIndividualWhiteCards
+from .services import getOwner,getRooms, submitWhiteCards, insertPlayer, createRoom, deleteRoom, getRoundWhiteCards, getCzar, getBlackCard, getPlayers,getIndividualWhiteCards
+
 
 game = Blueprint('game', __name__)
 
@@ -80,6 +81,14 @@ def handlePlayersRoute(roomId):
             requestData = request.get_json()
             token = requestData.get('token')
             return insertPlayer(roomId, token)
+        except Exception as e:
+            print(e)
+            return {'message': 'Server error'}, 500
+
+@game.route('/<roomId>/owner', methods=['GET'])
+def handleOwnerRoute(roomId):
+        try:
+            return getOwner(roomId)
         except Exception as e:
             print(e)
             return {'message': 'Server error'}, 500
