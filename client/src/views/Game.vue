@@ -110,8 +110,9 @@ import card from "@/components/Card";
 import player from "@/components/Player";
 import userCarousel from "@/components/UserCarousel";
 import anime from "animejs/lib/anime.es.js";
-import io from "socket.io-client";
 import axios from "axios";
+import GameSocket from '../socket'
+
 export default {
   components: {
     cardCarousel,
@@ -122,11 +123,7 @@ export default {
   methods: {
     sendMessage() {
       if (this.message)
-        this.socket.emit("sendMessage", {
-          username: this.username,
-          message: this.message,
-          room: this.room
-        });
+        this.socket.sendMessage(this.message);
       this.message = "";
     },
     fetchUsername() {
@@ -135,7 +132,7 @@ export default {
         .post(path, { token: localStorage.getItem("authToken") })
         .then(res => {
           this.username = res.data["username"];
-          this.connectSocket();
+          this.setupSocket();
         })
         .catch(error => {
           //oops
@@ -205,33 +202,15 @@ export default {
         this.nextRoundAnimation(i);
       }
     },
-    joinRoom() {
-      this.socket.emit("joined", { username: this.username, room: this.room });
+    setupSocket(){
+      this.socket = new GameSocket(this.username,this.room);
+      this.socket.handleMessageUpdate(this.updateMessages);
+      this.socket.handleLeave(this.updateMessages);
+      this.socket.handleJoin(this.updateMessages);
     },
-    connectSocket() {
-      this.socket = io.connect("http://localhost:5000");
-      this.enableSocketListeners();
-    },
-    enableSocketListeners() {
-      this.socket.on("connect", this.joinRoom);
-      this.socket.on("playerJoined", data => {
-        this.updateMessages(data.user, data.message);
-      });
-      this.socket.on("playerLeft", data => {
-        this.updateMessages(data.user, data.message);
-      });
-      this.socket.on("newMessage", data => {
-        this.updateMessages(data.user, data.message);
-      });
-    },
-    leaveGame() {
-      this.socket.emit("leave", {
-        username: this.username,
-        room: this.room
-      });
-      this.socket.disconnect();
-      this.$router.push("/play");
-    }
+    leaveGame(){
+    this.socket.leaveGame();
+  },
   },
   data() {
     return {
@@ -243,9 +222,9 @@ export default {
       isCzar: true,
       selectedCardsIndexes: [],
       cardsToPick: 1,
-      socket: Object,
       messages: [],
-      room: String
+      room: String,
+      socket :Object
     };
   },
   mounted() {

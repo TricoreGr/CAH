@@ -1,17 +1,15 @@
-from .models import  cardsCollection,roomsCollection, roomModel
 import json
-import jwt
-from flask import jsonify, Response
-from bson.json_util import dumps
 from bson import json_util
 from ..config import Config
 from bson.objectid import ObjectId
 import random
 
+
 # def migrateCards():
 #     with open('cards.json','r') as file:
 #         crds = json.load(file)
 #     cards.insert(crds)
+
 
 def getRooms():
     try:
@@ -20,7 +18,7 @@ def getRooms():
         for document in cursor:
             rooms.append(document)
         return Response(json.dumps({'rooms': rooms}, default=json_util.default),
-                mimetype='application/json')
+                        mimetype='application/json')
     except Exception as e:
         print(e)
         response = {
@@ -34,12 +32,12 @@ def createRoom(token):
     try:
         whiteCards = getRandomWhiteCards()
         blackCards = getRandomBlackCards()
-        room = roomModel(owner,blackCards,whiteCards)
+        room = roomModel(owner, blackCards, whiteCards)
         print(room)
         roomsCollection.insert_one(room)
         createdRoom = roomsCollection.find_one({"owner": owner})
         return Response(json.dumps({'room': createdRoom}, default=json_util.default),
-                mimetype='application/json')
+                        mimetype='application/json')
     except Exception as e:
         print(e)
         return {"message": "Server error"}, 500
@@ -59,8 +57,16 @@ def getRandomWhiteCards():
     print(len(allWhiteCards))
     return random.sample(allWhiteCards, k=146)
 
-def deleteRoom():
-    return okok
+
+def deleteRoom(id):
+    try:
+        query = {
+            '_id':ObjectId(id)
+        }
+        deletedRoom = roomsCollection.delete_one(query)
+        return id
+    except:
+        return {"message":"Server error"},500
 
 
 def getRoundWhiteCards(roomId):
@@ -156,20 +162,8 @@ def removeUserFromTable(user, id):
     return jsonify(response)
 
 
-def submitWhiteCard(user, id, card):
-    try:
-        query = {'id': id, 'players': [{'username': user['username']}]}
-        new_vals = {'$push': {'gamesession': {
-            'whitecards': [card]
-        }}}
-        tables.update_one(query, new_vals)
-        message = 'Card was submited'
-    except:
-        message = 'Card was not submited'
-    response = {
-        'message': message
-    }
-    return jsonify(response)
+
+
 
 
 def getSubmitedCards(id):
@@ -190,5 +184,5 @@ def getSubmitedCards(id):
 
 
 def getUsernameByJWToken(token):
-    username = jwt.decode(token,Config.SECRET_KEY)['user']
+    username = jwt.decode(token, Config.SECRET_KEY)['user']
     return username
