@@ -162,25 +162,8 @@ def removeUserFromTable(user, id):
     return jsonify(response)
 
 
-<<<<<<< HEAD
 
 
-=======
-def submitWhiteCard(user, id, card):
-    try:
-        query = {'id': id, 'players': [{'username': user['username']}]}
-        new_vals = {'$push': {'gamesession': {
-            'whitecards': [card]
-        }}}
-        tables.update_one(query, new_vals)
-        message = 'Card was submited'
-    except:
-        message = 'Card was not submited'
-    response = {
-        'message': message
-    }
-    return jsonify(response)
->>>>>>> dd34bf4c2c69c7902f996e33853120e6c44ad884
 
 
 def getSubmitedCards(id):
@@ -201,10 +184,5 @@ def getSubmitedCards(id):
 
 
 def getUsernameByJWToken(token):
-<<<<<<< HEAD
     username = jwt.decode(token, Config.SECRET_KEY)['user']
     return username
-=======
-    username = jwt.decode(token,Config.SECRET_KEY)['user']
-    return username
->>>>>>> dd34bf4c2c69c7902f996e33853120e6c44ad884
