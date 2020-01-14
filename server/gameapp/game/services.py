@@ -111,7 +111,6 @@ def getIndividualWhiteCards(roomId, username):
 
 def submitWhiteCards(roomId, token, cards):
     try:
-        roomDocument = roomsCollection.find_one({'_id': ObjectId(roomId)})
         submittedUsername = getUsernameByJWToken(token)
         cardsToAppend = []
         for card in cards:
@@ -139,6 +138,9 @@ def submitWhiteCards(roomId, token, cards):
     except Exception as e:
         print(e)
         return {"message": "Server error"}, 500
+
+def insertPlayer(roomId, token):
+    print(ok)
 
 def getAllTable():
     try:
