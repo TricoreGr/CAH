@@ -203,10 +203,6 @@ def removeUserFromTable(user, id):
     return jsonify(response)
 
 
-<<<<<<< HEAD
-=======
-
->>>>>>> c04e82a5e8234d37a3976f68efdcdfb7d1a3dec6
 
 
 
@@ -229,8 +225,4 @@ def getSubmitedCards(id):
 
 def getUsernameByJWToken(token):
     username = jwt.decode(token, Config.SECRET_KEY)['user']
-<<<<<<< HEAD
     return username
-=======
-    return username
->>>>>>> c04e82a5e8234d37a3976f68efdcdfb7d1a3dec6

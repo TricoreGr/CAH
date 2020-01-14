@@ -188,7 +188,6 @@ export default {
             headers
           )
           .then(res => {
-            console.log(res);
             if (res.status == 200) {
               this.fetchData();
             }

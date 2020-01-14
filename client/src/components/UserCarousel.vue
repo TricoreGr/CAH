@@ -1,7 +1,7 @@
 <template>
   <swiper ref="mySwiper" :options="swiperOption">
-    <swiper-slide v-for="text in 10" :key="text">
-      <player></player>
+    <swiper-slide v-for="player in this.$props.players" :key="player.username">
+      <player v-bind="player" ></player>
     </swiper-slide>
     <div
       class="cardCarousel__arrow cardCarousel__arrow--mini swiper-button-prev"
@@ -24,15 +24,11 @@ import { swiper, swiperSlide } from "vue-awesome-swiper";
 
 export default {
   components: { swiper, swiperSlide, player },
+  props: {
+    players:Array
+  },
   data() {
     return {
-      Texts: [
-        "lalalalal",
-        "lololololo",
-        "lelelelelle",
-        "lalalallalala",
-        "lululululuulu"
-      ],
       swiperOption: {
         slidesPerView: 8,
         // init: false,
@@ -61,6 +57,9 @@ export default {
     swiper() {
       return this.$refs.mySwiper.swiper;
     }
+  },
+  mounted(){
+    console.log(this.$props);
   }
 };
 </script>

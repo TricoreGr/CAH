@@ -8,7 +8,7 @@ def joined(data):
     join_room(room)
     username = data['username']
     img = returnImg(username)
-    emit('playerJoined',{'user':'status','message':username +' has joined.', 'image':img},room=room)
+    emit('playerJoined',{'user':'status','message':username +' has joined.', 'image':img,'player':username},room=room)
 
 @socketio.on('leave')
 def left(data):
