@@ -179,9 +179,8 @@ def submitWhiteCards(roomId, token, cards):
         print(e)
         return {"message": "Server error"}, 500
 
-def insertPlayer(roomId, token):
+def insertPlayer(roomId, username):
     try:
-        username = getUsernameByJWToken(token)
         query = {
                 '_id': ObjectId(roomId)
             }
@@ -273,7 +272,7 @@ def getUsernameByJWToken(token):
     username = jwt.decode(token, Config.SECRET_KEY)['user']
     return username
 
-def splitCards(roomId):
+def splitCards(roomId): #TODO remove added cardes from db when splitting
     roomDocument = roomsCollection.find_one({'_id': ObjectId(roomId)})
     whiteCards = roomDocument['gamesession']['cards']['whiteCards']
     players = roomDocument['gamesession']['players']
