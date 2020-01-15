@@ -44,8 +44,9 @@ Cards against humanity online game
 | `/users/{username}` | GET | Επιστρέφει τον συγκεκριμένο χρήστη, `returns user`| 200(OK), 500(SERVER ERROR) |
 | `/users/{username}` | PUT | Ανανεώνει τα δεδομένα του συγκεκριμένου χρήστη, `returns user` | 200(OK), 401(UNAUTHORIZED), 500(SERVER ERROR) |
 | `/users/{username}` | DELETE | Διαγράφει τον συγκεκριμένο χρήστη, `returns user` | 200(OK), 401(UNAUTHORIZED), 500(SERVER ERROR) |
-| `/users/jwtToUsername` | POST | Επιστρέφει το username που αντιστοιχεί το token, `returns user` | 200(OK) |
 | `/users/login` | POST | Επιστρέφει το token του χρήστη, `returns user, token` | 200(ΟΚ), 401(UNAUTHORIZED), 500(SERVER ERROR)
+| `/users/{username}/wins` | POST | Ανανεώνει τα wins του χρήστη, `returns user` | 200(OK), 500(SERVER ERROR)|
+| `/users/{username}/games` | POST | Ανανεώνει τα games του χρήστη, `returns user` | 200(OK), 500(SERVER ERROR) |
 
 #### User model in mysql
 ```
@@ -72,15 +73,20 @@ User :
 ### Room API
 | URI | METHOD | ΕΝΕΡΓΕΙΑ | RETURN STATUS |
 | ------------- |  ------------- | ------------- | ------------- |
-| `/game` | GET | Επιστρέφει όλα τα διαθέσιμα rooms, `returns rooms` | 200(OK), 500(SERVER ERROR) |
-| `/game` | POST | Δημιουργεί νέο room, `returns room` | 200(OK), 500(SERVER ERROR) |
-| `/game` | DELETE | Διαγράφει το room που δημιούργησε το room, `returns room` | 200(OK), 500(SERVER ERROR) |
-| `/game/{roomID}/round/whitecards` | GET | Επιστρέφει τις λευκές κάρτες του συγκεκριμένου room για το συγκεκριμένο room, `returns white cards` | 200(OK) , 500(SERVER ERROR) |
-| `/game/{roomID}/round/whitecards` | POST | Δηλώνει ποια κάρτα έπαιξε ο χρήστης και επιστρέφει ένα απλό μήνυμα, `returns message` | 200(OK), 500(SERVER ERROR) |
-| `/game/{roomID}/round/czar` | GET | Επιστρέφει τον czar του room, `returns czar` | 200(OK), 500(SERVER ERROR) |
-| `/game/{roomID}/round/blackcard` | GET | Επιστρέφει μία μαύρη κάρτα , `returns blackcard` | 200(OK), 500(SERVER ERROR) |
-| `/game/{roomID}/players` | GET | Επιστρέφει τους παίχτες του room, `returns players` | 200(OK), 500(SERVER ERROR) |
-| `/game/{roomID}/players/{username}/whitecards` | GET | Επιστρέφει τις λευκές κάρτες του δεδομένου παίχτη, `returns whitecards` | 200(OK), 500(SERVER ERROR)
+| `/rooms` | GET | Επιστρέφει όλα τα διαθέσιμα rooms, `returns rooms` | 200(OK), 500(SERVER ERROR) |
+| `/rooms` | POST | Δημιουργεί νέο room, `returns room` | 200(OK), 500(SERVER ERROR) |
+| `/rooms` | DELETE | Διαγράφει το room που δημιούργησε το room, `returns room` | 200(OK), 500(SERVER ERROR) |
+| `/rooms/{roomID}/round/whitecards` | GET | Επιστρέφει τις λευκές κάρτες του συγκεκριμένου room για το συγκεκριμένο room, `returns white cards` | 200(OK) , 500(SERVER ERROR) |
+| `/rooms/{roomID}/round/whitecards` | POST | Δηλώνει ποια κάρτα έπαιξε ο χρήστης και επιστρέφει ένα απλό μήνυμα, `returns message` | 200(OK), 500(SERVER ERROR) |
+| `/rooms/{roomID}/round/czar` | GET | Επιστρέφει τον czar του room, `returns czar` | 200(OK), 500(SERVER ERROR) |
+| `/rooms/{roomID}/round/blackcard` | GET | Επιστρέφει μία μαύρη κάρτα , `returns blackcard` | 200(OK), 500(SERVER ERROR) |
+| `/rooms/{roomID}/players` | GET | Επιστρέφει τους παίχτες του room, `returns players` | 200(OK), 500(SERVER ERROR) |
+| `/rooms/{roomID}/players` | POST | Προσθέτει τον παίχτη στο room , `returns player` | 200(OK), 500(SERVER ERROR)|
+| `/rooms/{roomID}/players/{username}/whitecards` | GET | Επιστρέφει τις λευκές κάρτες του δεδομένου παίχτη, `returns whitecards` | 200(OK), 500(SERVER ERROR)
+|
+| `/rooms/{roomId}/owner` | GET | Επιστρέφει τον onwer του room, `returns owner` | 200(OK), 500(SERVER ERROR)|
+| `/rooms/{roomId}` | GET | Επιστρέφει το room, `returns room` | 200(OK), 500(SERVER ERROR) |
+| `/rooms/{roomId}/players/{username}/points` | POST | Αυξάνει τα points του νικητή , `returns player` | 200(OK), 500(SERVER ERROR) |
 
 #### White Card model
 ```
