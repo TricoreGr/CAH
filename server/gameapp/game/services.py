@@ -313,7 +313,13 @@ def submitBlackCard(roomId):
                     'gamesession.cards.blackCards' : card
                 }
         }
-        roomsCollection.update_one(qyert,new_values)
+        update = {
+            '$set' : {
+                'gamesession.round.blackCard' : card
+            }
+        }
+        roomsCollection.update_one(query,update)
+        roomsCollection.update_one(query,new_values)
     except Exception as e:
         print(e)
-        
+        return jsonify({'message':'Server error'}),500
