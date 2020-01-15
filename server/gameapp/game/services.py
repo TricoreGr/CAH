@@ -1,4 +1,6 @@
 from .models import cardsCollection, roomsCollection, roomModel
+from flask_socketio import SocketIO,emit,send,join_room,leave_room
+from ..socket import socketio
 import json
 import jwt
 from flask import jsonify, Response
@@ -151,10 +153,10 @@ def getIndividualWhiteCards(roomId, username):
 def submitWhiteCards(roomId, token, cards):
     try:
         submittedUsername = getUsernameByJWToken(token)
-        cardsToAppend = []
+        cardsToAppend = ""
         for card in cards:
             if card is not None:
-                cardsToAppend.append(card)
+                cardsToAppend += " + " + card
         submittedCards = {
             'username': submittedUsername,
             'cards': cardsToAppend
@@ -171,7 +173,13 @@ def submitWhiteCards(roomId, token, cards):
             }
 
         }
+        user_query = {'_id':ObjectId(roomId), 'gamesession.players.username':submittedUsername}
+        old_vals = {'$pull': {'whitecards'}}
         roomsCollection.update_one(query,new_vals)
+        emit('played_card',{'username':submittedUsername},room=room)
+        resp = checkCzarTurn(roomId)
+        if resp is not False:
+                emit('czard',{'status':'czar'}, room=room)
         return Response(json.dumps({'cards': submittedCards}, default=json_util.default),
                         mimetype='application/json')
     except Exception as e:
@@ -320,3 +328,33 @@ def submitBlackCard(roomId):
     except Exception as e:
         print(e)
         return jsonify({'message':'Server error'}),500
+
+def getTableStatus(roomId):
+    try:
+        query = {
+            '_id': ObjectId(roomId)
+        }
+        roomDocument = roomsCollection.find_one(query)
+        return roomDocument
+    except Exception as e:
+        print(e)
+        return jsonify({'message':'Server Error'}),500
+
+def checkCzarTurn(roomId):
+    try:
+        query = {
+            '_id': ObjectId(roomId)
+        }
+        player_counter = 0
+        roomDocument = roomsCollection.find_one(query)
+        players = roomDocument['gamesession']['players']
+        cards = roomDocument['gamesession']['round']['whitecards']
+        for player in player:
+            if len(player['whitecards']) != 0:
+                player_counter += 1
+        if len(cards) == player_counter:
+            return cards
+        else:
+            return False
+    except:
+        return False
