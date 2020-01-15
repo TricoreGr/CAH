@@ -112,7 +112,6 @@ def getBlackCard(roomId):
 
 
 def getPlayers(roomId):
-    print("hiii")
     roomDocument = roomsCollection.find_one({'_id': ObjectId(roomId)})
     print(roomDocument)
     playersDoc = roomDocument['gamesession']['players']
@@ -204,7 +203,7 @@ def submitWhiteCards(roomId, token, cards):
 
         socketio.emit('playerSubmission',{'username':submittedUsername},room=roomId)
         if resp is not False:
-            socketio.emit('czard',{'status':'czar'}, room=roomId)
+            socketio.emit('czarPickingPhase',{'status':'czar'}, room=roomId)
         return Response(json.dumps({'cards': submittedCards}, default=json_util.default),
                         mimetype='application/json')
     except Exception as e:
@@ -361,7 +360,8 @@ def getTableStatus(roomId):
             '_id': ObjectId(roomId)
         }
         roomDocument = roomsCollection.find_one(query)
-        return roomDocument
+        return Response(json.dumps({'room': roomDocument}, default=json_util.default),
+                        mimetype='application/json')
     except Exception as e:
         print(e)
         return jsonify({'message':'Server Error'}),500
