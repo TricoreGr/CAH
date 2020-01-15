@@ -1,4 +1,6 @@
 from .models import cardsCollection, roomsCollection, roomModel
+from flask_socketio import SocketIO,emit,send,join_room,leave_room
+from ..socket import socketio
 import json
 import jwt
 from flask import jsonify, Response
@@ -7,6 +9,7 @@ from bson import json_util, BSON
 from ..config import Config
 from bson.objectid import ObjectId
 import random
+from pprint import pprint
 
 # def migrateCards():
 #     with open('cards.json','r') as file:
@@ -64,7 +67,8 @@ def getRoundWhiteCards(roomId):
         for card in card:
             white_cards.append(card)
         random.shuffle(white_cards)
-        return {"whiteCards":white_cards}
+        return Response(json.dumps({'whiteCards': white_cards}, default=json_util.default),
+                        mimetype='application/json')
     except Exception as e:
         print(e)
         return {'message','Server error'},500
@@ -110,9 +114,12 @@ def getBlackCard(roomId):
 
 def getPlayers(roomId):
     roomDocument = roomsCollection.find_one({'_id': ObjectId(roomId)})
-    players = roomDocument['gamesession']['players']
-    return Response(json.dumps({'players': players}, default=json_util.default),
+    print(roomDocument)
+    playersDoc = roomDocument['gamesession']['players']
+    print(playersDoc)
+    return Response(json.dumps({'players': playersDoc}, default=json_util.default),
                     mimetype='application/json')
+    
 
 def getRandomPlayer(roomId):
     roomDocument = roomsCollection.find_one({'_id': ObjectId(roomId)})
@@ -151,10 +158,12 @@ def getIndividualWhiteCards(roomId, username):
 def submitWhiteCards(roomId, token, cards):
     try:
         submittedUsername = getUsernameByJWToken(token)
-        cardsToAppend = []
+        
+
         for card in cards:
-            if card is not None:
-                cardsToAppend.append(card)
+            cardsToAppend +=  card + "   +   "
+        cardsToAppend = cardsToAppend[:-7]
+
         submittedCards = {
             'username': submittedUsername,
             'cards': cardsToAppend
@@ -172,13 +181,43 @@ def submitWhiteCards(roomId, token, cards):
 
         }
         roomsCollection.update_one(query,new_vals)
+
+        roomDoc = roomsCollection.find_one(query)
+        players = roomDoc['gamesession']['players']
+
+        for player in players:
+            if submittedUsername == player['username']:
+                Usercards = player['whitecards']
+                break
+
+        for card in Usercards:
+            if card in cards:
+                Usercards.remove(card)
+        
+        for player in players:
+            if submittedUsername == player['username']:
+                player['whitecards'] = Usercards
+        
+        
+        roomsCollection.update_one(query,{'$set':{'gamesession.players':players}})
+        resp = checkCzarTurn(roomId)
+
+        socketio.emit('playerSubmission',{'username':submittedUsername},room=roomId)
+        if resp is not False:
+            socketio.emit('czarPickingPhase',{'status':'czar'}, room=roomId)
         return Response(json.dumps({'cards': submittedCards}, default=json_util.default),
                         mimetype='application/json')
     except Exception as e:
         print(e)
         return {"message": "Server error"}, 500
 
-def insertPlayer(roomId, username):
+def setUserPoints(roomId, username):
+    roomDocument = roomsCollection.find_one({'_id': ObjectId(roomId)})
+    playersArray = roomDocument['gamesession']['players']
+    print(playersArray)
+    return {'message':'ok'}
+
+def insertPlayer(roomId, username, img):
     try:
         query = {
                 '_id': ObjectId(roomId)
@@ -186,6 +225,7 @@ def insertPlayer(roomId, username):
         userObject = {
             "username": username,
             "points" : 0,
+            "img": img,
             "whitecards": []
         }
         new_vals = {
@@ -320,3 +360,60 @@ def submitBlackCard(roomId):
     except Exception as e:
         print(e)
         return jsonify({'message':'Server error'}),500
+
+def getTableStatus(roomId):
+    try:
+        query = {
+            '_id': ObjectId(roomId)
+        }
+        roomDocument = roomsCollection.find_one(query)
+        return Response(json.dumps({'room': roomDocument}, default=json_util.default),
+                        mimetype='application/json')
+    except Exception as e:
+        print(e)
+        return jsonify({'message':'Server Error'}),500
+
+def checkCzarTurn(roomId):
+    try:
+        query = {
+            '_id': ObjectId(roomId)
+        }
+        player_counter = 0
+        roomDocument = roomsCollection.find_one(query)
+        players = roomDocument['gamesession']['players']
+        cards = roomDocument['gamesession']['round']['whitecards']
+        for player in player:
+            if len(player['whitecards']) != 0:
+                player_counter += 1
+        if len(cards) == player_counter - 1:
+            return cards
+        else:
+            return False
+    except:
+        return False
+
+def checkWinner(roomId):
+    try:
+        query = {
+            '_id' : ObjectId(roomId)
+        }
+        roomDocument = roomsCollection.find_one(query)
+        players = roomDocument['gamesession']['players']
+        winner = dict()
+        for player in players:
+            if player['points'] == 5:
+                winner = {
+                    'username': player['username'],
+                    'image' : player['image']
+                }
+                break
+        if len(winner) != 0:
+            return winner
+        else:
+            return jsonify({'message':'No winner here'})
+    except Exception as e:
+        print(e)
+        response = {
+            'message':'Server error'
+        }
+        return jsonify(response),500

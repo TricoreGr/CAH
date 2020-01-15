@@ -1,5 +1,5 @@
 from flask import Blueprint, request
-from .services import getOwner,getRooms, submitWhiteCards, insertPlayer, createRoom, getRoundWhiteCards, getCzar, getBlackCard, getPlayers,getIndividualWhiteCards
+from .services import setUserPoints, getOwner,getRooms, submitWhiteCards, insertPlayer, createRoom, getRoundWhiteCards, getCzar, getBlackCard, getPlayers,getIndividualWhiteCards, getTableStatus, checkWinner
 from .events import joined,left,start
 
 game = Blueprint('game', __name__)
@@ -42,10 +42,7 @@ def handleRoundWhitecardsRoute(roomId):
         try:
             requestData = request.get_json()
             token = requestData.get('token')
-            whitecards = []
-            whitecards.append(requestData.get('card1'))
-            whitecards.append(requestData.get('card2'))
-            whitecards.append(requestData.get('card3'))
+            whitecards = requestData.get('cards')
             return submitWhiteCards(roomId, token, whitecards)
         except Exception as e:
             print(e)
@@ -97,6 +94,20 @@ def handleOwnerRoute(roomId):
 def handlePlayerCardsRoute(roomId, username):
     try:
         return getIndividualWhiteCards(roomId, username)
+    except Exception as e:
+        print(e)
+        return {'message': 'Server error'}, 500
+
+@game.route('/<roomId>', methods=['GET'])
+def returnTableStatus(roomId):
+    table = getTableStatus(roomId)
+    del table['_id']
+    return table
+
+@game.route('/<roomId>/players/<username>/points', methods=['POST'])
+def handlePlayerPointsRoute(roomId, username):
+    try:
+        return setUserPoints(roomId, username)
     except Exception as e:
         print(e)
         return {'message': 'Server error'}, 500
