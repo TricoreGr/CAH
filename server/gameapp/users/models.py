@@ -9,6 +9,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{Configdb.SQL_USERNAME
 
 
 db = SQLAlchemy(app)
+db.init_app(app)
 ma = Marshmallow(app)
 
 class User(db.Model):

@@ -50,16 +50,13 @@
           <span v-if="cardsToPick > 1" class="inGame__hint">
             Special Round, Choose {{ cardsToPick }} cards!
           </span>
-          <span v-if="this.player.getIsCzar" class="inGame__hint">
+          <span v-if="this.player.getIsCzar()" class="inGame__hint scale-up-center">
             You're the czar! Choose the funniest card.
           </span>
         </transition>
       </div>
       <div class="inGame__mainCardWrapper">
-        <card
-          isCzar
-          :text="blackCard"
-        ></card>
+        <card isCzar :text="blackCard"></card>
 
         <div class="inGame__chatButtonWrapper">
           <v-btn
@@ -100,7 +97,7 @@
           v-on:updateSelectedCardsIndexes="updateSelectedCardsIndexes($event)"
           :selectedCardsIndexes="selectedCardsIndexes"
           :cardsToPick="cardsToPick"
-          :cardTexts="whiteCards"
+          :cardTexts="this.player.getIsCzar()?submittedCards:whiteCards"
         ></cardCarousel>
       </div>
       <div class="inGame__userCarouselWrapper">
@@ -166,7 +163,8 @@ export default {
       setTimeout(this.scrollToLastMessage, 10);
     },
     updatePlayers(player) {
-      if (player.username != this.player.getUsername()) this.players.push(player);
+      if (player.username != this.player.getUsername())
+        this.players.push(player);
       else {
         console.log("e (easter egg hehe)");
         this.player = player;
@@ -238,8 +236,14 @@ export default {
       this.socket = new GameSocket(this.player.getUsername(), this.room);
       this.socket.handleMessageUpdate(this.updateMessages);
       this.socket.handleLeave(this.updateMessages, this.removePlayer);
-      this.socket.handleJoin(this.updateMessages, this.updatePlayers,this.gameStarted,this.setDefaultBlackCard,this.players.length);
-      this.socket.handleNextRoundReady(this.updateCzar);
+      this.socket.handleJoin(
+        this.updateMessages,
+        this.updatePlayers,
+        this.gameStarted,
+        this.setDefaultBlackCard,
+        this.players.length
+      );
+      this.socket.handleNextRoundReady(this.updateCzar,this.fetchWhiteCards,this.fetchBlackCard);
     },
     leaveGame() {
       this.socket.leaveGame();
@@ -255,7 +259,7 @@ export default {
     },
     updateCzar(username) {
       if (username == this.player.getUsername()) this.player.setIsCzar(true);
-      for (player of this.players) {
+      for (var player of this.players) {
         if (player.getUsername() == username) {
           console.log("mpika enimerosa");
           player.setIsCzar(false);
@@ -263,11 +267,39 @@ export default {
         }
       }
     },
-    setDefaultBlackCard(){
-       this.players.length>=1
-       ?this.blackCard = `waiting for player ${this.owner} to start the game...`
-       :this.blackCard = 'waiting for players...'
-    }
+    setDefaultBlackCard() {
+      this.players.length >= 1
+        ? (this.blackCard = `waiting for player ${this.owner} to start the game...`)
+        : (this.blackCard = "waiting for players...");
+    },
+    fetchWhiteCards() {
+      const url =
+        "http://localhost:5000/rooms/" +
+        this.room +
+        "/players/" +
+        this.player.getUsername() +
+        "/whitecards";
+      axios
+        .get(url)
+        .then(res => {
+          this.whiteCards = res.data['whitecards'];
+        })
+        .catch(error => console.log(error));
+    },
+    fetchBlackCard() {
+      const url =
+        "http://localhost:5000/rooms/" +
+        this.room +
+        "/round/blackcard";
+      axios
+        .get(url)
+        .then(res => {
+          console.log(res.data);
+          this.blackCard = res.data['blackCard']['text'];
+          this.cardsToPick = res.data['blackCard']['pick'];
+        })
+        .catch(error => console.log(error));
+    },
   },
   data() {
     return {
@@ -284,16 +316,9 @@ export default {
       roundWinner: Object,
       gameStarted: false,
       pickingPhase: true,
-      blackCard:"Waiting for players...",
-      whiteCards: [
-        "POUTSA",
-        "lelelelelle",
-        "lalalallalala",
-        "lululululuulu",
-        "lelelelelle",
-        "lelelelelle",
-        "lelelelelle"
-      ],
+      blackCard: "Waiting for players...",
+      whiteCards: [],
+      submittedCards:[],
       players: [],
       player: Object
     };

@@ -301,19 +301,22 @@ def submitBlackCard(roomId):
         query = {
             '_id' : ObjectId(roomId)
         }
-        roomDocument = roomsCollection.find(query)
+        roomDocument = roomsCollection.find_one(query)
         blackCards = roomDocument['gamesession']['cards']['blackCards']
-        text, pick = random.choice(list(blackCards.items()))
-        card = {
-            "text":text,
-            "pick":pick
-        }
+        card = random.sample(blackCards, k=1)
+        card = card[0]
         new_values = {
             '$pull' : {
                     'gamesession.cards.blackCards' : card
                 }
         }
-        roomsCollection.update_one(qyert,new_values)
+        update = {
+            '$set' : {
+                'gamesession.round.blackCard' : card
+            }
+        }
+        roomsCollection.update_one(query,update)
+        roomsCollection.update_one(query,new_values)
     except Exception as e:
         print(e)
-        
+        return jsonify({'message':'Server error'}),500

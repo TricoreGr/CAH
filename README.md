@@ -119,8 +119,10 @@ User :
 ```
 ## Thanks to
    1. Our professors for allowing us to make such a masterpiece
-   2. Hell energy drinks
+   2. Hell energy drinks and coffee
    3. Antidepressants
+   4. [Gaia's Den](https://www.facebook.com/gaiasden/) for housing our development sessions
+   5. [Stella 'Bad and' Rouzi](https://github.com/differentreality) for helping with the deployment
    
 ## Copy notice
 We are noticing some of you are copying our md file. Our lawers will be contacting you shortly

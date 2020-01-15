@@ -84,10 +84,11 @@
     display: block;
     font-family: $voltaire;
   }
-
-  &__text {
-    text-align: left;
-  }
+  
+  &__text{
+        word-wrap: break-word;
+        text-align: left;
+    }
 
   &__signature-wrapper {
     display: flex;
