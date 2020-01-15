@@ -306,3 +306,18 @@ def splitCards(roomId):
         }
     }
     roomsCollection.update_one(query,new_vals)
+
+def deleteTable(roomId):
+    try:
+        query = {
+            '_id' : ObjectId(roomId)
+        }
+        roomsCollection.delete_one(query)
+        message = {
+            'message' : 'Room is deleted'
+        }
+    except:
+        messsage = {
+            'message' : 'Server error' , 500
+        }
+    return jsonify(message)
