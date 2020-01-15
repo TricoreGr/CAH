@@ -56,18 +56,18 @@ class GameSocket {
           setBlackCard();
   })}
 
-  handleNextRoundReady = updateCzar => {
-    //todo: set picking phase false
+  handleNextRoundReady = (updateCzar,fetchWhiteCards,fetchBlackCard) => {
     this.socket.on("nextRoundReady", () => {
       const roomUrl = "http://localhost:5000/rooms/" + this.room;
-      var czar;
       axios
         .get(roomUrl + "/round/czar", {
           token: localStorage.getItem("authToken")
         })
         .then(res => {
-          czar = res.data["czar"];
+          let czar = res.data["czar"];
           updateCzar(czar);
+          fetchWhiteCards();
+          fetchBlackCard();
         })
         .catch(error => console.log(error));
     });
