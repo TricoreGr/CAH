@@ -9,6 +9,9 @@ Vue.config.productionTip = false;
 Vue.component("navbar", Navbar);
 
 new Vue({
+  created() {
+    document.title = this.$route.name + " - CAH";
+  },
   router,
   vuetify,
   render: h => h(App)
