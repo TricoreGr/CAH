@@ -42,10 +42,7 @@ def handleRoundWhitecardsRoute(roomId):
         try:
             requestData = request.get_json()
             token = requestData.get('token')
-            whitecards = []
-            whitecards.append(requestData.get('card1'))
-            whitecards.append(requestData.get('card2'))
-            whitecards.append(requestData.get('card3'))
+            whitecards = requestData.get('cards')
             return submitWhiteCards(roomId, token, whitecards)
         except Exception as e:
             print(e)
