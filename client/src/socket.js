@@ -74,9 +74,9 @@ class GameSocket {
     this.socket.disconnect();
   };
 
-  startGame = room => {
+  startGame = () => {
     this.socket.emit("round_start", {
-      room: room
+      room: this.room
     });
   };
 }

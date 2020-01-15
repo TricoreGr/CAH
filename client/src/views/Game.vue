@@ -85,15 +85,15 @@
               rounded
               color="black"
               v-if="
-                this.startGamePriviladges() ||
+                this.startGamePrivileges() ||
                   (gameStarted && cardsToPick == selectedCardsIndexes.length)
               "
               dark
-              :disabled="hasSubmitted"
+              :disabled="this.player.getHasPlayed()"
               class="inGame__submitButton"
-              @click="startGamePriviladges() ? startGame() : submitCards()"
+              @click="startGamePrivileges() ? startGame() : submitCards()"
             >
-              {{ this.startGamePriviladges() ? "Start Game!" : "Submit!" }}
+              {{ this.startGamePrivileges() ? "Start Game!" : "Submit!" }}
             </v-btn>
           </transition>
         </div>
@@ -101,7 +101,7 @@
           v-on:updateSelectedCardsIndexes="updateSelectedCardsIndexes($event)"
           :selectedCardsIndexes="selectedCardsIndexes"
           :cardsToPick="cardsToPick"
-          :cardTexts="texts"
+          :cardTexts="whiteCards"
         ></cardCarousel>
       </div>
       <div class="inGame__userCarouselWrapper">
@@ -178,7 +178,7 @@ export default {
         element => element.getUsername() != player.getUsername()
       );
     },
-    startGamePriviladges() {
+    startGamePrivileges() {
       return this.owner == this.player.getUsername() && !this.gameStarted;
     },
     scrollToLastMessage() {
@@ -247,12 +247,11 @@ export default {
       this.$router.push("/play");
     },
     submitCards() {
-      this.hasSubmitted = true;
-      //todo: handle submit
+      this.player.setHasPlayed(true);
     },
     startGame() {
       this.gameStarted = true;
-      this.socket.startGame(this.room);
+      this.socket.startGame();
     },
     updateCzar(username) {
       if (username == this.player.getUsername()) this.player.setIsCzar(true);
@@ -273,13 +272,14 @@ export default {
       selectedCardsIndexes: [],
       cardsToPick: 1,
       messages: [],
-      hasSubmitted: false, //todo: set it up with player
+      hasSubmitted: false,
       room: String,
       socket: Object,
       roundWinner: Object,
       gameStarted: false,
       pickingPhase: true,
-      texts: [
+      blackCard:String,
+      whiteCards: [
         "POUTSA",
         "lelelelelle",
         "lalalallalala",

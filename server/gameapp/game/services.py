@@ -179,9 +179,8 @@ def submitWhiteCards(roomId, token, cards):
         print(e)
         return {"message": "Server error"}, 500
 
-def insertPlayer(roomId, token):
+def insertPlayer(roomId, username):
     try:
-        username = getUsernameByJWToken(token)
         query = {
                 '_id': ObjectId(roomId)
             }
@@ -282,6 +281,7 @@ def splitCards(roomId):
         '_id' : ObjectId(roomId),
     }
 
+    print(players)
     for player in players:
         difference = 10 - len(player['whitecards'])
         player_cards = list()
