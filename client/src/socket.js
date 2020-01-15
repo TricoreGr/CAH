@@ -57,6 +57,7 @@ class GameSocket {
   })}
 
   handleNextRoundReady = (updateCzar,fetchWhiteCards,fetchBlackCard,updateGameState) => {
+    console.log("yes");
     this.socket.on("nextRoundReady", () => {
       const roomUrl = "http://localhost:5000/rooms/" + this.room;
       axios
@@ -65,10 +66,11 @@ class GameSocket {
         })
         .then(res => {
           let czar = res.data["czar"];
+          updateGameState();
           updateCzar(czar);
+          console.log(czar);
           fetchWhiteCards();
           fetchBlackCard();
-          updateGameState();
         })
         .catch(error => console.log(error));
     });
@@ -87,6 +89,21 @@ class GameSocket {
     });
   }
 
+  handleWinner=(updateWinner) =>{
+    this.socket.on("round_winner", data => {
+      console.log("data.winner",data.winner);
+      console.log("data",data);
+      updateWinner(data.winner);
+    });
+  }
+
+  roundOver = (winner) => {
+    this.socket.emit("round_over", {
+      username: winner,
+      room: this.room
+    });
+  };
+
   leaveGame = () => {
     this.socket.emit("leave", {
       username: this.username,
@@ -96,6 +113,7 @@ class GameSocket {
   };
 
   startGame = room => {
+    console.log("TO DINW")
     this.socket.emit("round_start", {
       room: room
     });

@@ -23,6 +23,7 @@ def left(data):
     
 @socketio.on('round_start')
 def start(data):
+    print("RYEHS")
     room = data['room']
     czar = getCzarAsJson(room)
     if czar is "" or czar is None:
@@ -36,5 +37,6 @@ def start(data):
 @socketio.on('round_over')
 def roundOver(data):
     winner = data['username']
+    print(winner)
     room = data['room']
     emit('round_winner', {'winner': winner}, room=room)    
