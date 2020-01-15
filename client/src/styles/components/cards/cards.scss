@@ -1,101 +1,99 @@
-.card{
-    width: 80px;
-    height: 120px;
-    font-size: 12px;
-    padding: 30px 15px;
-    border-radius: 15px;
+.card {
+  width: 90px;
+  height: 130px;
+  font-size: 10px;
+  padding: 23px 15px;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  font-family: $montserrat;
+  justify-content: space-between;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  background: $color-white;
+  user-select: none;
+  border: 3px solid transparent;
+  transition: border 200ms ease-out;
+
+  @media (min-width: $tabletLarge) {
+    width: 176px;
+    height: 230px;
+    font-size:11px;
+  }
+
+  &__signature {
+    font-family: $voltaire;
+    text-align: center;
+  }
+
+  &__error {
+    font-family: $montserrat;
+    color: $color-error;
+  }
+
+  &--player {
+    background: $color-white;
+    color: $color-black;
+  }
+
+  &--selected {
+    border: 3px solid $color-black;
+  }
+
+  &--czar {
+    width: 190px;
+    height: 241px;
+    background: $color-black;
+    color: $color-white;
+  }
+
+  &--userAuth-input {
+    width: 190px;
+    height: 281px;
+    z-index: 1;
+    margin: -20% 0 0 25%;
+    padding: 10px 15px;
+
+    @media (min-width: $desktop) {
+      width: 258px;
+      height: 321px;
+    }
+  }
+
+  &--userAuth-czar {
+    margin-left: -25%;
+
+    @media (min-width: $desktop) {
+      width: 258px;
+      height: 321px;
+    }
+  }
+
+  &__content-wrapper {
+    height: 100px;
     display: flex;
     flex-direction: column;
-    font-family: $montserrat;
     justify-content: space-between;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    background: $color-white;
-    user-select: none;
-    border: 3px solid transparent;
-    transition : border 200ms ease-out;
 
-    @media (min-width:$tabletLarge){
-    width: 156px;
-    height: 180px;
+    @media (min-width: $desktop) {
+      height: 150px;
     }
+  }
 
-    &__signature{
-        font-family: $voltaire;
-        text-align: center;
-    }
-
-
-    &__error{
-        font-family: $montserrat;
-        color:$color-error;
-    }
-
-    &--player{
-        background:$color-white;
-        color:$color-black;
-    }
-
-    &--selected{
-        border:3px solid $color-black;
-        }
-
-    &--czar{
-        width: 190px;
-        height: 241px;
-        background: $color-black;
-        color:$color-white;
-    }
-
-    &--userAuth-input{
-        width: 190px;
-        height: 281px;
-        z-index: 1;
-        margin:-20% 0 0 25%;
-        padding: 10px 15px;
-        
-        @media(min-width:$desktop){
-            width: 258px;
-            height: 321px;
-        }
-    }
-
-    &--userAuth-czar{
-        margin-left:-25%;
-
-        @media(min-width:$desktop){
-            width: 258px;
-            height: 321px;
-        }
-    }
-
-    &__content-wrapper{
-        height:100px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-
-
-        @media(min-width:$desktop){
-            height:150px;
-        }
-    }
-
-    &__input{
-        text-align: center;
-        display: block;
-        font-family: $voltaire;
-    }
-
-    &__text{
+  &__input {
+    text-align: center;
+    display: block;
+    font-family: $voltaire;
+  }
+  
+  &__text{
         word-wrap: break-word;
         text-align: left;
     }
 
-    &__signature-wrapper{
-        display: flex;
-        height: 50px;
-        justify-content: space-between;
-        flex-direction: column;
-    }
-
+  &__signature-wrapper {
+    display: flex;
+    height: 50px;
+    justify-content: space-between;
+    flex-direction: column;
+  }
 }

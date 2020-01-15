@@ -63,7 +63,7 @@ export default {
             slidesPerView: 4
           },
           1044: {
-            slidesPerView: 3
+            slidesPerView: 2
           },
           600: {
             slidesPerView: 2
