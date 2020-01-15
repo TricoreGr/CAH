@@ -1,7 +1,7 @@
 from flask_socketio import SocketIO,emit,send,join_room,leave_room
 from ..socket import socketio
 from ..users.services import returnImg
-from .services import insertPlayer,getCzarAsJson, getRandomPlayer, getNextCzar, splitCards, checkToDeleteRoom, removeUserFromTable
+from .services import insertPlayer,getCzarAsJson, getRandomPlayer, getNextCzar, splitCards, checkToDeleteRoom, removeUserFromTable, submitBlackCard
 
 @socketio.on('joined')
 def joined(data):
@@ -30,4 +30,5 @@ def start(data):
     else:
        czar = getNextCzar(czar,room)
     splitCards(room)
+    submitBlackCard(room)
     emit('nextRoundReady', room=room)
