@@ -319,6 +319,7 @@ def checkToDeleteRoom(roomId):
             roomsCollection.delete_one(query)
             message = {
                 'message' : 'Room is deleted'
+            }
         else:
             message = {
                 'message' : 'Romm was not deleted'

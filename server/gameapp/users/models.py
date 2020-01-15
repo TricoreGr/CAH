@@ -15,7 +15,7 @@ class User(db.Model):
     username = db.Column(db.String(120) , primary_key=True, unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
     email = db.Column(db.String(200), unique=True, nullable=False)
-    img = db.Column(db.String(300))
+    img = db.Column(db.String(300), default='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1HwEPiKz4lsD5ilzNbsIWM8JuzS49G--StZSNCJSAwE8VKAeM&s')
     games = db.Column(db.Integer)
     wins = db.Column(db.Integer)
 

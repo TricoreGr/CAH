@@ -1,9 +1,11 @@
 from gameapp import create_app,socketio
 from flask_cors import CORS
-from .gameapp.users.models import db
+
 app = create_app()
 socketio = socketio
+
 from gameapp.chat import * 
+from gameapp.users.models import db
 
 CORS(app, resources={r'/*': {'origins': '*'}})
 
