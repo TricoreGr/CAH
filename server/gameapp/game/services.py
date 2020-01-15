@@ -112,10 +112,14 @@ def getBlackCard(roomId):
 
 
 def getPlayers(roomId):
+    print("hiii")
     roomDocument = roomsCollection.find_one({'_id': ObjectId(roomId)})
-    players = roomDocument['gamesession']['players']
-    return Response(json.dumps({'players': players}, default=json_util.default),
+    print(roomDocument)
+    playersDoc = roomDocument['gamesession']['players']
+    print(playersDoc)
+    return Response(json.dumps({'players': playersDoc}, default=json_util.default),
                     mimetype='application/json')
+    
 
 def getRandomPlayer(roomId):
     roomDocument = roomsCollection.find_one({'_id': ObjectId(roomId)})
@@ -207,7 +211,7 @@ def submitWhiteCards(roomId, token, cards):
         print(e)
         return {"message": "Server error"}, 500
 
-def insertPlayer(roomId, username):
+def insertPlayer(roomId, username, img):
     try:
         query = {
                 '_id': ObjectId(roomId)
@@ -215,6 +219,7 @@ def insertPlayer(roomId, username):
         userObject = {
             "username": username,
             "points" : 0,
+            "img": img,
             "whitecards": []
         }
         new_vals = {
