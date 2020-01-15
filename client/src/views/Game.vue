@@ -251,23 +251,26 @@ export default {
         this.fetchWhiteCards,
         this.fetchBlackCard
       );
-      this.socket.handlePlayerSubmission(this.updatePlayerSubmissionState)
+      this.socket.handlePlayerSubmission(this.updatePlayerSubmissionState);
     },
     leaveGame() {
       this.socket.leaveGame();
       this.$router.push("/play");
     },
+    //todo; triggers event
     submitCards() {
       this.player.setHasPlayed(true);
       //todo: fix it
-      const url = "http://localhost:5000/rooms/";
+      const url =
+        "http://localhost:5000/rooms/" + this.room + "/round/whitecards";
       var selectedCards = [];
       for (var index of this.selectedCardsIndexes);
-       selectedCards.push(this.whiteCards[index]);
-
-      console.log(selectedCards);
+      selectedCards.push(this.whiteCards[index]);
       axios
-        .post(url, { selectedCards: selectedCards })
+        .post(url, {
+          token: localStorage.getItem("authToken"),
+          cards: selectedCards
+        })
         .then(res => {
           console.log(res);
         })
@@ -286,6 +289,8 @@ export default {
         }
       }
     },
+
+    //todo: after a user submits
     updatePlayerSubmissionState(username) {
       if (username == this.player.getUsername()) this.player.setHasPlayed(true);
       for (var player of this.players) {
@@ -325,6 +330,49 @@ export default {
           this.cardsToPick = res.data["blackCard"]["pick"];
         })
         .catch(error => console.log(error));
+    },
+    //todo: next round comes
+    resetPlayers() {
+      for (var player of this.players) {
+        player.setHasPlayed(false);
+        player.setIsCzar(false);
+      }
+
+      this.player.setIsCzar(false);
+      this.player.setHasPlayed(false);
+    },
+    //todo: after czar chooses favorite card
+    handleWinner(username) {
+      if (username == this.player.getUsername()) {
+        this.player.increasePoints();
+        this.roundWinner = this.player;
+      }
+
+      for (var player of this.players) {
+        if (player.getUsername() == username) {
+          player.increasePoints();
+          this.roundWinner = player;
+          return;
+        }
+      }
+    },
+
+    fetchPlayers() {
+      const roomUrl = "http://localhost:5000/rooms/" + this.room;
+      axios
+        .get(roomUrl + "/players", {
+          token: localStorage.getItem("authToken")
+        })
+        .then(res => {
+          var data = res.data;
+          console.log(data);
+          for (var user of data.players) {
+            var player = new Player(user.username, user.img);
+            player.setPoints(user.points);
+            this.updatePlayers(player);
+          }
+        })
+        .catch(error => console.log(error));
     }
   },
   data() {
@@ -353,6 +401,7 @@ export default {
     this.room = this.$router.currentRoute.params.gameId;
     this.fetchOwner();
     this.fetchUsername();
+    this.fetchPlayers();
   },
   created() {
     this.player = new Player();

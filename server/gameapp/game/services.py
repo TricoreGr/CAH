@@ -159,7 +159,7 @@ def submitWhiteCards(roomId, token, cards):
     try:
         submittedUsername = getUsernameByJWToken(token)
         
-
+        cardsToAppend = ""
         for card in cards:
             cardsToAppend +=  card + "   +   "
         cardsToAppend = cardsToAppend[:-7]
