@@ -50,7 +50,7 @@
           <span v-if="cardsToPick > 1" class="inGame__hint">
             Special Round, Choose {{ cardsToPick }} cards!
           </span>
-          <span v-if="this.player.getIsCzar" class="inGame__hint">
+          <span v-if="this.player.getIsCzar()" class="inGame__hint scale-up-center">
             You're the czar! Choose the funniest card.
           </span>
         </transition>
@@ -97,7 +97,7 @@
           v-on:updateSelectedCardsIndexes="updateSelectedCardsIndexes($event)"
           :selectedCardsIndexes="selectedCardsIndexes"
           :cardsToPick="cardsToPick"
-          :cardTexts="this.player.getIsCzar()?whiteCards:submittedCards"
+          :cardTexts="this.player.getIsCzar()?submittedCards:whiteCards"
         ></cardCarousel>
       </div>
       <div class="inGame__userCarouselWrapper">
@@ -243,7 +243,7 @@ export default {
         this.setDefaultBlackCard,
         this.players.length
       );
-      this.socket.handleNextRoundReady(this.updateCzar,this.fetchWhiteCards);
+      this.socket.handleNextRoundReady(this.updateCzar,this.fetchWhiteCards,this.fetchBlackCard);
     },
     leaveGame() {
       this.socket.leaveGame();
@@ -285,7 +285,21 @@ export default {
           this.whiteCards = res.data['whitecards'];
         })
         .catch(error => console.log(error));
-    }
+    },
+    fetchBlackCard() {
+      const url =
+        "http://localhost:5000/rooms/" +
+        this.room +
+        "/round/blackcard";
+      axios
+        .get(url)
+        .then(res => {
+          console.log(res.data);
+          this.blackCard = res.data['blackCard']['text'];
+          this.cardsToPick = res.data['blackCard']['pick'];
+        })
+        .catch(error => console.log(error));
+    },
   },
   data() {
     return {
