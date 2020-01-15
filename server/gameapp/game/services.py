@@ -67,7 +67,8 @@ def getRoundWhiteCards(roomId):
         for card in card:
             white_cards.append(card)
         random.shuffle(white_cards)
-        return {"whiteCards":white_cards}
+        return Response(json.dumps({'whiteCards': white_cards}, default=json_util.default),
+                        mimetype='application/json')
     except Exception as e:
         print(e)
         return {'message','Server error'},500
@@ -209,6 +210,12 @@ def submitWhiteCards(roomId, token, cards):
     except Exception as e:
         print(e)
         return {"message": "Server error"}, 500
+
+def setUserPoints(roomId, username):
+    roomDocument = roomsCollection.find_one({'_id': ObjectId(roomId)})
+    playersArray = roomDocument['gamesession']['players']
+    print(playersArray)
+    return {'message':'ok'}
 
 def insertPlayer(roomId, username, img):
     try:
