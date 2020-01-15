@@ -98,3 +98,27 @@ def returnImg(username):
     if img is None:
         img = 'https://celebs.infoseemedia.com/wp-content/uploads/2019/08/Chris-Brown-and-Lisa-Ann-dated.jpg'
     return img
+
+def updateWins(username):
+    user = User.query.filter_by(username=username).first()
+    wins = user.wins
+    if wins is None:
+        user.wins = 1
+    else:
+        user.wins = wins + 1
+    db.session.commit()
+    user = User.query.filter_by(username=username).first()
+    output = user_schema.dump(user)
+    return {'user':output}
+
+def updateGames(username):
+    user = User.query.filter_by(username=username).first()
+    games = user.games
+    if games is None:
+        user.games = 1
+    else:
+        user.games = games + 1
+    db.session.commit()
+    user = User.query.filter_by(username=username).first()
+    output = user_schema.dump(user)
+    return {'user':output}

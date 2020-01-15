@@ -1,5 +1,5 @@
 from flask import Blueprint
-from .services import getUsers, getUser, checkCreds, addUser, getUserByJWToken, deleteUser, updateUser
+from .services import getUsers, getUser, checkCreds, addUser, getUserByJWToken, deleteUser, updateUser, updateGames, updateWins
 from flask import jsonify, request, Response
 
 users = Blueprint('users', __name__)
@@ -85,6 +85,29 @@ def login():
         print(e)
         response = {
             'message': 'Server error'
+        }
+        return response,500
+
+@users.route('/<username>/games', methods=['POST'])
+def updateGame(username):
+    try:
+        return updateGames(username)
+    except Exception as e:
+        print(e)
+        response = {
+            'message':'Server error'
+        }
+        return response,500
+
+
+@users.route('/<username>/wins', methods=['POST'])
+def updateWin(username):
+    try:
+        return updateWins(username)
+    except Exception as e:
+        print(e)
+        response = {
+            'message' : 'Server error'
         }
         return response,500
 
