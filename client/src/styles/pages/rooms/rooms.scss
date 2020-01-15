@@ -5,12 +5,9 @@
     display: flex;
     flex-flow: row wrap;
     min-width: 300px;
-    justify-content: flex-start;
+    justify-content: center;
     margin: 40px auto;
     overflow: hidden;
-    @media (max-width:$tablet){
-        justify-content: center;
-        }
   }
 
   &__loader{

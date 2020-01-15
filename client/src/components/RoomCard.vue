@@ -23,14 +23,14 @@ export default {
   },
   methods: {
     buttonPressed(usersJoined) {
-      if (usersJoined == 8) return;
+      if (usersJoined > 7) return;
       var url = this.$props.id;
       this.$router.push("/play/" + url);
     }
   },
   computed: {
     roomIsFull() {
-      return this.$props.usersJoined == 8;
+      return this.$props.usersJoined > 7;
     }
   }
 };
