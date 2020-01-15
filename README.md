@@ -82,8 +82,7 @@ User :
 | `/rooms/{roomID}/round/blackcard` | GET | Επιστρέφει μία μαύρη κάρτα , `returns blackcard` | 200(OK), 500(SERVER ERROR) |
 | `/rooms/{roomID}/players` | GET | Επιστρέφει τους παίχτες του room, `returns players` | 200(OK), 500(SERVER ERROR) |
 | `/rooms/{roomID}/players` | POST | Προσθέτει τον παίχτη στο room , `returns player` | 200(OK), 500(SERVER ERROR)|
-| `/rooms/{roomID}/players/{username}/whitecards` | GET | Επιστρέφει τις λευκές κάρτες του δεδομένου παίχτη, `returns whitecards` | 200(OK), 500(SERVER ERROR)
-|
+| `/rooms/{roomID}/players/{username}/whitecards` | GET | Επιστρέφει τις λευκές κάρτες του δεδομένου παίχτη, `returns whitecards` | 200(OK), 500(SERVER ERROR) |
 | `/rooms/{roomId}/owner` | GET | Επιστρέφει τον onwer του room, `returns owner` | 200(OK), 500(SERVER ERROR)|
 | `/rooms/{roomId}` | GET | Επιστρέφει το room, `returns room` | 200(OK), 500(SERVER ERROR) |
 | `/rooms/{roomId}/players/{username}/points` | POST | Αυξάνει τα points του νικητή , `returns player` | 200(OK), 500(SERVER ERROR) |
