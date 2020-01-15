@@ -121,3 +121,6 @@ User :
    1. Our professors for allowing us to make such a masterpiece
    2. Hell energy drinks
    3. Antidepressants
+   
+## Copy notice
+We are noticing some of you are copying our md file. Our lawers will be contacting you shortly
