@@ -66,7 +66,7 @@
                 <v-text-field
                   label="Username"
                   :type="'text'"
-                  :rules="[rules.required, rules.counter]"
+                  :rules="[rules.required, rules.counter,rules.illegalChars]"
                   @input="syncUsername"
                   value=""
                   v-model="username"
@@ -220,11 +220,13 @@ export default {
       formType: "signup",
       rules: {
         //vuetify form rules
+        illegalChars : value=> !/\W/.test(value) || "Illegal characters.",
         counter: value => value.length <= 20 || "Max 20 characters",
         required: value => !!value || "Required.",
         emailRules: [
           value => !!value || "E-mail is required",
-          value => /.+@.+\..+/.test(value) || "E-mail must be valid"
+          value => /.+@.+\..+/.test(value) || "E-mail must be valid",
+          value => !/.*\s.*/.test(value) || "Illegal characters."
         ]
       },
       //default values for cards
