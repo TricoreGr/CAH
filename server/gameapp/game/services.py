@@ -309,15 +309,21 @@ def splitCards(roomId):
     }
     roomsCollection.update_one(query,new_vals)
 
-def deleteRoom(roomId):
+def checkToDeleteRoom(roomId):
     try:
         query = {
             '_id' : ObjectId(roomId)
         }
-        roomsCollection.delete_one(query)
-        message = {
-            'message' : 'Room is deleted'
-        }
+        roomDocument = roomsCollection.find_one(query)
+        playas = roomDocument['gamesession']['players']
+        if len(playas) == 0:
+            roomsCollection.delete_one(query)
+            message = {
+                'message' : 'Room is deleted'
+        else:
+            message = {
+                'message' : 'Romm was not deleted'
+            }
         return jsonify(message)
     except:
         messsage = {

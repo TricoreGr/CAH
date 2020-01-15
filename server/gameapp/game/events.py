@@ -1,7 +1,7 @@
 from flask_socketio import SocketIO,emit,send,join_room,leave_room
 from ..socket import socketio
 from ..users.services import returnImg
-from .services import insertPlayer,getCzarAsJson, getRandomPlayer, getNextCzar, splitCards
+from .services import insertPlayer,getCzarAsJson, getRandomPlayer, getNextCzar, splitCards, checkToDeleteRoom
 
 @socketio.on('joined')
 def joined(data):
@@ -17,6 +17,7 @@ def joined(data):
 def left(data):
     username = data['username']
     room = data['room']
+    checkToDeleteRoom()
     leave_room(room)
     emit('playerLeft',{'user':'status','message':data['username']+' has left.','player':username}, room=room)
     

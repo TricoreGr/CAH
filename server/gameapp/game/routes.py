@@ -100,8 +100,3 @@ def handlePlayerCardsRoute(roomId, username):
     except Exception as e:
         print(e)
         return {'message': 'Server error'}, 500
-
-@game.route('/<roomId>/delete', methods=['DELETE'])
-def deleteTable(roomId):
-    response = deleteRoom(roomId)
-    return response
