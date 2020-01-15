@@ -1,5 +1,5 @@
 from flask import Blueprint, request
-from .services import getOwner,getRooms, submitWhiteCards, insertPlayer, createRoom, getRoundWhiteCards, getCzar, getBlackCard, getPlayers,getIndividualWhiteCards
+from .services import getOwner,getRooms, submitWhiteCards, insertPlayer, createRoom, getRoundWhiteCards, getCzar, getBlackCard, getPlayers,getIndividualWhiteCards, getTableStatus
 from .events import joined,left,start
 
 game = Blueprint('game', __name__)
@@ -100,3 +100,9 @@ def handlePlayerCardsRoute(roomId, username):
     except Exception as e:
         print(e)
         return {'message': 'Server error'}, 500
+
+@game.route('/<roomId>', methods=['GET'])
+def returnTableStatus(roomId):
+    table = getTableStatus(roomId)
+    del table['_id']
+    return table
