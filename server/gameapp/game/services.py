@@ -55,17 +55,20 @@ def getRandomWhiteCards():
     cursor = cardsCollection.find({})
     for document in cursor:
         allWhiteCards = document["whiteCards"]
-    print(len(allWhiteCards))
     return random.sample(allWhiteCards, k=146)
 
-def deleteRoom():
-    return okok
-
-
 def getRoundWhiteCards(roomId):
-    roomDocument = roomsCollection.find_one({'_id': ObjectId(roomId)})
-    session = roomDocument['gamesession']['round']['whitecards']
-    return {"message": "ok"}
+    try:
+        roomDocument = roomsCollection.find_one({'_id': ObjectId(roomId)})
+        cards = roomDocument['gamesession']['round']['whitecards']
+        white_cards = list()
+        for card in card:
+            white_cards.append(card)
+        random.shuffle(white_cards)
+        return {"whiteCards":white_cards}
+    except Exception as e:
+        print(e)
+        return {'message','Server error'},500
 
 def getCzar(roomId):
     czar = getCzarAsJson(roomId)
@@ -217,18 +220,6 @@ def getAllTable():
         }
     return jsonify(response)
 
-def deleteTable(id):
-    try:
-        query = {'id': id}
-        tables.delete_one(query)
-        message = 'Table was deleted'
-    except:
-        message = 'Unable to delete table'
-    response = {
-        'message': message
-    }
-    return jsonify(response)
-
 def addUserToTable(user, id):
     try:
         query = {'id': id}
@@ -287,19 +278,30 @@ def splitCards(roomId):
     whiteCards = roomDocument['gamesession']['cards']['whiteCards']
     players = roomDocument['gamesession']['players']
     new_values = list()
+    query = {
+        '_id' : ObjectId(roomId),
+    }
+
     for player in players:
         difference = 10 - len(player['whitecards'])
         player_cards = list()
+
         for i in range(difference):
-            player_cards.append(whiteCards.pop())
+            white_card = whiteCards.pop()
+            player_cards.append(white_card)
+            new_vals = {
+                '$pop' : {
+                    'gamesession.cards.whiteCards' : white_card
+                }
+            }
+            roomsCollection.update_one(quert,new_vals)
+
         new_values.append({
             'username': player['username'],
             "points" : player['points'],
             "whitecards" : player_cards
         })
-    query = {
-        '_id' : ObjectId(roomId),
-    }
+
     new_vals = {
         '$set' : {
             "gamesession.players": new_values
@@ -307,7 +309,7 @@ def splitCards(roomId):
     }
     roomsCollection.update_one(query,new_vals)
 
-def deleteTable(roomId):
+def deleteRoom(roomId):
     try:
         query = {
             '_id' : ObjectId(roomId)
