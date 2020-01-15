@@ -58,8 +58,7 @@
       <div class="inGame__mainCardWrapper">
         <card
           isCzar
-          text="Exercitation sint Lorem deserunt excepteur aliquip laboris in
-            ullamco veniam dolore nostrud."
+          :text="blackCard"
         ></card>
 
         <div class="inGame__chatButtonWrapper">
@@ -101,7 +100,7 @@
           v-on:updateSelectedCardsIndexes="updateSelectedCardsIndexes($event)"
           :selectedCardsIndexes="selectedCardsIndexes"
           :cardsToPick="cardsToPick"
-          :cardTexts="texts"
+          :cardTexts="whiteCards"
         ></cardCarousel>
       </div>
       <div class="inGame__userCarouselWrapper">
@@ -239,7 +238,7 @@ export default {
       this.socket = new GameSocket(this.player.getUsername(), this.room);
       this.socket.handleMessageUpdate(this.updateMessages);
       this.socket.handleLeave(this.updateMessages, this.removePlayer);
-      this.socket.handleJoin(this.updateMessages, this.updatePlayers);
+      this.socket.handleJoin(this.updateMessages, this.updatePlayers,this.gameStarted,this.setDefaultBlackCard,this.players.length);
       this.socket.handleNextRoundReady(this.updateCzar);
     },
     leaveGame() {
@@ -256,12 +255,18 @@ export default {
     },
     updateCzar(username) {
       if (username == this.player.getUsername()) this.player.setIsCzar(true);
-      for (player in this.players) {
+      for (player of this.players) {
         if (player.getUsername() == username) {
+          console.log("mpika enimerosa");
           player.setIsCzar(false);
           return;
         }
       }
+    },
+    setDefaultBlackCard(){
+       this.players.length>=1
+       ?this.blackCard = `waiting for player ${this.owner} to start the game...`
+       :this.blackCard = 'waiting for players...'
     }
   },
   data() {
@@ -279,7 +284,8 @@ export default {
       roundWinner: Object,
       gameStarted: false,
       pickingPhase: true,
-      texts: [
+      blackCard:"Waiting for players...",
+      whiteCards: [
         "POUTSA",
         "lelelelelle",
         "lalalallalala",
@@ -292,7 +298,6 @@ export default {
       player: Object
     };
   },
-  computed: {},
   mounted() {
     this.nextRoundAnimation(0); //for showing off purposes
     this.room = this.$router.currentRoute.params.gameId;

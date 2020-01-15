@@ -42,13 +42,19 @@ class GameSocket {
     });
   };
 
-  handleJoin = (updateMessages, updatePlayers) => {
+  handleJoin = (
+    updateMessages,
+    updatePlayers,
+    gameStarted,
+    setBlackCard,
+  ) => {
     this.socket.on("playerJoined", data => {
       var player = new Player(data.player, data.image);
       updatePlayers(player);
       updateMessages(data.user, data.message);
-    });
-  };
+      if (!gameStarted)
+          setBlackCard();
+  })}
 
   handleNextRoundReady = updateCzar => {
     //todo: set picking phase false
