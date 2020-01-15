@@ -295,3 +295,25 @@ def checkToDeleteRoom(roomId):
             }
     except:
         pass
+
+def submitBlackCard(roomId):
+    try:
+        query = {
+            '_id' : ObjectId(roomId)
+        }
+        roomDocument = roomsCollection.find(query)
+        blackCards = roomDocument['gamesession']['cards']['blackCards']
+        text, pick = random.choice(list(blackCards.items()))
+        card = {
+            "text":text,
+            "pick":pick
+        }
+        new_values = {
+            '$pull' : {
+                    'gamesession.cards.blackCards' : card
+                }
+        }
+        roomsCollection.update_one(qyert,new_values)
+    except Exception as e:
+        print(e)
+        
