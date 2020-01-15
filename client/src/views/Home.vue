@@ -8,7 +8,7 @@
           src="https://static-ssl.businessinsider.com/image/54fda64869bedd6c797376de-1200-600/cards-against-humanity-1.jp2"
           class="parallax"
         >
-          <v-btn class="parallax__button">
+          <v-btn class="parallax__button" router to="/play">
             PLAY NOW!
           </v-btn>
         </v-parallax>
