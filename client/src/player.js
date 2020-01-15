@@ -1,6 +1,6 @@
 class Player {
   username = String;
-  imageSrc = 'String';
+  imageSrc = String;
   points = 0;
   hasPlayed = false;
   isCzar = false;
@@ -19,6 +19,11 @@ class Player {
 
   setHasPlayed(hasPlayed) {
     this.hasPlayed = hasPlayed;
+  }
+
+  setUsername(username) {
+    console.log(username);
+    this.username = username;
   }
 
   setIsCzar(isCzar) {
