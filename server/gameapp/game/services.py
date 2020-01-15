@@ -212,7 +212,7 @@ def submitWhiteCards(roomId, token, cards):
         return {"message": "Server error"}, 500
 
 def setUserPoints(roomId, username):
-    roomDocument = roomsCollection.find_one('_id': ObjectId(roomId))
+    roomDocument = roomsCollection.find_one({'_id': ObjectId(roomId)})
     playersArray = roomDocument['gamesession']['players']
     print(playersArray)
     return {'message':'ok'}
