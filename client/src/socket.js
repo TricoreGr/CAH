@@ -56,7 +56,7 @@ class GameSocket {
           setBlackCard();
   })}
 
-  handleNextRoundReady = (updateCzar,fetchWhiteCards,fetchBlackCard) => {
+  handleNextRoundReady = (updateCzar,fetchWhiteCards,fetchBlackCard,updateGameState) => {
     this.socket.on("nextRoundReady", () => {
       const roomUrl = "http://localhost:5000/rooms/" + this.room;
       axios
@@ -68,6 +68,7 @@ class GameSocket {
           updateCzar(czar);
           fetchWhiteCards();
           fetchBlackCard();
+          updateGameState();
         })
         .catch(error => console.log(error));
     });
@@ -77,6 +78,12 @@ class GameSocket {
   handlePlayerSubmission=updatePlayerSubmissionState=>{
     this.socket.on("playerSubmission", data => {
       updatePlayerSubmissionState(data.username)
+    });
+  }
+
+  handleCzarPickingPhase=(fetchSubmittedCards) =>{
+    this.socket.on("czarPickingPhase", () => {
+      fetchSubmittedCards();
     });
   }
 

@@ -64,9 +64,10 @@ def getRoundWhiteCards(roomId):
         roomDocument = roomsCollection.find_one({'_id': ObjectId(roomId)})
         cards = roomDocument['gamesession']['round']['whitecards']
         white_cards = list()
-        for card in card:
+        for card in cards:
             white_cards.append(card)
         random.shuffle(white_cards)
+        print(white_cards)
         return Response(json.dumps({'whiteCards': white_cards}, default=json_util.default),
                         mimetype='application/json')
     except Exception as e:
@@ -114,9 +115,7 @@ def getBlackCard(roomId):
 
 def getPlayers(roomId):
     roomDocument = roomsCollection.find_one({'_id': ObjectId(roomId)})
-    print(roomDocument)
     playersDoc = roomDocument['gamesession']['players']
-    print(playersDoc)
     return Response(json.dumps({'players': playersDoc}, default=json_util.default),
                     mimetype='application/json')
     
@@ -375,6 +374,7 @@ def getTableStatus(roomId):
 
 def checkCzarTurn(roomId):
     try:
+        print("CZAR TEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEST")
         query = {
             '_id': ObjectId(roomId)
         }
@@ -382,10 +382,13 @@ def checkCzarTurn(roomId):
         roomDocument = roomsCollection.find_one(query)
         players = roomDocument['gamesession']['players']
         cards = roomDocument['gamesession']['round']['whitecards']
-        for player in player:
+        for player in players:
+            print(len(player['whitecards']))
             if len(player['whitecards']) != 0:
                 player_counter += 1
+        print(player_counter)       
         if len(cards) == player_counter - 1:
+            print("WORKS")
             return cards
         else:
             return False

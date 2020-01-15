@@ -249,13 +249,18 @@ export default {
       this.socket.handleNextRoundReady(
         this.updateCzar,
         this.fetchWhiteCards,
-        this.fetchBlackCard
+        this.fetchBlackCard,
+        this.updateGameState
       );
       this.socket.handlePlayerSubmission(this.updatePlayerSubmissionState);
+      this.socket.handleCzarPickingPhase(this.fetchSubmittedCards);
     },
     leaveGame() {
       this.socket.leaveGame();
       this.$router.push("/play");
+    },
+    updateGameState(){
+      this.gameStarted=true;
     },
     //todo; triggers event
     submitCards() {
@@ -327,7 +332,25 @@ export default {
         .then(res => {
           console.log(res.data);
           this.blackCard = res.data["blackCard"]["text"];
+          console.log(res.data["blackCard"]["pick"]);
           this.cardsToPick = res.data["blackCard"]["pick"];
+        })
+        .catch(error => console.log(error));
+    },
+    fetchSubmittedCards(){
+      const url =
+        "http://localhost:5000/rooms/" + this.room + "/round/whitecards";
+      axios
+        .get(url)
+        .then(res => {
+          this.submittedData=res.data;
+          console.log("res",res.data["whiteCards"][0])
+          for (var i=0;  i<res.data["whiteCards"].length; i++) 
+          {
+            console.log(i);
+            console.log("card",res.data["whiteCards"][i].cards)
+            this.submittedCards.push(res.data["whiteCards"][i].cards)
+          }
         })
         .catch(error => console.log(error));
     },
@@ -356,7 +379,6 @@ export default {
         }
       }
     },
-
     fetchPlayers() {
       const roomUrl = "http://localhost:5000/rooms/" + this.room;
       axios
@@ -373,6 +395,9 @@ export default {
           }
         })
         .catch(error => console.log(error));
+    },
+    pickCard(){
+
     }
   },
   data() {
@@ -388,17 +413,19 @@ export default {
       socket: Object,
       roundWinner: Object,
       gameStarted: false,
-      pickingPhase: true,
+      pickingPhase: false,
       blackCard: "Waiting for players...",
       whiteCards: [],
       submittedCards: [],
       players: [],
-      player: Object
+      player: Object,
+      submittedData:[]
     };
   },
   mounted() {
-    this.nextRoundAnimation(0); //for showing off purposes
-    this.room = this.$router.currentRoute.params.gameId;
+
+
+this.room = this.$router.currentRoute.params.gameId;
     this.fetchOwner();
     this.fetchUsername();
     this.fetchPlayers();
