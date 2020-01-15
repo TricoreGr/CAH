@@ -34,7 +34,6 @@ def createRoom(token):
         whiteCards = getRandomWhiteCards()
         blackCards = getRandomBlackCards()
         room = roomModel(owner, blackCards, whiteCards)
-        print(room)
         roomsCollection.insert_one(room)
         createdRoom = roomsCollection.find_one({"owner": owner})
         return Response(json.dumps({'room': createdRoom}, default=json_util.default),
@@ -201,27 +200,9 @@ def insertPlayer(roomId, username):
         print(e)
         return {"message": "Server error"}, 500
 
-def getAllTable():
-    try:
-        rooms = []
-        cursor = tables.find({})
-        for table in cursor:
-            id = table['id']
-            players = len(table['players'])
-            rooms.append({"id": id, "players": players})
-        response = {
-            'message': 'All table',
-            'tables': rooms
-        }
-    except:
-        response = {
-            'message': 'Could not return tables'
-        }
-    return jsonify(response)
-
 def addUserToTable(user, id):
     try:
-        query = {'id': id}
+        query = {'_id': ObjectId(roomId)}
         newuser = {'$push': {
             'players': [
                 {'username': user['username'], 'points':0, 'whitecards':[]}
@@ -235,25 +216,17 @@ def addUserToTable(user, id):
     }
     return jsonify(response)
 
-def removeUserFromTable(user, id):
+def removeUserFromTable(username, roomId):
     try:
-        query = {'id': id}
-        new_vals = {'$pull': {
-            'players': [
-                {'username': user['username']}
-            ]}}
-        tables.update_one(query, new_vals)
-        message = 'User removed from table'
+        query = {'_id': ObjectId(roomId)}
+        new_vals = {'$pull': {'gamesession.players': {'username': username}}}
+        roomsCollection.update_one(query, new_vals)
     except:
-        message = 'User was not removed from table'
-    response = {
-        'message': message
-    }
-    return jsonify(response)
+        pass
 
 def getSubmitedCards(id):
     try:
-        query = {'id': id}
+        query = {'_id': ObjectId(roomId)}
         result = tables.find_one(query)
         session = result['gamesession']
         cards = session['whiteCards']
@@ -272,7 +245,7 @@ def getUsernameByJWToken(token):
     username = jwt.decode(token, Config.SECRET_KEY)['user']
     return username
 
-def splitCards(roomId): #TODO remove added cardes from db when splitting
+def splitCards(roomId):
     roomDocument = roomsCollection.find_one({'_id': ObjectId(roomId)})
     whiteCards = roomDocument['gamesession']['cards']['whiteCards']
     players = roomDocument['gamesession']['players']
@@ -320,13 +293,5 @@ def checkToDeleteRoom(roomId):
             message = {
                 'message' : 'Room is deleted'
             }
-        else:
-            message = {
-                'message' : 'Romm was not deleted'
-            }
-        return jsonify(message)
     except:
-        messsage = {
-            'message' : 'Server error' 
-        }
-        return jsonify(message),500
+        pass

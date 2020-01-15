@@ -17,7 +17,7 @@ def left(data):
     username = data['username']
     room = data['room']
     removeUserFromTable(username,room)
-    checkToDeleteRoom()
+    checkToDeleteRoom(room)
     leave_room(room)
     emit('playerLeft',{'user':'status','message':data['username']+' has left.','player':username}, room=room)
     
