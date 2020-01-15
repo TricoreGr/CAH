@@ -50,7 +50,10 @@
           <span v-if="cardsToPick > 1" class="inGame__hint">
             Special Round, Choose {{ cardsToPick }} cards!
           </span>
-          <span v-if="this.player.getIsCzar()" class="inGame__hint scale-up-center">
+          <span
+            v-if="this.player.getIsCzar()"
+            class="inGame__hint scale-up-center"
+          >
             You're the czar! Choose the funniest card.
           </span>
         </transition>
@@ -81,15 +84,16 @@
               rounded
               color="black"
               v-if="
-                this.startGamePriviladges() ||
-                  (gameStarted && cardsToPick == selectedCardsIndexes.length)
+                this.startGamePrivileges() ||
+                  (gameStarted &&
+                    cardsToPick == selectedCardsIndexes.length &&
+                    !this.player.getHasPlayed())
               "
               dark
-              :disabled="hasSubmitted"
               class="inGame__submitButton"
-              @click="startGamePriviladges() ? startGame() : submitCards()"
+              @click="startGamePrivileges() ? startGame() : submitCards()"
             >
-              {{ this.startGamePriviladges() ? "Start Game!" : "Submit!" }}
+              {{ this.startGamePrivileges() ? "Start Game!" : "Submit!" }}
             </v-btn>
           </transition>
         </div>
@@ -97,7 +101,7 @@
           v-on:updateSelectedCardsIndexes="updateSelectedCardsIndexes($event)"
           :selectedCardsIndexes="selectedCardsIndexes"
           :cardsToPick="cardsToPick"
-          :cardTexts="this.player.getIsCzar()?submittedCards:whiteCards"
+          :cardTexts="this.player.getIsCzar() ? submittedCards : whiteCards"
         ></cardCarousel>
       </div>
       <div class="inGame__userCarouselWrapper">
@@ -175,7 +179,7 @@ export default {
         element => element.getUsername() != player.getUsername()
       );
     },
-    startGamePriviladges() {
+    startGamePrivileges() {
       return this.owner == this.player.getUsername() && !this.gameStarted;
     },
     scrollToLastMessage() {
@@ -183,7 +187,6 @@ export default {
       var test = document.getElementsByClassName(
         "v-navigation-drawer__content"
       )[0];
-
       //scroll to the end of the container
       test.scrollTop = test.scrollHeight;
     },
@@ -243,15 +246,32 @@ export default {
         this.setDefaultBlackCard,
         this.players.length
       );
-      this.socket.handleNextRoundReady(this.updateCzar,this.fetchWhiteCards,this.fetchBlackCard);
+      this.socket.handleNextRoundReady(
+        this.updateCzar,
+        this.fetchWhiteCards,
+        this.fetchBlackCard
+      );
+      this.socket.handlePlayerSubmission(this.updatePlayerSubmissionState)
     },
     leaveGame() {
       this.socket.leaveGame();
       this.$router.push("/play");
     },
     submitCards() {
-      this.hasSubmitted = true;
-      //todo: handle submit
+      this.player.setHasPlayed(true);
+      //todo: fix it
+      const url = "http://localhost:5000/rooms/";
+      var selectedCards = [];
+      for (var index of this.selectedCardsIndexes);
+       selectedCards.push(this.whiteCards[index]);
+
+      console.log(selectedCards);
+      axios
+        .post(url, { selectedCards: selectedCards })
+        .then(res => {
+          console.log(res);
+        })
+        .catch(error => console.log(error));
     },
     startGame() {
       this.gameStarted = true;
@@ -261,8 +281,16 @@ export default {
       if (username == this.player.getUsername()) this.player.setIsCzar(true);
       for (var player of this.players) {
         if (player.getUsername() == username) {
-          console.log("mpika enimerosa");
-          player.setIsCzar(false);
+          player.setIsCzar(true);
+          return;
+        }
+      }
+    },
+    updatePlayerSubmissionState(username) {
+      if (username == this.player.getUsername()) this.player.setHasPlayed(true);
+      for (var player of this.players) {
+        if (player.getUsername() == username) {
+          player.setHasPlayed(true);
           return;
         }
       }
@@ -282,24 +310,22 @@ export default {
       axios
         .get(url)
         .then(res => {
-          this.whiteCards = res.data['whitecards'];
+          this.whiteCards = res.data["whitecards"];
         })
         .catch(error => console.log(error));
     },
     fetchBlackCard() {
       const url =
-        "http://localhost:5000/rooms/" +
-        this.room +
-        "/round/blackcard";
+        "http://localhost:5000/rooms/" + this.room + "/round/blackcard";
       axios
         .get(url)
         .then(res => {
           console.log(res.data);
-          this.blackCard = res.data['blackCard']['text'];
-          this.cardsToPick = res.data['blackCard']['pick'];
+          this.blackCard = res.data["blackCard"]["text"];
+          this.cardsToPick = res.data["blackCard"]["pick"];
         })
         .catch(error => console.log(error));
-    },
+    }
   },
   data() {
     return {
@@ -308,9 +334,8 @@ export default {
       chatNotification: false,
       drawer: false,
       selectedCardsIndexes: [],
-      cardsToPick: 1,
+      cardsToPick: -1,
       messages: [],
-      hasSubmitted: false, //todo: set it up with player
       room: String,
       socket: Object,
       roundWinner: Object,
@@ -318,7 +343,7 @@ export default {
       pickingPhase: true,
       blackCard: "Waiting for players...",
       whiteCards: [],
-      submittedCards:[],
+      submittedCards: [],
       players: [],
       player: Object
     };

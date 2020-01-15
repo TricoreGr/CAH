@@ -72,6 +72,14 @@ class GameSocket {
         .catch(error => console.log(error));
     });
   };
+
+  //todo: receive username
+  handlePlayerSubmission=updatePlayerSubmissionState=>{
+    this.socket.on("playerSubmission", data => {
+      updatePlayerSubmissionState(data.username)
+    });
+  }
+
   leaveGame = () => {
     this.socket.emit("leave", {
       username: this.username,
