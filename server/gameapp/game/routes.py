@@ -1,5 +1,5 @@
 from flask import Blueprint, request
-from .services import getOwner,getRooms, submitWhiteCards, insertPlayer, createRoom, getRoundWhiteCards, getCzar, getBlackCard, getPlayers,getIndividualWhiteCards, getTableStatus
+from .services import getOwner,getRooms, submitWhiteCards, insertPlayer, createRoom, getRoundWhiteCards, getCzar, getBlackCard, getPlayers,getIndividualWhiteCards, getTableStatus,checkWinner
 from .events import joined,left,start
 
 game = Blueprint('game', __name__)

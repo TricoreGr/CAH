@@ -384,3 +384,29 @@ def checkCzarTurn(roomId):
             return False
     except:
         return False
+
+def checkWinner(roomId):
+    try:
+        query = {
+            '_id' : ObjectId(roomId)
+        }
+        roomDocument = roomsCollection.find_one(query)
+        players = roomDocument['gamesession']['players']
+        winner = dict()
+        for player in players:
+            if player['points'] == 5:
+                winner = {
+                    'username': player['username'],
+                    'image' : player['image']
+                }
+                break
+        if len(winner) != 0:
+            return winner
+        else:
+            return jsonify({'message':'No winner here'})
+    except Exception as e:
+        print(e)
+        response = {
+            'message':'Server error'
+        }
+        return jsonify(response),500
