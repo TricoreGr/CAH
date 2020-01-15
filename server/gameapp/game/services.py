@@ -318,8 +318,9 @@ def deleteRoom(roomId):
         message = {
             'message' : 'Room is deleted'
         }
+        return jsonify(message)
     except:
         messsage = {
-            'message' : 'Server error' , 500
+            'message' : 'Server error' 
         }
-    return jsonify(message)
+        return jsonify(message),500
