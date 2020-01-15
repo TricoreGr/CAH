@@ -2,7 +2,7 @@
   <v-app>
     <div class="inGame" :class="{ 'inGame--czar': this.player.getIsCzar() }">
       <div v-for="index in 3" :key="index" class="inGame__animation">
-        <player v-bind="player"></player>
+        <player v-bind="roundWinner"></player>
       </div>
       <div class="inGame__statusWrapper">
         <v-btn rounded color="black" dark @click="leaveGame">
@@ -84,14 +84,24 @@
               rounded
               color="black"
               v-if="
-                this.startGamePrivileges() ||
-                  (gameStarted &&
+
+                this.pickCardPrivileges() ||
+                  this.startGamePrivileges() ||
+                  (!pickingPhase && gameStarted &&
+
                     cardsToPick == selectedCardsIndexes.length &&
                     !this.player.getHasPlayed())
               "
               dark
               class="inGame__submitButton"
-              @click="startGamePrivileges() ? startGame() : submitCards()"
+              @click="
+                startGamePrivileges()
+                  ? startGame()
+                  : pickingPhase
+                  ? submitPickedCard()
+                  : submitCards()
+              "
+
             >
               {{ this.startGamePrivileges() ? "Start Game!" : "Submit!" }}
             </v-btn>
@@ -101,7 +111,13 @@
           v-on:updateSelectedCardsIndexes="updateSelectedCardsIndexes($event)"
           :selectedCardsIndexes="selectedCardsIndexes"
           :cardsToPick="cardsToPick"
-          :cardTexts="this.player.getIsCzar() ? submittedCards : whiteCards"
+          :cardTexts="
+            pickingPhase
+              ? submittedCards
+              : !player.getIsCzar()
+              ? whiteCards
+              : null
+          "
         ></cardCarousel>
       </div>
       <div class="inGame__userCarouselWrapper">
@@ -144,6 +160,13 @@ export default {
           //oops
           console.log(error);
         });
+    },
+    pickCardPrivileges() {
+      return (
+        this.player.getIsCzar() &&
+        this.pickingPhase &&
+        this.selectedCardsIndexes.length == 1
+      );
     },
     fetchOwner() {
       const path = `http://localhost:5000/rooms/${this.room}/owner`;
@@ -194,6 +217,7 @@ export default {
       this.selectedCardsIndexes = indexArray;
     },
     nextRoundAnimation(i) {
+      console.log(this.roundWinner);
       var translate_y;
       i++;
       switch (i) {
@@ -249,25 +273,62 @@ export default {
       this.socket.handleNextRoundReady(
         this.updateCzar,
         this.fetchWhiteCards,
-        this.fetchBlackCard
+
+        this.fetchBlackCard,
+        this.updateGameState
       );
-      this.socket.handlePlayerSubmission(this.updatePlayerSubmissionState)
+      this.socket.handlePlayerSubmission(this.updatePlayerSubmissionState);
+      this.socket.handleCzarPickingPhase(this.fetchSubmittedCards);
+      this.socket.handleWinner(this.updateWinner);
+    },
+    updateWinner(winner){
+
+      if(winner == this.player.getUsername())
+           this.roundWinner = this.player;
+      else
+      for (var user of this.players){
+        if(user.getUsername() == winner){
+          this.roundWinner = user;
+          return;
+        }
+      }
+      this.nextRoundAnimation(0);
+
     },
     leaveGame() {
       this.socket.leaveGame();
       this.$router.push("/play");
     },
+    updateGameState() {
+      for (var user of this.players){
+        user.setIsCzar(false);
+        user.setHasPlayed(false);
+      }
+      this.player.setIsCzar(false);
+      this.player.setHasPlayed(false);
+      this.pickingPhase = false;
+      this.gameStarted = true;
+    },
+    //todo; triggers event
     submitCards() {
       this.player.setHasPlayed(true);
       //todo: fix it
-      const url = "http://localhost:5000/rooms/";
-      var selectedCards = [];
-      for (var index of this.selectedCardsIndexes);
-       selectedCards.push(this.whiteCards[index]);
 
-      console.log(selectedCards);
+      const url =
+        "http://localhost:5000/rooms/" + this.room + "/round/whitecards";
+      var selectedCards = [];
+      console.log("selectedCardIntexes", this.selectedCardsIndexes);
+
+      for (var i = 0; i < this.selectedCardsIndexes.length; i++) {
+        selectedCards.push(this.whiteCards[this.selectedCardsIndexes[i]]);
+      }
+
       axios
-        .post(url, { selectedCards: selectedCards })
+        .post(url, {
+          token: localStorage.getItem("authToken"),
+          cards: selectedCards
+        })
+
         .then(res => {
           console.log(res);
         })
@@ -286,6 +347,10 @@ export default {
         }
       }
     },
+
+
+    //todo: after a user submits
+
     updatePlayerSubmissionState(username) {
       if (username == this.player.getUsername()) this.player.setHasPlayed(true);
       for (var player of this.players) {
@@ -313,6 +378,8 @@ export default {
           this.whiteCards = res.data["whitecards"];
         })
         .catch(error => console.log(error));
+
+        console.log(this.whiteCards);
     },
     fetchBlackCard() {
       const url =
@@ -322,9 +389,83 @@ export default {
         .then(res => {
           console.log(res.data);
           this.blackCard = res.data["blackCard"]["text"];
+
+          console.log(res.data["blackCard"]["pick"]);
           this.cardsToPick = res.data["blackCard"]["pick"];
         })
         .catch(error => console.log(error));
+    },
+    fetchSubmittedCards() {
+      this.pickingPhase = true;
+      this.cardsToPick = 1;
+      const url =
+        "http://localhost:5000/rooms/" + this.room + "/round/whitecards";
+      axios
+        .get(url)
+        .then(res => {
+          this.submittedData = res.data;
+          console.log("res", res.data["whiteCards"][0]);
+          for (var i = 0; i < res.data["whiteCards"].length; i++) {
+            console.log(i);
+            console.log("card", res.data["whiteCards"][i].cards);
+            this.submittedCards.push(res.data["whiteCards"][i].cards);
+          }
+        })
+        .catch(error => console.log(error));
+    },
+    //todo: next round comes
+    resetPlayers() {
+      for (var player of this.players) {
+        player.setHasPlayed(false);
+        player.setIsCzar(false);
+      }
+      this.player.setIsCzar(false);
+      this.player.setHasPlayed(false);
+    },
+    //todo: after czar chooses favorite card
+    handleWinner(username) {
+      if (username == this.player.getUsername()) {
+        this.player.increasePoints();
+        this.roundWinner = this.player;
+      }
+
+      for (var player of this.players) {
+        if (player.getUsername() == username) {
+          player.increasePoints();
+          this.roundWinner = player;
+          return;
+        }
+      }
+    },
+    fetchPlayers() {
+      const roomUrl = "http://localhost:5000/rooms/" + this.room;
+      axios
+        .get(roomUrl + "/players", {
+          token: localStorage.getItem("authToken")
+        })
+        .then(res => {
+          var data = res.data;
+          console.log(data);
+          for (var user of data.players) {
+            var player = new Player(user.username, user.img);
+            player.setPoints(user.points);
+            this.updatePlayers(player);
+          }
+        })
+        .catch(error => console.log(error));
+    },
+    submitPickedCard() {
+      var selectedIndex = this.selectedCardsIndexes[0];
+      var username = this.submittedData["whiteCards"][selectedIndex]["username"];
+      this.socket.roundOver(username);
+
+      const roomUrl = "http://localhost:5000/rooms/" + this.room+"/players/"+username+"/points";
+      axios.post(roomUrl,{}).then( () =>{
+        this.player.setIsCzar(false);
+        this.socket.startGame(this.room);
+      });
+      
+
     }
   },
   data() {
@@ -340,19 +481,20 @@ export default {
       socket: Object,
       roundWinner: Object,
       gameStarted: false,
-      pickingPhase: true,
+      pickingPhase: false,
       blackCard: "Waiting for players...",
       whiteCards: [],
       submittedCards: [],
       players: [],
-      player: Object
+      player: Object,
+      submittedData: []
     };
   },
   mounted() {
-    this.nextRoundAnimation(0); //for showing off purposes
     this.room = this.$router.currentRoute.params.gameId;
     this.fetchOwner();
     this.fetchUsername();
+    this.fetchPlayers();
   },
   created() {
     this.player = new Player();

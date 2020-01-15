@@ -22,7 +22,6 @@ class Player {
   }
 
   setUsername(username) {
-    console.log(username);
     this.username = username;
   }
 
@@ -32,6 +31,10 @@ class Player {
 
   setPoints(points) {
     this.points = points;
+  }
+
+  increasePoints(){
+    this.points++;
   }
 }
 export default Player;
