@@ -1,6 +1,6 @@
 <template>
-  <div class="rooms-page">
-    <v-app>
+  <v-app>
+    <div class="rooms-page">
       <navbar />
       <div class="rooms-page__container">
         <v-progress-circular
@@ -27,8 +27,8 @@
         @click="createRoomButtonPressed"
         ><v-icon>mdi-plus</v-icon>
       </v-btn>
-    </v-app>
-  </div>
+    </div>
+  </v-app>
 </template>
 
 <script>

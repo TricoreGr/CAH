@@ -1,5 +1,7 @@
 .rooms-page {
   background: $color-white-green-gradient !important;
+  min-height: 100vh;
+  
 
   &__container {
     display: flex;
