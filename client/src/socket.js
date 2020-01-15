@@ -11,6 +11,7 @@ class GameSocket {
     this.username = username;
     this.room = room;
     this.handleConnect();
+    this.handleNextRoundReady();
   }
 
   handleConnect = () => {
@@ -36,7 +37,8 @@ class GameSocket {
   };
   handleLeave = (updateMessages,removePlayer) => {
     this.socket.on("playerLeft", data => {
-      removePlayer(data.player);
+      var player = new Player(data.player,"default.jpg");
+      removePlayer(player);
       updateMessages(data.user, data.message);
     });
   };
@@ -57,7 +59,7 @@ class GameSocket {
     });
   };
 
-  getNextRoundInfo = () => {
+  handleNextRoundReady = () => { //todo: set picking phase false
     this.socket.on("nextRoundReady", data => {
       const roomUrl = "http://localhost:5000/rooms/" + this.room;
       var czar;
@@ -80,7 +82,7 @@ class GameSocket {
   };
 
   startGame = (room) => {
-    this.socket.emit("start_round", {
+    this.socket.emit("round_start", {
     room: room
   });
 };

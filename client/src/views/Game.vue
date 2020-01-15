@@ -88,7 +88,7 @@
               dark
               :disabled="hasSubmitted"
               class="inGame__submitButton"
-              @click="this.startGamePriviladges()?startGame:submitCards"
+              @click="startGamePriviladges()?startGame():submitCards()"
             >
               {{this.startGamePriviladges()? 'Start Game!' : 'Submit!'}}
             </v-btn>
@@ -168,8 +168,8 @@ export default {
 
       else {console.log("e (easter egg hehe)");this.player = player;}
     },
-    removePlayer(username){
-      this.players = this.players.filter(element=>element.getUsername()!=username);
+    removePlayer(player){
+      this.players = this.players.filter(element=>element.getUsername()!=player.getUsername());
     },
     startGamePriviladges(){
       return this.owner == this.username && !this.gameStarted 
@@ -245,7 +245,8 @@ export default {
     },
     startGame() {
       //todo: handle start
-      this.GameSocket.startGame();
+      console.log("HEHEHEHHEHE")
+      this.socket.startGame(this.room);
     }
   },
   data() {
