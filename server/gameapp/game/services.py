@@ -154,11 +154,10 @@ def getIndividualWhiteCards(roomId, username):
 def submitWhiteCards(roomId, token, cards):
     try:
         submittedUsername = getUsernameByJWToken(token)
-        cardsToAppend = ""
+        
 
         for card in cards:
-            if card is not None:
-                cardsToAppend +=  card + "   +   "
+            cardsToAppend +=  card + "   +   "
         cardsToAppend = cardsToAppend[:-7]
 
         submittedCards = {
