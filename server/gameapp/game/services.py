@@ -290,7 +290,7 @@ def splitCards(roomId):
             white_card = whiteCards.pop()
             player_cards.append(white_card)
             new_vals = {
-                '$pop' : {
+                '$pull' : {
                     'gamesession.cards.whiteCards' : white_card
                 }
             }
