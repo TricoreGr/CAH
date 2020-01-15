@@ -32,3 +32,9 @@ def start(data):
     splitCards(room)
     submitBlackCard(room)
     emit('nextRoundReady', room=room)
+
+@socketio.on('round_over')
+def roundOver(data):
+    winner = data['username']
+    room = data['room']
+    emit('round_winner', {'winner': winner}, room=room)    
