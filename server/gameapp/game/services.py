@@ -339,12 +339,22 @@ def checkToDeleteRoom(roomId):
         roomDocument = roomsCollection.find_one(query)
         playas = roomDocument['gamesession']['players']
         if len(playas) == 0:
-            roomsCollection.delete_one(query)
+            deleteRoom(roomId)
             message = {
                 'message' : 'Room is deleted'
             }
-    except:
+    except Exception as e:
+        print(e)
         pass
+
+def deleteRoom(roomId):
+    try:
+        query = {
+            '_id' : ObjectId(roomId)
+        }
+        roomsCollection.delete_one(query)
+    except Exception as e:
+        print(e)
 
 def submitBlackCard(roomId):
     try:

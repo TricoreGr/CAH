@@ -84,9 +84,11 @@
               rounded
               color="black"
               v-if="
+
                 this.pickCardPrivileges() ||
                   this.startGamePrivileges() ||
                   (!pickingPhase && gameStarted &&
+
                     cardsToPick == selectedCardsIndexes.length &&
                     !this.player.getHasPlayed())
               "
@@ -99,6 +101,7 @@
                   ? submitPickedCard()
                   : submitCards()
               "
+
             >
               {{ this.startGamePrivileges() ? "Start Game!" : "Submit!" }}
             </v-btn>
@@ -270,6 +273,7 @@ export default {
       this.socket.handleNextRoundReady(
         this.updateCzar,
         this.fetchWhiteCards,
+
         this.fetchBlackCard,
         this.updateGameState
       );
@@ -289,6 +293,7 @@ export default {
         }
       }
       this.nextRoundAnimation(0);
+
     },
     leaveGame() {
       this.socket.leaveGame();
@@ -308,6 +313,7 @@ export default {
     submitCards() {
       this.player.setHasPlayed(true);
       //todo: fix it
+
       const url =
         "http://localhost:5000/rooms/" + this.room + "/round/whitecards";
       var selectedCards = [];
@@ -322,6 +328,7 @@ export default {
           token: localStorage.getItem("authToken"),
           cards: selectedCards
         })
+
         .then(res => {
           console.log(res);
         })
@@ -341,7 +348,9 @@ export default {
       }
     },
 
+
     //todo: after a user submits
+
     updatePlayerSubmissionState(username) {
       if (username == this.player.getUsername()) this.player.setHasPlayed(true);
       for (var player of this.players) {
@@ -380,6 +389,7 @@ export default {
         .then(res => {
           console.log(res.data);
           this.blackCard = res.data["blackCard"]["text"];
+
           console.log(res.data["blackCard"]["pick"]);
           this.cardsToPick = res.data["blackCard"]["pick"];
         })
