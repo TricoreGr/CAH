@@ -1,6 +1,6 @@
 import io from "socket.io-client";
 import Player from "./player";
-import axios from 'axios'
+import axios from "axios";
 class GameSocket {
   socket = io();
   username = String;
@@ -11,7 +11,6 @@ class GameSocket {
     this.username = username;
     this.room = room;
     this.handleConnect();
-    this.handleNextRoundReady();
   }
 
   handleConnect = () => {
@@ -35,9 +34,9 @@ class GameSocket {
       updateMessages(data.user, data.message);
     });
   };
-  handleLeave = (updateMessages,removePlayer) => {
+  handleLeave = (updateMessages, removePlayer) => {
     this.socket.on("playerLeft", data => {
-      var player = new Player(data.player,"default.jpg");
+      var player = new Player(data.player, "default.jpg");
       removePlayer(player);
       updateMessages(data.user, data.message);
     });
@@ -51,40 +50,34 @@ class GameSocket {
     });
   };
 
-  handleJoin = (updateMessages, updatePlayers) => {
-    this.socket.on("playerJoined", data => {
-      var player = new Player(data.player, data.image);
-      updatePlayers(player);
-      updateMessages(data.user, data.message);
-    });
-  };
-
-  handleNextRoundReady = () => { //todo: set picking phase false
-    this.socket.on("nextRoundReady", data => {
+  handleNextRoundReady = updateCzar => {
+    //todo: set picking phase false
+    this.socket.on("nextRoundReady", () => {
       const roomUrl = "http://localhost:5000/rooms/" + this.room;
       var czar;
       axios
         .get(roomUrl + "/round/czar", {
           token: localStorage.getItem("authToken")
         })
-        .then(res => console.log(res))
+        .then(res => {
+          czar = res.data["czar"];
+          updateCzar(czar);
+        })
         .catch(error => console.log(error));
-      console.log(data);
-      console.log(czar);
     });
   };
   leaveGame = () => {
-      this.socket.emit("leave", {
+    this.socket.emit("leave", {
       username: this.username,
       room: this.room
     });
     this.socket.disconnect();
   };
 
-  startGame = (room) => {
+  startGame = room => {
     this.socket.emit("round_start", {
-    room: room
-  });
-};
+      room: room
+    });
+  };
 }
 export default GameSocket;

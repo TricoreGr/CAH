@@ -294,7 +294,7 @@ def splitCards(roomId):
                     'gamesession.cards.whiteCards' : white_card
                 }
             }
-            roomsCollection.update_one(quert,new_vals)
+            roomsCollection.update_one(query,new_vals)
 
         new_values.append({
             'username': player['username'],
