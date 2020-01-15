@@ -9,6 +9,7 @@ from bson import json_util, BSON
 from ..config import Config
 from bson.objectid import ObjectId
 import random
+from pprint import pprint
 
 # def migrateCards():
 #     with open('cards.json','r') as file:
@@ -154,9 +155,12 @@ def submitWhiteCards(roomId, token, cards):
     try:
         submittedUsername = getUsernameByJWToken(token)
         cardsToAppend = ""
+
         for card in cards:
             if card is not None:
-                cardsToAppend += " + " + card
+                cardsToAppend +=  card + "   +   "
+        cardsToAppend = cardsToAppend[:-7]
+
         submittedCards = {
             'username': submittedUsername,
             'cards': cardsToAppend
@@ -173,13 +177,31 @@ def submitWhiteCards(roomId, token, cards):
             }
 
         }
-        user_query = {'_id':ObjectId(roomId), 'gamesession.players.username':submittedUsername}
-        old_vals = {'$pull': {'whitecards'}}
         roomsCollection.update_one(query,new_vals)
-        emit('played_card',{'username':submittedUsername},room=room)
+
+        roomDoc = roomsCollection.find_one(query)
+        players = roomDoc['gamesession']['players']
+
+        for player in players:
+            if submittedUsername == player['username']:
+                Usercards = player['whitecards']
+                break
+
+        for card in Usercards:
+            if card in cards:
+                Usercards.remove(card)
+        
+        for player in players:
+            if submittedUsername == player['username']:
+                player['whitecards'] = Usercards
+        
+        
+        roomsCollection.update_one(query,{'$set':{'gamesession.players':players}})
         resp = checkCzarTurn(roomId)
+
+        socketio.emit('playerSubmission',{'username':submittedUsername},room=roomId)
         if resp is not False:
-                emit('czard',{'status':'czar'}, room=room)
+            socketio.emit('czard',{'status':'czar'}, room=roomId)
         return Response(json.dumps({'cards': submittedCards}, default=json_util.default),
                         mimetype='application/json')
     except Exception as e:
@@ -352,7 +374,7 @@ def checkCzarTurn(roomId):
         for player in player:
             if len(player['whitecards']) != 0:
                 player_counter += 1
-        if len(cards) == player_counter:
+        if len(cards) == player_counter - 1:
             return cards
         else:
             return False
