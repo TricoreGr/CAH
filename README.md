@@ -1,6 +1,8 @@
 # IEEEdiots
 ![CAH](https://media.firebox.com/product/8322/extra3_column_grid_10/cards-against-humanity_29067.jpg)
 
+Try it at https://adise19-ieeediots.firebaseapp.com/
+
 Cards against humanity online game 
 ### The IEEEdiots:
 1. George 'Atlas' Apostolopoulos
