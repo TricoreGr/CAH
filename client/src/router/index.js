@@ -8,6 +8,7 @@ import Play from "../views/Play.vue";
 import Game from "../views/Game.vue";
 import Profile from "../views/Profile.vue";
 import ErrorPage from "../views/ErrorPage.vue";
+import About from "../views/About.vue";
 
 Vue.use(VueRouter);
 
@@ -66,6 +67,15 @@ const routes = [
     meta: {
       title: "Game",
       requiresAuth: true
+    }
+  },
+  {
+    path: "/About",
+    name: "About",
+    component: About,
+    props: true,
+    meta: {
+      title: "About",
     }
   },
   {
