@@ -22,17 +22,19 @@ export default {
     selectedCardsIndexes: Array,
     index: Number,
     isCzar: Boolean,
-    text: String
+    text: String,
+    canBeClicked:Boolean
   },
   methods: {
     selectCard() {
-      this.$emit("updateSelectedIndex", this.index);
+      if(this.canBeClicked)
+          this.$emit("updateSelectedIndex", this.index);
     }
   },
   data() {
     return {
       isSelected: false
     };
-  }
+  },
 };
 </script>

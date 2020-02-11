@@ -19,7 +19,7 @@ export default {
     imageSrc:{type:String,default:''},
     isCzar:{type:Boolean,default:false},
     isMainUser:{type:Boolean,default:false},
-    points:{type:Number,default:10},
+    points:{type:Number,default:0},
     hasPlayed:{type:Boolean,default:false}
   },
 };

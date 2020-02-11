@@ -4,6 +4,10 @@
   margin-left: 10px;
   margin-right: 10px;
 
+  &--gameStarted{
+    opacity:.3;
+  }
+
   &__title{
     font-family: $montserrat-light;
   }  

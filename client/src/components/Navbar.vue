@@ -90,7 +90,6 @@ export default {
       var currentLink;
 
       if (!userIsAuthenticated) {
-        console.log(userIsAuthenticated);
         for (currentLink of this.$data.allPageLinks) {
           if (currentLink.nonAuthenticated) links.push(currentLink);
         }

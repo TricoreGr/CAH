@@ -17,6 +17,7 @@
           :creator="room.creator"
           :usersJoined="room.usersJoined"
           :id="room.id"
+          :gameStarted="room.gameStarted"
         >
         </room>
       </div>
@@ -34,6 +35,7 @@
 <script>
 import Room from "@/components/RoomCard.vue";
 import axios from "axios";
+import baseURL from "../global"
 
 export default {
   components: { Room },
@@ -45,7 +47,7 @@ export default {
   },
   methods: {
     createRoomButtonPressed: function() {
-      const path = "http://localhost:5000/rooms/";
+      const path = baseURL+"/rooms/";
       axios
         .post(path, { token: localStorage.getItem("authToken") })
         .then(res => {
@@ -53,21 +55,20 @@ export default {
           var newRoom = {
             id: id,
             creator: res.data.room.owner,
-            usersJoined: 0
+            usersJoined: 0,
           };
           this.$data.rooms.push(newRoom);
           this.$router.push("/play/" + id);
         })
-        .catch(error => {
-          console.log(error);
-        });
+        .catch();
 
       // this.$router.push("/play/" + id);
     }
   },
   created() {
+    if(!localStorage.getItem("authToken")) this.$router.push("/login")
     //call the api to get all available rooms
-    const path = "http://localhost:5000/rooms/";
+    const path = baseURL+"/rooms/";
     this.$data.isLoading = true;
     axios
       .get(path, { token: localStorage.getItem("authToken") })
@@ -78,14 +79,14 @@ export default {
           var newRoom = {
             id: room._id.$oid,
             creator: room.owner,
-            usersJoined: room.gamesession.players.length
+            usersJoined: room.gamesession.players.length,
+            gameStarted: room.gameStarted?true:false
+
           };
           this.$data.rooms.push(newRoom);
         }
       })
-      .catch(error => {
-        console.log(error);
-      });
+      .catch();
   }
 };
 </script>

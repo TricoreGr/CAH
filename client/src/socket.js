@@ -1,13 +1,21 @@
 import io from "socket.io-client";
 import Player from "./player";
 import axios from "axios";
+import baseURL from "./global";
 class GameSocket {
   socket = io();
   username = String;
   room = String;
+  connectOptions={
+    secure:true,
+    reconnect:true,
+    rejectUnauthorized:false
+  };
+  url = baseURL
+
 
   constructor(username, room) {
-    this.socket = io.connect("http://localhost:5000");
+    this.socket = io.connect(this.url,this.connectOptions);
     this.username = username;
     this.room = room;
     this.handleConnect();
@@ -42,24 +50,23 @@ class GameSocket {
     });
   };
 
-  handleJoin = (
-    updateMessages,
-    updatePlayers,
-    gameStarted,
-    setBlackCard,
-  ) => {
+  handleJoin = (updateMessages, updatePlayers, gameStarted, setBlackCard) => {
     this.socket.on("playerJoined", data => {
       var player = new Player(data.player, data.image);
       updatePlayers(player);
       updateMessages(data.user, data.message);
-      if (!gameStarted)
-          setBlackCard();
-  })}
+      if (!gameStarted) setBlackCard();
+    });
+  };
 
-  handleNextRoundReady = (updateCzar,fetchWhiteCards,fetchBlackCard,updateGameState) => {
-    console.log("yes");
+  handleNextRoundReady = (
+    updateCzar,
+    fetchWhiteCards,
+    fetchBlackCard,
+    updateGameState
+  ) => {
     this.socket.on("nextRoundReady", () => {
-      const roomUrl = "http://localhost:5000/rooms/" + this.room;
+      const roomUrl = baseURL +"/rooms/"+ this.room;
       axios
         .get(roomUrl + "/round/czar", {
           token: localStorage.getItem("authToken")
@@ -68,36 +75,39 @@ class GameSocket {
           let czar = res.data["czar"];
           updateGameState();
           updateCzar(czar);
-          console.log(czar);
           fetchWhiteCards();
           fetchBlackCard();
         })
-        .catch(error => console.log(error));
+        .catch();
     });
   };
 
   //todo: receive username
-  handlePlayerSubmission=updatePlayerSubmissionState=>{
+  handlePlayerSubmission = updatePlayerSubmissionState => {
     this.socket.on("playerSubmission", data => {
-      updatePlayerSubmissionState(data.username)
+      updatePlayerSubmissionState(data.username);
     });
-  }
+  };
 
-  handleCzarPickingPhase=(fetchSubmittedCards) =>{
+  handleCzarPickingPhase = fetchSubmittedCards => {
     this.socket.on("czarPickingPhase", () => {
       fetchSubmittedCards();
     });
-  }
+  };
 
-  handleWinner=(updateWinner) =>{
-    this.socket.on("round_winner", data => {
-      console.log("data.winner",data.winner);
-      console.log("data",data);
-      updateWinner(data.winner);
+  handleGameEnding=finishGame=>{
+    this.socket.on("game_winner", (data) => {
+      finishGame(data.winner);
     });
   }
 
-  roundOver = (winner) => {
+  handleWinner = updateWinner => {
+    this.socket.on("round_winner", data => {
+      updateWinner(data.winner);
+    });
+  };
+
+  roundOver = winner => {
     this.socket.emit("round_over", {
       username: winner,
       room: this.room
@@ -112,8 +122,7 @@ class GameSocket {
     this.socket.disconnect();
   };
 
-  startGame = room => {
-    console.log("TO DINW")
+  startRound = room => {
     this.socket.emit("round_start", {
       room: room
     });

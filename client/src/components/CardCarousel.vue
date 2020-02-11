@@ -6,6 +6,7 @@
         :selectedCardsIndexes="selectedCardsIndexes"
         :index="index"
         :text="text"
+        :canBeClicked="canSelectCard"
       ></card>
     </swiper-slide>
     <div class="cardCarousel__arrow swiper-button-prev" slot="button-prev">
@@ -79,6 +80,9 @@ export default {
   computed: {
     swiper() {
       return this.$refs.mySwiper.swiper;
+    },
+    canSelectCard(){
+      return this.cardsToPick>0
     }
   }
 };

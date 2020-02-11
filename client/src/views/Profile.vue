@@ -103,15 +103,17 @@
 
 <script>
 import axios from "axios";
+import baseURL from '../global'
+import VueJwtDecode from "vue-jwt-decode";
 export default {
   data() {
     return {
       username: "Loading...",
       email: "gooduser@hehe.com",
       rank: "big Boi", //todo : add ranks
-      wins: 3,
+      wins: 0,
       overlay: false,
-      gamesTotal: 10,
+      gamesTotal: 0,
       isLoading: false,
       img:"",
       updateModal: false,
@@ -132,25 +134,21 @@ export default {
   methods: {
     fetchData() {
       this.isLoading = true;
-      const path = "http://localhost:5000/users/jwtToUsername";
+      const path = baseURL+"/users/"+this.username;
       axios
-        .post(path, { token: localStorage.getItem("authToken") })
+        .get(path)
         .then(res => {
-          this.username = res.data["username"];
           this.email = res.data["email"];
           this.wins = res.data["wins"] ? res.data["wins"] : 0;
           this.gamesTotal = res.data["games"] ? res.data["games"] : 0;
           this.img = res.data["img"];
           this.isLoading = false;
         })
-        .catch(error => {
-          //oops
-          console.log(error);
-        });
+        .catch();
     },
     deleteAccount() {
       this.isLoading = true;
-      const path = "http://localhost:5000/users/"+this.username;
+      const path = baseURL+"/users/"+this.username;
       axios
         .delete(path, { data: { token: localStorage.getItem("authToken") } })
         .then(() => {
@@ -158,10 +156,7 @@ export default {
           this.isLoading = false;
 
         })
-        .catch(error => {
-          //oops
-          console.log(error);
-        });
+        .catch();
     },
     resetModal() {
       this.updateModal = false;
@@ -174,7 +169,7 @@ export default {
         "Content-Type": "application/json"
       };
       //url for post method
-      const path = "http://localhost:5000/users/" + this.username;
+      const path = baseURL+"/users/" + this.username;
       //form rules
       if (this.$refs.form.validate())
         //use axios for requests
@@ -192,14 +187,13 @@ export default {
               this.fetchData();
             }
           })
-          .catch(error => {
-            //oops
-            console.log(error);
-          });
+          .catch();
     }
   },
   mounted() {
+    this.username =  VueJwtDecode.decode(localStorage.getItem("authToken")).user;
     this.fetchData();
+    
   }
 };
 </script>

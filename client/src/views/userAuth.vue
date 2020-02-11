@@ -125,6 +125,7 @@
 
 <script>
 import axios from "axios";
+import baseURL from '../global';
 export default {
   methods: {
     syncUsername() {
@@ -150,7 +151,7 @@ export default {
     login() {
       this.isLoading = true;
       //url for post method
-      const path = "http://localhost:5000/users/login";
+      const path = baseURL+"/users/login";
       //form rules
       if (this.$refs.form.validate())
         //use axios for requests
@@ -176,14 +177,13 @@ export default {
                 this.error = "Server Error, try again";
                 break;
             }
-            console.log(error);
             this.isLoading = false;
           });
     },
     signup() {
       this.isLoading = true;
       //url for post method
-      const path = "http://localhost:5000/users/";
+      const path = baseURL+"/users/";
       //form rules
       if (this.$refs.form.validate())
         //use axios for requests

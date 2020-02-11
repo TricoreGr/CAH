@@ -1,9 +1,9 @@
-<template>
-  <v-card class="room-card">
+<template v-if="usersJoined<8">
+  <v-card class="room-card" :class="{'room-card--gameStarted':gameStarted}">
     <v-card-title class="room-card__title">{{ creator }}'s room</v-card-title>
     <div class="room-card__subcontainer">
-      <v-btn class="room-card__button" @click="buttonPressed(usersJoined)">
-        JOIN
+      <v-btn class="room-card__button" :disabled="gameStarted" @click="buttonPressed(usersJoined)">
+        {{gameStarted?"PLAYING":"JOIN"}}
       </v-btn>
       <span
         class="room-card__size-label"
@@ -19,7 +19,8 @@ export default {
   props: {
     creator: String,
     usersJoined: Number,
-    id: String
+    id: String,
+    gameStarted:Boolean
   },
   methods: {
     buttonPressed(usersJoined) {

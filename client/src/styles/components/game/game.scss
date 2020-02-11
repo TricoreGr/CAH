@@ -2,6 +2,7 @@
   background: $color-white; //browser fallback
   background: $color-white-gradient;
   min-height: 100vh;
+  overflow-x: hidden;
 
   &__statusWrapper {
     padding: 20px;
