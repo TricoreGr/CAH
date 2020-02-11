@@ -44,20 +44,25 @@ export default {
                 images:[
           jojos0,
           jojos1  
-        ],},
+        ],
+        link:"https://gitlab.com/joj0s"
+        },
         {
                 name:'Gregory "The bad merger" Giapa',
                 information:"Back end developer - Database administrator - Drunk committer - Testing allergic - Beer devourer",
                 images:[
           giapa0,
           giapa1  
-        ]},
+        ],
+        link:"https://github.com/Giapa"
+        },
         {
                 name:'Apostolos "Front-End machine" Kalovelo',
                 information:"Front end developer - UI/UX Designer - Executive Creative Director - Potential weeaboo - Harry Potter copy",
                 images:[
           tolis0,
-          tolis1]}
+          tolis1],
+          link:"https://kalovelo.com"}
         ],
         teachers:[
             {
