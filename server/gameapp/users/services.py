@@ -1,124 +1,170 @@
-from .models import User,db,users_schema,user_schema
+from .models import usersCollection,userModel
 from flask import jsonify, Response
 import json
-import hashlib
 import jwt
+from flask import jsonify, Response
+from bson.json_util import dumps
+from bson import json_util, BSON
 from ..config import Config
-
+from bson.objectid import ObjectId
+import hashlib
 
 def getUsers():
-    users = User.query.all()
-    output = users_schema.dump(users)
-    return {"users": output}
+    try:
+        users = []
+        cursor = usersCollection.find({})
+        for document in cursor:
+            users.append(document)
+        return Response(json.dumps({'output': users}, default=json_util.default),
+                        mimetype='application/json')
+    except Exception as e:
+        print(e)
+        response = {
+            'message': 'Could not return tables'
+        }
+        return response, 500
 
 
 def addUser(username,password,email):
-    userExists = User.query.filter_by(username=username).first()
-    mailExists = User.query.filter_by(email=email).first()
+    try:
+        userExists = usersCollection.find_one({"username": username})
+        if userExists is not None:
+            return {'message': 'User already exists'}, 409
 
-    if userExists is not None:
-        return {'message': 'User already exists'}, 409
-    if mailExists is not None:
-        return {'message': 'A user with this email already exists'}, 409
-    hashedPassword = hashPassword(str(password))
-    user = User(username=username, password=hashedPassword, email=email)
-    db.session.add(user)
-    db.session.commit()
+        mailExists = usersCollection.find_one({"email": email})
+        if mailExists is not None:
+            return {'message': 'A user with this email already exists'}, 409
 
-    newUser = user.query.filter_by(username = username).first()
-    output = user_schema.dump(newUser)
-    key = Config.SECRET_KEY #get the secrete key
-    token = jwt.encode({'user':username},key) #generate token
+        hashedPassword = hashPassword(str(password))
+        user = userModel(username, hashedPassword, email)
+        usersCollection.insert_one(user)
+        
+        key = Config.SECRET_KEY #get the secret key
+        token = jwt.encode({'user':username},key).decode('utf-8') #generate token
 
-    return {"user": output, "token": token.decode('utf-8')}    
-
+        return Response(json.dumps({'user': user, 'token':token}, default=json_util.default),
+                        mimetype='application/json')   
+    except Exception as e:
+        print(e)
+        return {"message": "Server error"}, 500
 
 def hashPassword(password):
+    password = str(password)
     h = hashlib.md5(password.encode('utf-8'))
     return h.hexdigest()
 
-
 def getUser(uname):
-    user = User.query.filter_by(username=uname).first()
-    if user is None:
-        return {'message': 'User was not found'}, 404
-    output = user_schema.dump(user)
-    return output
-
+    try:
+        user = usersCollection.find_one({'username':uname})
+        if user is None:
+            return {'message':'User was not found'}, 404
+        return Response(json.dumps({'user': user}, default=json_util.default),
+                        mimetype='application/json')
+    except Exception as e:
+        print(e)
+        return {"message": "Server error"}, 500
 
 def getUserByJWToken(token):
     username = jwt.decode(token,Config.SECRET_KEY)['user']
     return getUser(username)
 
-
 def checkCreds(username,password):
-    hashedPassword = hashPassword(password)
-    user = User.query.filter_by(username=username)
-    if user is None:
-        return {'message': 'There is no user with this username'}, 404
-    userWithPassword = user.filter_by(password=hashedPassword).first()
-    if userWithPassword is None:
-        return {'message': 'Invalid credentials'}, 401
-    key = Config.SECRET_KEY #get the secrete key
-    token = jwt.encode({'user':username},key) #generate token
-    output = user_schema.dump(userWithPassword)
-    return {"user": output, "token": token.decode('utf-8')}
-
+    try:
+        hashedPassword = hashPassword(password)
+        user = usersCollection.find_one({'username':username})
+        if user is None:
+            return {'message':'The is no user with this username'}, 404
+        userWithPassword = usersCollection.find_one({'password':hashedPassword})
+        if userWithPassword is None:
+            return {'message':'Invalid credentials'}, 401
+        key = Config.SECRET_KEY
+        token = jwt.encode({'user':username},key).decode('utf-8')   
+        return Response(json.dumps({'user': userWithPassword, 'token':token}, default=json_util.default),
+                            mimetype='application/json')
+    except Exception as e:
+        print(e)
+        return {"message": "Server error"}, 500
 
 def deleteUser(username):
-    user = User.query.filter_by(username=username).first()
-    if user is None:
-        return {'message': 'User was not found'}, 404
-    output = user_schema.dump(user)
-    db.session.delete(user)
-    db.session.commit()
-    return output
-    
+    try:
+        query = {
+            'username' : username
+        }
+        user = usersCollection.find_one(query)
+        usersCollection.delete_one(query)
+        return Response(json.dumps({'user': user}, default=json_util.default),
+                        mimetype='application/json')
+    except Exception as e:
+        print(e)
+        pass
 
 def updateUser(username, img):
-    user = User.query.filter_by(username=username).first()
-    if user is None:
-        return {'message':'There is no user with this username'}, 404 
-    return updateUserImg(user, img)
+    try:
+        user = usersCollection.find_one({'username':username})
+        if user is None:
+            return {'message':'There is no user with this username'}, 404 
+        return updateUserImg(username, img)
+    except Exception as e:
+        print(e)
+        return {"message": "Server error"}, 500
 
 
-def updateUserImg(user, img):
-    if (user.img == img):
-        return {'message':'The new image is the same as the old one'}, 400
-    user.img = img
-    db.session.commit()
-    print(user.username)
-    newUser = user.query.filter_by(username = user.username).first()
-    output = user_schema.dump(user)
-    return output
-
+def updateUserImg(username, img):
+    try:
+        user_image = usersCollection.find_one({'username':username})['img']
+        if user_image == img:
+            return {'message':'The new image is the same as the old one'}, 400
+        new_vals = {
+            "$set" : {"img": img}
+        }
+        usersCollection.update_one({'username':username},new_vals)
+        user = usersCollection.find_one({'username':username})
+        
+        return Response(json.dumps({'user': user}, default=json_util.default),
+                            mimetype='application/json')
+    except Exception as e:
+        print(e)
+        return {"message": "Server error"}, 500
+                        
 def returnImg(username):
-    user = User.query.filter_by(username=username).first()
-    img = user.img
-    if img is None:
-        img = 'https://celebs.infoseemedia.com/wp-content/uploads/2019/08/Chris-Brown-and-Lisa-Ann-dated.jpg'
-    return img
+    try:
+        img = usersCollection.find_one({'username':username})
+        if img is None:
+            img = 'https://celebs.infoseemedia.com/wp-content/uploads/2019/08/Chris-Brown-and-Lisa-Ann-dated.jpg'
+        return img
+    except Exception as e:
+        print(e)
+        return {"message": "Server error"}, 500
 
 def updateWins(username):
-    user = User.query.filter_by(username=username).first()
-    wins = user.wins
-    if wins is None:
-        user.wins = 1
-    else:
-        user.wins = wins + 1
-    db.session.commit()
-    user = User.query.filter_by(username=username).first()
-    output = user_schema.dump(user)
-    return {'user':output}
+    try:
+        user = usersCollection.find_one({"username": username})
+        wins = user['wins']
+        if wins is None:
+            wins = 1
+        else:
+            wins = wins + 1
+        usersCollection.update_one({'username': username},{'$set':{'wins': wins}})
+        user = usersCollection.find_one({"username": username})
+        return Response(json.dumps({'user': user}, default=json_util.default),
+                            mimetype='application/json')
+    except Exception as e:
+        print(e)
+        return {"message": "Server error"}, 500
+
 
 def updateGames(username):
-    user = User.query.filter_by(username=username).first()
-    games = user.games
-    if games is None:
-        user.games = 1
-    else:
-        user.games = games + 1
-    db.session.commit()
-    user = User.query.filter_by(username=username).first()
-    output = user_schema.dump(user)
-    return {'user':output}
+    try:
+        user = usersCollection.find_one({"username": username})
+        games = user['games']
+        if games is None:
+            games = 1
+        else:
+            games = games + 1
+        usersCollection.update_one({'username': username},{'$set':{'games': games}})
+        user = usersCollection.find_one({"username": username})
+        return Response(json.dumps({'user': user}, default=json_util.default),
+                            mimetype='application/json')
+    except Exception as e:
+        print(e)
+        return {"message": "Server error"}, 500

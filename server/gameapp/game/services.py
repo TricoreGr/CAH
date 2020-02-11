@@ -50,14 +50,14 @@ def getRandomBlackCards():
     cursor = cardsCollection.find({})
     for document in cursor:
         allBlackCards = document["blackCards"]
-    return random.sample(allBlackCards, k=33)
+    return random.sample(allBlackCards, k=43)
 
 def getRandomWhiteCards():
     allWhiteCards = []
     cursor = cardsCollection.find({})
     for document in cursor:
         allWhiteCards = document["whiteCards"]
-    return random.sample(allWhiteCards, k=146)
+    return random.sample(allWhiteCards, k=246)
 
 def getRoundWhiteCards(roomId):
     try:
@@ -156,8 +156,7 @@ def getIndividualWhiteCards(roomId, username):
 
 def submitWhiteCards(roomId, token, cards):
     try:
-        submittedUsername = getUsernameByJWToken(token)
-        
+        submittedUsername = getUsernameByJWToken(token)       
         cardsToAppend = ""
         for card in cards:
             cardsToAppend +=  card + "   +   "
@@ -306,7 +305,7 @@ def splitCards(roomId):
 
     for player in players:
         difference = 10 - len(player['whitecards'])
-        player_cards = list()
+        player_cards = player['whitecards']
 
         for i in range(difference):
             white_card = whiteCards.pop()
@@ -330,6 +329,34 @@ def splitCards(roomId):
         }
     }
     roomsCollection.update_one(query,new_vals)
+
+
+def checkGameWinner(roomId):
+    try:
+        query = {
+            '_id' : ObjectId(roomId)
+        }
+        roomDocument = roomsCollection.find_one(query)
+        players = roomDocument['gamesession']['players']
+        winner = dict()
+        for player in players:
+            if player['points'] + 1 == 5:
+                winner = {
+                    'username': player['username'],
+                    'image' : player['image']
+                }
+                break
+        if len(winner) != 0:
+            return winner
+        else:
+            return False
+    except Exception as e:
+        print(e)
+        response = {
+            'message':'Server error'
+        }
+        return jsonify(response),500
+
 
 def checkToDeleteRoom(roomId):
     try:
@@ -356,6 +383,26 @@ def deleteRoom(roomId):
     except Exception as e:
         print(e)
 
+
+def clearRoundWhiteCards(roomId):
+    try:
+        query = {
+            '_id': ObjectId(roomId)
+        }
+        whiteCards = []
+        update = {
+            '$set' : {
+                'gamesession.round.whitecards' : whiteCards
+            }
+        }
+        roomsCollection.update_one(query,update)
+        roomDocument = roomsCollection.find_one(query)
+        return Response(json.dumps({'room': roomDocument}, default=json_util.default),
+                        mimetype='application/json')
+    except Exception as e:
+        print(e)
+        return jsonify({'message':'Server Error'}),500
+
 def submitBlackCard(roomId):
     try:
         query = {
@@ -381,6 +428,7 @@ def submitBlackCard(roomId):
         print(e)
         return jsonify({'message':'Server error'}),500
 
+
 def getTableStatus(roomId):
     try:
         query = {
@@ -393,9 +441,9 @@ def getTableStatus(roomId):
         print(e)
         return jsonify({'message':'Server Error'}),500
 
+
 def checkCzarTurn(roomId):
     try:
-        print("CZAR TEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEST")
         query = {
             '_id': ObjectId(roomId)
         }
@@ -404,10 +452,8 @@ def checkCzarTurn(roomId):
         players = roomDocument['gamesession']['players']
         cards = roomDocument['gamesession']['round']['whitecards']
         for player in players:
-            print(len(player['whitecards']))
             if len(player['whitecards']) != 0:
                 player_counter += 1
-        print(player_counter)       
         if len(cards) == player_counter - 1:
             print("WORKS")
             return cards
@@ -441,3 +487,16 @@ def checkWinner(roomId):
             'message':'Server error'
         }
         return jsonify(response),500
+
+def setFlag(roomId):
+    query = {
+            '_id' : ObjectId(roomId)
+        }
+    try: 
+        roomDocument = roomsCollection.find_one(query)
+        flag = roomDocument['gameStarted']
+    except:
+        new_vals = {
+            '$set' : {'gameStarted': True}
+        }
+        roomsCollection.update_one(query,new_vals)

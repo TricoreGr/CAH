@@ -1,5 +1,4 @@
 from pymongo import MongoClient
-from pprint import pprint
 
 # TODO whitlist your ip in order to connect
 client = MongoClient(

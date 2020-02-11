@@ -45,7 +45,7 @@ def handleUserRoute(username):
             creds = request.get_json()
             validUser = validateToken(creds.get('token'), username)
             if not validUser:
-                return {'message': 'Unauthorized'}, 401
+               return {'message': 'Unauthorized'}, 401
             img = creds.get('image')
             if img is None:
                 return {'message': 'No user info given'}, 400 
@@ -57,10 +57,6 @@ def handleUserRoute(username):
         try:
             creds = request.get_json()
             validUser = validateToken(creds.get('token'), username)
-            print('validUser')
-            print(validUser)
-            print('token')
-            print(creds.get('token'))
             if not validUser:
                 return {'message': 'Unauthorized'}, 401
             return deleteUser(username)

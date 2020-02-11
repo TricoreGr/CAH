@@ -1,7 +1,7 @@
 from flask_socketio import SocketIO,emit,send,join_room,leave_room
 from ..socket import socketio
 from ..users.services import returnImg
-from .services import insertPlayer,getCzarAsJson, getRandomPlayer, getNextCzar, splitCards, checkToDeleteRoom, removeUserFromTable, submitBlackCard, submitWhiteCards
+from .services import checkGameWinner, clearRoundWhiteCards, insertPlayer,getCzarAsJson, getRandomPlayer, getNextCzar, splitCards, checkToDeleteRoom, removeUserFromTable, submitBlackCard, submitWhiteCards, setFlag
 
 @socketio.on('joined')
 def joined(data):
@@ -23,13 +23,13 @@ def left(data):
     
 @socketio.on('round_start')
 def start(data):
-    print("RYEHS")
     room = data['room']
     czar = getCzarAsJson(room)
     if czar is "" or czar is None:
        czar = getRandomPlayer(room)
     else:
        czar = getNextCzar(czar,room)
+    setFlag(room)
     splitCards(room)
     submitBlackCard(room)
     emit('nextRoundReady', room=room)
@@ -37,6 +37,10 @@ def start(data):
 @socketio.on('round_over')
 def roundOver(data):
     winner = data['username']
-    print(winner)
     room = data['room']
-    emit('round_winner', {'winner': winner}, room=room)    
+    val = checkGameWinner(room)
+    if(val is not False):
+        emit('game_winner', {'winner': winner}, room=room)   
+    else:
+        emit('round_winner', {'winner': winner}, room=room)  
+    clearRoundWhiteCards(room) 

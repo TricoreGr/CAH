@@ -5,12 +5,8 @@ app = create_app()
 socketio = socketio
 
 from gameapp.chat import * 
-from gameapp.users.models import db
 
 CORS(app, resources={r'/*': {'origins': '*'}})
 
 if __name__ == '__main__':
-    try:
-        app.run(debug=True,port=5000)
-    except KeyboardInterrupt:
-        db.session.close()
+    app.run(debug=True,port=5000)

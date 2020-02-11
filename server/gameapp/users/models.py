@@ -1,28 +1,17 @@
-from flask_sqlalchemy import SQLAlchemy
-from flask_marshmallow import Marshmallow
-from flask import Flask
-from ..config import Config, Configdb
+from pymongo import MongoClient
 
-app = Flask(__name__)
+client = MongoClient(
+    "mongodb+srv://ieeediots:asidirop@ieeediots-uctmo.mongodb.net/test?retryWrites=true&w=majority")
 
-app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{Configdb.SQL_USERNAME}:{Configdb.SQL_PASSWORD}@{Configdb.SQL_URL}/{Configdb.SQL_USERNAME}' #add password in order for it to run
+db = client['ieeediots_cah']  # db name is game
+usersCollection = db['users']  # collection name
 
-
-db = SQLAlchemy(app)
-db.init_app(app)
-ma = Marshmallow(app)
-
-class User(db.Model):
-    username = db.Column(db.String(120) , primary_key=True, unique=True, nullable=False)
-    password = db.Column(db.String(60), nullable=False)
-    email = db.Column(db.String(200), unique=True, nullable=False)
-    img = db.Column(db.String(300), default='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1HwEPiKz4lsD5ilzNbsIWM8JuzS49G--StZSNCJSAwE8VKAeM&s')
-    games = db.Column(db.Integer)
-    wins = db.Column(db.Integer)
-
-class UserSchema(ma.Schema):
-    class Meta:
-        fields = ('username', 'email','img','games','wins')
-
-user_schema = UserSchema()
-users_schema = UserSchema(many=True)
+def userModel(username,password,email):
+    return {
+       'username' : username,
+       'password' : password,
+       'email' : email,
+       'img' : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTv4sdBGW3mOGK5e9h4KrbgA2UqdgPY6hstXXYnqhabBmtNSDwL&s',
+       'games' : 0,
+       'wins' : 0 
+    }
